@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lab 06A - Telnet and SSH | CN Lab Helper</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="style.css" />
+
+    <!-- Atom One Dark theme for highlight.js -->
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/atom-one-dark.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    <script>
+        hljs.highlightAll();
+    </script>
+
+    <style>
+        .lab-detail {
+            background-color: white;
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 3rem;
+        }
+
+        .lab-detail-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .lab-detail-header h2 {
+            color: var(--primary);
+        }
+
+        .lab-content {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+
+        .lab-explanation {
+            padding-right: 1rem;
+        }
+
+        .lab-explanation h3 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+            margin-top: 2rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .lab-explanation h3:first-child {
+            margin-top: 0;
+        }
+
+        .lab-explanation p {
+            margin-bottom: 1.2rem;
+        }
+
+        .lab-explanation ul {
+            margin: 1rem 0;
+            padding-left: 2rem;
+        }
+
+        .lab-explanation li {
+            margin: 0.5rem 0;
+        }
+
+        .pdf-container {
+            margin: 2rem 0;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 1rem;
+            background: #f9f9f9;
+        }
+
+        .pdf-container h4 {
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+
+        .pdf-placeholder {
+            width: 100%;
+            height: 500px;
+            background-color: #e9ecef;
+            border-radius: 4px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #6c757d;
+            margin-bottom: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .lab-detail-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+        }
+
+        .code-block {
+            position: relative;
+            background-color: #1e1e1e;
+            padding: 1rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: 'Fira Code', monospace;
+            border-left: 5px solid var(--primary);
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: var(--primary);
+            border: none;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: background 0.3s;
+        }
+
+        .copy-btn:hover {
+            background-color: rgba(52, 152, 219, 0.8);
+        }
+
+        .code-explanation {
+            background-color: #f9f9f9;
+            padding: 0.8rem 1rem;
+            border-left: 4px solid var(--primary);
+            border-radius: 5px;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+        }
+
+        .carousel-container {
+            margin: 2rem 0;
+            text-align: center;
+            overflow: hidden;
+        }
+
+        .carousel {
+            position: relative;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .carousel-images {
+            display: flex;
+            overflow: hidden;
+            border-radius: 8px 8px 0 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            background-color: #f8f9fa;
+            min-height: 500px;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .carousel-image {
+            width: 100%;
+            height: auto;
+            max-height: 500px;
+            object-fit: contain;
+            display: none;
+        }
+
+        .carousel-image.active {
+            display: block;
+        }
+
+        .carousel-caption {
+            background-color: var(--primary);
+            color: white;
+            padding: 1rem;
+            border-radius: 0 0 8px 8px;
+            margin-top: -1px;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .carousel-controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 1rem;
+            gap: 1rem;
+        }
+
+        .carousel-btn {
+            background-color: var(--primary);
+            border: none;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background 0.3s;
+        }
+
+        .carousel-btn:hover {
+            background-color: rgba(52, 152, 219, 0.8);
+        }
+
+        .carousel-btn:disabled {
+            background-color: #bdc3c7;
+            cursor: not-allowed;
+        }
+
+        .carousel-indicators {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .carousel-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: #bdc3c7;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .carousel-indicator.active {
+            background-color: var(--primary);
+        }
+
+        .code-explanation2 {
+            background-color: #f9f9f9;
+            padding: 1rem 1.5rem;
+            border-left: 5px solid var(--primary);
+            border-radius: 8px;
+            margin: 1.5rem auto;
+            max-width: 1000px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        .code-explanation2 b {
+            color: var(--primary);
+        }
+
+        .code-explanation2 p {
+            margin-top: 0.5rem;
+            margin-bottom: 0;
+        }
+
+        .small-note {
+            font-size: 0.9rem;
+            color: #555;
+        }
+
+        .protocol-section {
+            margin: 2rem 0;
+        }
+
+        .protocol-section h4 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--secondary);
+        }
+
+        .wireshark-commands {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-left: 4px solid #f39c12;
+        }
+
+        .command-item {
+            display: flex;
+            margin-bottom: 1rem;
+            align-items: flex-start;
+            padding: 0.8rem;
+            background: white;
+            border-radius: 6px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .command-badge {
+            background-color: var(--primary);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.9rem;
+            margin-right: 1rem;
+            min-width: 200px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .command-desc {
+            flex: 1;
+            color: #333;
+            line-height: 1.5;
+        }
+
+        @media (max-width: 768px) {
+            .command-item {
+                flex-direction: column;
+            }
+            
+            .command-badge {
+                margin-bottom: 0.5rem;
+                margin-right: 0;
+                min-width: auto;
+            }
+        }
+        
+        #pdf-viewer-1 {
+            width: 100%;
+            height: 500px;
+            border: 1px solid #ddd;
+            border-radius: 4px
+        }
+
+        @media (max-width: 768px) {
+            #pdf-viewer-1 {
+                height: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                <img src="images/logo2.png" alt="CN Lab Helper Logo" style="height:90px; width:auto;">
+                    <h1>NetLabPro</h1>
+                </div>
+                <nav>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="netplay.html">NetPlay</a></li>
+                        <li><a href="about.html">About</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Lab Detail -->
+    <section class="container">
+        <div class="lab-detail">
+            <div class="lab-detail-header">
+                <h2>Lab 06: SSH & Telnet</h2>
+                <a href="index.html" class="btn">Back to Labs</a>
+            </div>
+
+            <div class="lab-content">
+                <div class="lab-explanation">
+
+                    <!-- Objectives -->
+                    <h3>1. Lab Objectives</h3>
+                    <p>By the end of this lab you should be able to:</p>
+                    <ul>
+                        <li>Understand the purpose and functionality of Telnet and SSH protocols.</li>
+                        <li>Configure Telnet on a Cisco switch for remote command-line access.</li>
+                        <li>Implement SSH to establish secure encrypted communication.</li>
+                        <li>Compare Telnet and SSH in terms of authentication and data security.</li>
+                        <li>Verify remote access configurations using Packet Tracer simulation.</li>
+                    </ul>
+
+                    <!-- Telnet Theory -->
+                    <h3>2. Introduction to Telnet</h3>
+                    <p>
+                        <strong>Telnet</strong> is a terminal emulation protocol that allows remote command-line access to
+                        network devices over TCP/IP. It enables administrators to execute commands on routers, switches,
+                        or servers as if they were locally connected. Telnet transmits all traffic in <strong>plain text</strong>,
+                        including credentials, making it unsuitable for untrusted networks.
+                    </p>
+
+                    <!-- Telnet Steps -->
+                    <h3>3. Telnet - Configuration Steps (Packet Tracer)</h3>
+                    <ol>
+                        <li>Create a topology with a PC and a switch (or router) in Packet Tracer.</li>
+                        <li>Assign IP addresses to the PC and configure VLAN 1 interface on the switch (if required).</li>
+                        <li>Attempt to Telnet to the device — it will fail until authentication is configured.</li>
+                        <li>On the switch, configure VTY lines, set a password, and enable login:</li>
+                    </ol>
+
+                    <!-- Telnet CLI sample -->
+                    <div class="code-block">
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><code class="language-bash">
+enable
+configure terminal
+interface vlan 1
+ ip address 192.168.10.2 255.255.255.0
+ no shutdown
+exit
+
+line vty 0 4
+ password yourVTYpassword
+ login
+exit
+
+enable password yourEnablePassword
+write memory
+</code></pre>
+                    </div>
+
+                    <div class="code-explanation">
+                        <b>Explanation:</b> The code above sets an IP on VLAN 1 (if switch supports SVI), configures VTY lines
+                        with a password and enables privileged access with an enable password.
+                    </div>
+
+                    <!-- Telnet Carousel -->
+                    <div class="carousel-container">
+                        <div class="carousel" id="telnet-carousel">
+                            <div class="carousel-images" id="telnet-images">
+                                <img src="images/lab6a_1.jpg" alt="Telnet Topology" class="carousel-image active">
+                                <img src="images/lab6a_2.jpg" alt="Commands on Router" class="carousel-image">
+                                <img src="images/lab6a_3.jpg" alt="TelnetConnection" class="carousel-image">
+                                <img src="images/lab6a_4.jpg" alt ="Telnet on Switch" class="carousel-image">
+                                <img src="images/lab6a_5.jpg" alt="Commands on Switch" class="carousel-image">
+                                <img src="images/lab6a_6.jpg" alt="IP Configuration" class="carousel-image">
+                                <img src="images/lab6a_7.jpg" alt="IP Configuration" class="carousel-image">
+                                <img src="images/lab6a_8.jpg" alt="IP Configuration" class="carousel-image">
+                                <img src="images/lab6a_9.jpg" alt="Successful Telnet after config" class="carousel-image">
+                                <img src="images/lab6a_10.jpg" alt="Telnet Connection on PC" class="carousel-image">
+                            </div>
+
+                            <div class="carousel-caption">
+                                <p id="telnet-caption">Figure 1: Telnet implementation screenshots (Topology → Config → Test).</p>
+                            </div>
+
+                            <div class="carousel-controls">
+                                <button class="carousel-btn" id="telnet-prev">Previous</button>
+                                <span id="telnet-counter">1 of 5</span>
+                                <button class="carousel-btn" id="telnet-next">Next</button>
+                            </div>
+
+                            <div class="carousel-indicators" id="telnet-indicators"></div>
+                        </div>
+                    </div>
+
+                    <!-- SSH Theory -->
+                    <h3>4. Introduction to SSH</h3>
+                    <p>
+                        <strong>SSH (Secure Shell)</strong> is a cryptographic network protocol for secure remote login and
+                        command execution. It encrypts all data between client and server, protecting credentials and
+                        session data. SSH supports password-based and key-based authentication and is the recommended
+                        replacement for Telnet on production networks.
+                    </p>
+
+                    <!-- SSH Steps -->
+                    <h3>5. SSH - Configuration Steps (Packet Tracer / CLI)</h3>
+                    <ol>
+                        <li>Use the same topology you used for Telnet (PC + switch/router).</li>
+                        <li>On the device configure hostname and domain name (required for RSA key generation).</li>
+                        <li>Generate RSA keys, create a local username, and configure VTY to accept SSH only.</li>
+                        <li>Test SSH from a terminal on the PC (or from Packet Tracer's terminal).</li>
+                    </ol>
+
+                    <!-- SSH CLI sample -->
+                    <div class="code-block">
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+<pre><code class="language-bash">
+enable
+configure terminal
+hostname Switch1
+ip domain-name cnlab.local
+
+crypto key generate rsa modulus 1024
+username admin secret StrongPassword123
+
+line vty 0 4
+ login local
+ transport input ssh
+ exit
+
+ip ssh version 2
+write memory
+</code></pre>
+                    </div>
+
+                    <div class="code-explanation">
+                        <b>Explanation:</b> `hostname` and `ip domain-name` are necessary before generating RSA keys.
+                        `crypto key generate rsa` creates the server key. `login local` tells VTY to use the local user database.
+                        `transport input ssh` disables Telnet on VTY lines if you want an SSH-only policy.
+                    </div>
+
+                    <!-- SSH Carousel -->
+                    <div class="carousel-container">
+                        <div class="carousel" id="ssh-carousel">
+                            <div class="carousel-images" id="ssh-images">
+                                <img src="images/sshswitch_1.jpg" alt="SSH Topology" class="carousel-image active">
+                                <img src="images/sshswitch_2.jpg" alt="IP Configuration" class="carousel-image">
+                                <img src="images/sshswitch_3.jpg" alt="IP Configuration" class="carousel-image">
+                                <img src="images/sshswitch_4.jpg" alt="Commands on Switch" class="carousel-image">
+                                <img src="images/sshswitch_5.jpg" alt="SSH Implementation" class="carousel-image">
+                                <img src="images/sshswitch_6.jpg" alt="SSH connection on PC" class="carousel-image">
+                                <img src="images/sshrouter_1.jpg" alt="Network topology for applying ssh on router" class="carousel-image">
+                                <img src="images/sshrouter_2.jpg" alt="IP Configuration" class="carousel-image">
+                                <img src="images/sshrouter_3.jpg" alt="Commands on Router" class="carousel-image">
+                                <img src="images/sshrouter_4.jpg" alt="SSH Connection successful" class="carousel-image">
+                            </div>
+
+                            <div class="carousel-caption">
+                                <p id="ssh-caption">Figure 2: SSH implementation screenshots (Hostname → Keys → Login).</p>
+                            </div>
+
+                            <div class="carousel-controls">
+                                <button class="carousel-btn" id="ssh-prev">Previous</button>
+                                <span id="ssh-counter">1 of 5</span>
+                                <button class="carousel-btn" id="ssh-next">Next</button>
+                            </div>
+
+                            <div class="carousel-indicators" id="ssh-indicators"></div>
+                        </div>
+                    </div>
+
+                    <!-- Verification & Notes -->
+                    <h3>6. Verification & Best Practices</h3>
+                    <ul>
+                        <li>Verify connectivity with <code>ping</code> and then attempt SSH/Telnet sessions from client PCs.</li>
+                        <li>Prefer SSH over Telnet in real networks — Telnet sends plain-text credentials.</li>
+                        <li>Use strong passwords or, better, key-based authentication for SSH.</li>
+                        <li>Limit VTY access with ACLs or use AAA servers (RADIUS/TACACS+) for large environments.</li>
+                    </ul>
+
+                    <!-- PDF / Resources -->
+                    <h3>7. Lab Resources</h3>
+                    <div class="pdf-container">
+                        <h4>Applying Telnet,SSH on Switch & Router PDF</h4>
+                        <div id="pdf-viewer-1">
+                            <div class="pdf-placeholder">PDF preview will appear here if available.</div>
+                        </div>
+                        <a href="pdfs/APPLYING_TELNET,SSH.pdf" class="btn" target="_blank">Download PDF</a>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer (matching your site) -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>About CN Lab Helper</h3>
+                    <p>An interactive platform to help students visualize and understand Computer Networks laboratory
+                        experiments through detailed explanations, screenshots, and animations.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <p><a href="index.html">Home</a></p>
+                    <p><a href="netplay.html">NetPlay</a></p>
+                    <p><a href="about.html">About</a></p>
+                </div>
+                <div class="footer-section">
+                    <h3>Connect With Us</h3>
+                    <div class="social-links">
+                        <a href="https://linkedin.com/in/kinza-afzal7-" target="_blank"><i class="fab fa-linkedin"></i></a>
+                        <a href="https://github.com/kinza7124" target="_blank"><i class="fab fa-github"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 CN Lab Helper created by Kinza. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- PDFObject embed -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfobject/2.2.8/pdfobject.min.js"></script>
+    <script>
+        // Embed the lab PDF if present
+        PDFObject.embed("pdfs/TELNET&SSH.pdf#zoom=page-width", "#pdf-viewer-1");
+    </script>
+
+    <!-- Copy button for code blocks -->
+    <script>
+        function copyCode(button) {
+            try {
+                // find the <code> element that's a descendant of the same code-block
+                const codeBlockContainer = button.parentElement;
+                const codeEl = codeBlockContainer.querySelector('code');
+                const text = codeEl ? codeEl.innerText : '';
+                if (!text) throw new Error('No code found to copy.');
+
+                navigator.clipboard.writeText(text).then(() => {
+                    const original = button.innerText;
+                    button.innerText = 'Copied!';
+                    setTimeout(() => button.innerText = original, 1400);
+                }).catch((err) => {
+                    console.error('Copy failed', err);
+                    alert('Copy failed — please select and copy manually.');
+                });
+            } catch (e) {
+                console.error(e);
+                alert('Unable to copy code block.');
+            }
+        }
+    </script>
+
+    <!-- Carousel logic (supports indicators, captions and counter) -->
+    <script>
+        function initCarousel(rootId, captions) {
+            const root = document.getElementById(rootId);
+            const imagesContainer = root.querySelector('.carousel-images');
+            const images = Array.from(imagesContainer.querySelectorAll('.carousel-image'));
+            const prevBtn = root.querySelector('.carousel-controls button:first-child');
+            const nextBtn = root.querySelector('.carousel-controls button:last-child');
+            const counter = root.querySelector('.carousel-controls span');
+            const captionEl = root.querySelector('.carousel-caption p');
+            const indicatorsContainer = root.querySelector('.carousel-indicators');
+
+            let index = 0;
+            const total = images.length;
+
+            // create indicators
+            images.forEach((_, i) => {
+                const dot = document.createElement('div');
+                dot.className = 'carousel-indicator' + (i === 0 ? ' active' : '');
+                dot.addEventListener('click', () => goTo(i));
+                indicatorsContainer.appendChild(dot);
+            });
+
+            const indicators = Array.from(indicatorsContainer.children);
+
+            function update() {
+                images.forEach(img => img.classList.remove('active'));
+                indicators.forEach(dot => dot.classList.remove('active'));
+
+                images[index].classList.add('active');
+                indicators[index].classList.add('active');
+                counter.textContent = `${index + 1} of ${total}`;
+                if (captions && captions[index]) captionEl.textContent = captions[index];
+                prevBtn.disabled = index === 0;
+                nextBtn.disabled = index === total - 1;
+            }
+
+            function next() {
+                if (index < total - 1) {
+                    index++;
+                    update();
+                }
+            }
+
+            function prev() {
+                if (index > 0) {
+                    index--;
+                    update();
+                }
+            }
+
+            function goTo(i) {
+                index = i;
+                update();
+            }
+
+            prevBtn.addEventListener('click', prev);
+            nextBtn.addEventListener('click', next);
+
+            // keyboard navigation for accessibility
+            root.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowLeft') prev();
+                if (e.key === 'ArrowRight') next();
+            });
+
+            // initialize
+            update();
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const telnetCaptions = [
+                "Figure 1: Telnet topology in Packet Tracer for applying Telnet on Router.",
+                "Figure 2: Commands on Router.",
+                "Figure 3: From PC, check if the telnet connection works.",
+                "Figure 4: Telnet topology for implementing Telnet on Switch.",
+                "Figure 5: Commands on Switch.",
+                "Figure 6: IP configuration on PC0.",
+                "Figure 7: IP configuration on PC1.",
+                "Figure 7: IP configuration on PC2.",
+                "Figure 8: Telnet connection successful on PC0.",
+                "Figure 9: Telnet connection on PC1."
+            ];
+
+            const sshCaptions = [
+                "Figure 1: SSH topology in Packet Tracer.",
+                "Figure 2: IP configuration on PC3.",
+                "Figure 3: IP configuration on PC4.",
+                "Figure 4: Commands on Switch.",
+                "Figure 5: Commands on switch to implement SSH.",
+                "Figure 6: SSH connection successful on PC3.",
+                "Figure 7: SSH topology for applying SSH on Router.",
+                "Figure 8: IP configuration on PC5,PC6.",
+                "Figure 9: Commands on Router to implement SSH.",
+                "Figure 10: SSH connection successful on PC5."
+            ];
+
+            initCarousel('telnet-carousel', telnetCaptions);
+            initCarousel('ssh-carousel', sshCaptions);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab 2 - Packet Tracer & Topologies | CN Lab Helper</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .lab-detail {
+            background-color: white;
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 3rem;
+        }
+
+        .lab-detail-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .lab-detail-header h2 {
+            color: var(--primary);
+        }
+
+        .lab-content {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+
+        .lab-explanation {
+            padding-right: 1rem;
+        }
+
+        .lab-explanation h3 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+            margin-top: 2rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .lab-explanation h3:first-child {
+            margin-top: 0;
+        }
+
+        .lab-explanation p {
+            margin-bottom: 1.5rem;
+        }
+
+        .lab-explanation ul {
+            margin: 1rem 0;
+            padding-left: 2rem;
+        }
+
+        .lab-explanation li {
+            margin: 0.5rem 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+        }
+
+        table,
+        th,
+        td {
+            border: 1px solid #ddd;
+        }
+
+        th,
+        td {
+            padding: 12px;
+            text-align: left;
+        }
+
+        th {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        .pdf-container {
+            margin: 2rem 0;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 1rem;
+            background: #f9f9f9;
+        }
+
+        .pdf-container h4 {
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+
+        .pdf-placeholder {
+            width: 100%;
+            height: 500px;
+            background-color: #e9ecef;
+            border-radius: 4px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #6c757d;
+            margin-bottom: 1rem;
+        }
+
+        
+        #pdf-viewer-1 {
+            width: 100%;
+            height: 500px;
+            border: 1px solid #ddd;
+            border-radius: 4px
+        }
+
+        #pdf-viewer-2 {
+            width: 100%;
+            height: 500px;
+            border: 1px solid #ddd;
+            border-radius: 4px
+        }
+
+        @media (max-width: 768px) {
+            #pdf-viewer-1 {
+                height: 300px;
+            }
+
+            #pdf-viewer-2 {
+                height: 300px;
+            }
+        }
+        @media (max-width: 768px) {
+            .lab-detail-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                <img src="images/logo2.png" alt="CN Lab Helper Logo" style="height:90px; width:auto;">
+                    <h1>NetLabPro</h1>
+                </div>
+                <nav>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="netplay.html">NetPlay</a></li>
+                        <li><a href="about.html">About</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <section class="container">
+        <div class="lab-detail">
+            <div class="lab-detail-header">
+                <h2>Lab 2: Packet Tracer & Networking Topologies</h2>
+                <a href="index.html" class="btn">Back to Labs</a>
+            </div>
+            <div class="lab-content">
+                <div class="lab-explanation">
+                    <h3>1. Lab Objectives</h3>
+                    <ul>
+                        <li>Learn Packet Tracer basics and interface.</li>
+                        <li>Build network topologies and configure hosts.</li>
+                        <li>Configure DHCP and verify connectivity.</li>
+                        <li>Understand bus, star, mesh, ring, and hybrid topologies.</li>
+                    </ul>
+
+                    <h3>2. Lab Steps</h3>
+                    <p><strong>STEP I:</strong> Start Packet Tracer and create a new project.</p>
+                    <p><strong>STEP II:</strong> Add PCs, laptops, switches, hubs, and servers.</p>
+                    <p><strong>STEP III:</strong> Build topology, connect devices using proper cables.</p>
+                    <p><strong>STEP IV:</strong> Assign IP addresses and subnet masks to hosts (if not using DHCP).</p>
+                    <p><strong>STEP V:</strong> Configure DHCP server to assign IP addresses automatically.</p>
+                    <p><strong>STEP VI:</strong> Verify connectivity in Realtime and Simulation modes.</p>
+                    <p><strong>STEP VII:</strong> Save topology as .pkt file.</p>
+
+                    <h3>3. DHCP Configuration</h3>
+                    <p><strong>What is DHCP?</strong> DHCP (Dynamic Host Configuration Protocol) is used to
+                        automatically assign IP addresses and network settings to devices in a network. This avoids
+                        manual configuration and reduces errors.</p>
+                    <p><strong>Why use DHCP?</strong></p>
+                    <ul>
+                        <li>Saves time by automatically assigning IP addresses.</li>
+                        <li>Ensures no IP conflicts occur in the network.</li>
+                        <li>Easy management in large networks.</li>
+                    </ul>
+
+                    <p><strong>Configuring DHCP in Packet Tracer:</strong></p>
+                    <p><strong>STEP I:</strong> Add a server to your topology.</p>
+                    <p><strong>STEP II:</strong> Click on the server and go to the "Config" tab.</p>
+                    <p><strong>STEP III:</strong> Select "DHCP" and enable it.</p>
+                    <p><strong>STEP IV:</strong> Define a pool of IP addresses (e.g., 172.16.1.10 to 172.16.1.50) and
+                        subnet mask.</p>
+                    <p><strong>STEP V:</strong> Optionally set default gateway and DNS.</p>
+                    <p><strong>STEP VI:</strong> Click on PCs, go to "Desktop" → "IP Configuration" → select DHCP.</p>
+                    <p><strong>STEP VII:</strong> Verify that PCs automatically get an IP from the DHCP server.</p>
+
+                    <h3>4. Network Topologies Summary</h3>
+                    <table>
+                        <tr>
+                            <th>Topology</th>
+                            <th>Description</th>
+                            <th>Advantages</th>
+                            <th>Disadvantages</th>
+                        </tr>
+                        <tr>
+                            <td>Bus</td>
+                            <td>Single backbone cable</td>
+                            <td>Low cost</td>
+                            <td>Single point failure</td>
+                        </tr>
+                        <tr>
+                            <td>Star</td>
+                            <td>Central hub/switch</td>
+                            <td>Easy management</td>
+                            <td>Hub failure stops network</td>
+                        </tr>
+                        <tr>
+                            <td>Mesh</td>
+                            <td>All devices interconnected</td>
+                            <td>Fault-tolerant</td>
+                            <td>Complex cabling</td>
+                        </tr>
+                        <tr>
+                            <td>Ring</td>
+                            <td>Devices in circular chain</td>
+                            <td>Orderly data flow</td>
+                            <td>Single point failure</td>
+                        </tr>
+                        <tr>
+                            <td>Hybrid</td>
+                            <td>Combination of topologies</td>
+                            <td>Flexible</td>
+                            <td>High cost</td>
+                        </tr>
+                    </table>
+                    <h3>5. Lab Resources</h3>
+
+                    <div class="pdf-container">
+                        <h4>Lab 2 Task 1 PDF</h4>
+                        <div id="pdf-viewer-1"></div>
+                        <a href="pdfs/Lab_02_Task.pdf" class="btn" target="_blank">Download PDF</a>
+                    </div>
+
+                    <div class="pdf-container">
+                        <h4>DHCP Lab PDF</h4>
+                        <div id="pdf-viewer-2"></div>
+                        <a href="pdfs/DHCP.pdf" class="btn" target="_blank">Download PDF</a>
+                    </div>
+    </section>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfobject/2.2.8/pdfobject.min.js"></script>
+    <script>
+        // Embed both PDFs properly
+        PDFObject.embed("pdfs/Lab_02_Task.pdf#zoom=page-width", "#pdf-viewer-1");
+        PDFObject.embed("pdfs/DHCP.pdf#zoom=page-width", "#pdf-viewer-2");
+    </script>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>About CN Lab Helper</h3>
+                    <p>An interactive platform to help students visualize and understand Computer Networks laboratory
+                        experiments through detailed explanations, screenshots, and animations.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <p><a href="index.html">Home</a></p>
+                    <p><a href="netplay.html">NetPlay</a></p>
+                    <p><a href="about.html">About</a></p>
+                </div>
+                <div class="footer-section">
+                    <h3>Connect With Us</h3>
+                    <div class="social-links">
+                        <a href="https://linkedin.com/in/kinza-afzal7-" target="_blank"><i class="fab fa-linkedin"></i></a>
+                        <a href="https://github.com/kinza7124" target="_blank"><i class="fab fa-github"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 CN Lab Helper created by Kinza. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

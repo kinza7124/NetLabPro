@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lab 4 - HTTP, HTTPS, DNS & Wireshark | CN Lab Helper</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="style.css" />
+
+    <!-- Atom One Dark theme for highlight.js -->
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/atom-one-dark.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    <script>
+        hljs.highlightAll();
+    </script>
+
+    <style>
+        .lab-detail {
+            background-color: white;
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 3rem;
+        }
+
+        .lab-detail-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .lab-detail-header h2 {
+            color: var(--primary);
+        }
+
+        .lab-content {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+
+        .lab-explanation {
+            padding-right: 1rem;
+        }
+
+        .lab-explanation h3 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+            margin-top: 2rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .lab-explanation h3:first-child {
+            margin-top: 0;
+        }
+
+        .lab-explanation p {
+            margin-bottom: 1.2rem;
+        }
+
+        .lab-explanation ul {
+            margin: 1rem 0;
+            padding-left: 2rem;
+        }
+
+        .lab-explanation li {
+            margin: 0.5rem 0;
+        }
+
+        .pdf-container {
+            margin: 2rem 0;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 1rem;
+            background: #f9f9f9;
+        }
+
+        .pdf-container h4 {
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+
+        .pdf-placeholder {
+            width: 100%;
+            height: 500px;
+            background-color: #e9ecef;
+            border-radius: 4px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #6c757d;
+            margin-bottom: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .lab-detail-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+        }
+
+        .code-block {
+            position: relative;
+            background-color: #1e1e1e;
+            padding: 1rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: 'Fira Code', monospace;
+            border-left: 5px solid var(--primary);
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: var(--primary);
+            border: none;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: background 0.3s;
+        }
+
+        .copy-btn:hover {
+            background-color: rgba(52, 152, 219, 0.8);
+        }
+
+        .code-explanation {
+            background-color: #f9f9f9;
+            padding: 0.8rem 1rem;
+            border-left: 4px solid var(--primary);
+            border-radius: 5px;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+        }
+
+        .carousel-container {
+            margin: 2rem 0;
+            text-align: center;
+            overflow: hidden;
+        }
+
+        .carousel {
+            position: relative;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .carousel-images {
+            display: flex;
+            overflow: hidden;
+            border-radius: 8px 8px 0 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            background-color: #f8f9fa;
+            min-height: 500px;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .carousel-image {
+            width: 100%;
+            height: auto;
+            max-height: 500px;
+            object-fit: contain;
+            display: none;
+        }
+
+        .carousel-image.active {
+            display: block;
+        }
+
+        .carousel-caption {
+            background-color: var(--primary);
+            color: white;
+            padding: 1rem;
+            border-radius: 0 0 8px 8px;
+            margin-top: -1px;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .carousel-controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 1rem;
+            gap: 1rem;
+        }
+
+        .carousel-btn {
+            background-color: var(--primary);
+            border: none;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background 0.3s;
+        }
+
+        .carousel-btn:hover {
+            background-color: rgba(52, 152, 219, 0.8);
+        }
+
+        .carousel-btn:disabled {
+            background-color: #bdc3c7;
+            cursor: not-allowed;
+        }
+
+        .carousel-indicators {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .carousel-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: #bdc3c7;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .carousel-indicator.active {
+            background-color: var(--primary);
+        }
+
+        .code-explanation2 {
+            background-color: #f9f9f9;
+            padding: 1rem 1.5rem;
+            border-left: 5px solid var(--primary);
+            border-radius: 8px;
+            margin: 1.5rem auto;
+            max-width: 1000px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        .code-explanation2 b {
+            color: var(--primary);
+        }
+
+        .code-explanation2 p {
+            margin-top: 0.5rem;
+            margin-bottom: 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+        }
+
+        table,
+        th,
+        td {
+            border: 1px solid #ddd;
+        }
+
+        th,
+        td {
+            padding: 12px;
+            text-align: left;
+        }
+
+        th {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        .small-note {
+            font-size: 0.9rem;
+            color: #555;
+        }
+
+        .protocol-section {
+            margin: 2rem 0;
+        }
+
+        .protocol-section h4 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--secondary);
+        }
+
+        .wireshark-commands {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-left: 4px solid #f39c12;
+        }
+
+        .command-item {
+            display: flex;
+            margin-bottom: 1rem;
+            align-items: flex-start;
+            padding: 0.8rem;
+            background: white;
+            border-radius: 6px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .command-badge {
+            background-color: var(--primary);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.9rem;
+            margin-right: 1rem;
+            min-width: 200px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .command-desc {
+            flex: 1;
+            color: #333;
+            line-height: 1.5;
+        }
+
+        @media (max-width: 768px) {
+            .command-item {
+                flex-direction: column;
+            }
+            
+            .command-badge {
+                margin-bottom: 0.5rem;
+                margin-right: 0;
+                min-width: auto;
+            }
+        }
+        
+
+        #pdf-viewer-1 {
+            width: 100%;
+            height: 500px;
+            border: 1px solid #ddd;
+            border-radius: 4px
+        }
+
+        @media (max-width: 768px) {
+            #pdf-viewer-1 {
+                height: 300px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                <img src="images/logo2.png" alt="CN Lab Helper Logo" style="height:90px; width:auto;">
+                    <h1>NetLabPro</h1>
+                </div>
+                <nav>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="netplay.html">NetPlay</a></li>
+                        <li><a href="about.html">About</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <section class="container">
+        <div class="lab-detail">
+            <div class="lab-detail-header">
+                <h2>Lab 4: HTTP / HTTPS, DNS & Wireshark</h2>
+                <a href="index.html" class="btn">Back to Labs</a>
+            </div>
+
+            <div class="lab-content">
+                <div class="lab-explanation">
+                    <h3>1. Lab Introduction</h3>
+                    <p>
+                        This lab covers the implementation and analysis of HTTP/HTTPS, DNS configuration in Cisco Packet
+                        Tracer,
+                        and packet capture/analysis using Wireshark. You will configure a web server, observe HTTP and
+                        HTTPS traffic,
+                        create DNS records, and use Wireshark filters to inspect network traffic.
+                    </p>
+
+                    <h3>2. HTTP vs HTTPS - Overview</h3>
+                    <p>
+                        <strong>HTTP</strong> (Hypertext Transfer Protocol) is the foundation of data communication for
+                        the
+                        World Wide Web. The client (browser) sends requests and the server responds with resources such
+                        as HTML.
+                        <strong>HTTPS</strong> secures HTTP by using SSL/TLS to encrypt the channel between client and
+                        server.
+                    </p>
+
+                    <table class="table" aria-label="HTTP vs HTTPS">
+                        <thead>
+                            <tr>
+                                <th>HTTP</th>
+                                <th>HTTPS</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>URL begins with <code>http://</code></td>
+                                <td>URL begins with <code>https://</code></td>
+                            </tr>
+                            <tr>
+                                <td>Port <code>80</code></td>
+                                <td>Port <code>443</code></tr>
+                            <tr>
+                                <td>Unencrypted</td>
+                                <td>Encrypted (SSL/TLS)</td>
+                            </tr>
+                            <tr>
+                                <td>No certificate required</td>
+                                <td>Server certificate required (CA-signed or self-signed for lab)</td>
+                            </tr>
+                            <tr>
+                                <td>Works at Application Layer</td>
+                                <td>Encryption at Transport Layer (TLS) + Application</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h3>3. HTTP / HTTPS Packet Observation (Packet Tracer)</h3>
+                    <p>
+                        Steps (Packet Tracer):
+                    </p>
+                    <ul>
+                        <li>Set up topology (server, client PCs, switches/routers if required) and assign static IPs.
+                        </li>
+                        <li>Enable HTTP/HTTPS service on the server (Server > Services > HTTP / HTTPS).</li>
+                        <li>From client Desktop &gt; Web Browser, enter server IP or DNS name to request pages.</li>
+                        <li>Switch to <em>Simulation Mode</em>, filter by <strong>http</strong> or
+                            <strong>https</strong>, capture and inspect PDUs.
+                        </li>
+                    </ul>
+
+                    <div class="code-block">
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        <pre><code class="language-python">
+# Packet Tracer hints - browser test
+1. Open PC0 -> Desktop -> Web Browser
+2. Type web server IP (e.g. http://192.168.2.2) or hostname (&lt;use DNS if configured&gt;)
+3. Switch to Simulation -> Edit Filters -> enable 'http' or 'https' then Capture/Forward
+</code></pre>
+                    </div>
+                    <div class="code-explanation">
+                        <b>Note:</b>
+                        <p>Observe HTTP and HTTPS traffic using Cisco Packet Tracer and capture PDUs to see difference
+                            in port numbers and payload.Use the Packet Tracer web browser and the simulation filters to
+                            capture HTTP (port 80)
+                            and HTTPS (port 443) PDUs and inspect the outbound/inbound PDU details.</p>
+                    </div>
+
+                    <h3>4. DNS - Theory & Packet Tracer Configuration</h3>
+                    <p>
+                        DNS (Domain Name System) translates human-friendly hostnames into IP addresses. In Packet Tracer
+                        you can
+                        enable DNS on a server and add records like A, CNAME, NS, and SOA for the simulated network.
+                    </p>
+
+                    <div class="code-block">
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        <pre><code class="language-python">
+# Common DNS record types (conceptual)
+A      # Map hostname to IPv4 address
+CNAME  # Alias pointing to a canonical hostname
+NS     # Authoritative name server for a zone
+SOA    # Start of Authority - zone metadata
+</code></pre>
+                    </div>
+                    <div class="code-explanation">
+                        <b>Question:</b> Configure basic DNS records in Packet Tracer so that hostnames resolve to
+                        server IPs. <br>
+                        <b>Explanation:</b> Add A records for hostnames (e.g., web-server -> 192.168.2.2) and CNAMEs for
+                        aliases
+                        so clients can resolve names in the lab topology.
+                    </div>
+
+                    <h4>Packet Tracer - Steps to add DNS records</h4>
+                    <ol>
+                        <li>Click DNS Server &gt; Services &gt; DNS.</li>
+                        <li>Add an A record: <code>name: web-server</code>, <code>IP: 192.168.2.2</code>, click
+                            <em>Add</em>.
+                        </li>
+                        <li>Add a CNAME record: <code>alias: www</code>, <code>canonical: web-server</code>, click
+                            <em>Add</em>.
+                        </li>
+                        <li>On client PC, Desktop &gt; Web Browser, type <code>web-server</code> or <code>www</code> to
+                            verify resolution.</li>
+                    </ol>
+
+                    <h3>5. Cisco Packet Tracer - Example CLI (router/server hints)</h3>
+                    <p class="small-note">(Not all Packet Tracer devices require the same exact commands; this is sample
+                        CLI for real devices / learning.)</p>
+
+                    <div class="code-block">
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        <pre><code class="language-bash">
+!-- Example: configure router interface (conceptual)
+enable
+configure terminal
+interface GigabitEthernet0/0
+ ip address 192.168.1.1 255.255.255.0
+ no shutdown
+exit
+!-- Configure DNS server IP on router (if acting as resolver)
+ip name-server 192.168.2.10
+</code></pre>
+                    </div>
+                    <div class="code-explanation">
+                        <b>Question:</b> Assign IPs to router interfaces and set a name-server. <br>
+                        <b>Explanation:</b> Configure interface addressing and tell the router which DNS server to use
+                        as a resolver.
+                    </div>
+
+                    <h3>6. Wireshark - Comprehensive Display Filters</h3>
+                    <p>
+                        Wireshark is an open-source packet analyzer used for troubleshooting and protocol analysis. Use
+                        these filters to capture and analyze specific network traffic patterns.
+                    </p>
+
+                    <div class="wireshark-commands">
+                        <h4>Essential Wireshark Display Filters</h4>
+                        
+                        <div class="command-item">
+                            <div class="command-badge">http</div>
+                            <div class="command-desc">Show HTTP requests and responses</div>
+                        </div>
+                        
+                        <div class="command-item">
+                            <div class="command-badge">dns</div>
+                            <div class="command-desc">Show DNS queries and responses</div>
+                        </div>
+                        
+                        <div class="command-item">
+                            <div class="command-badge">tcp.port == 80</div>
+                            <div class="command-desc">Filter HTTP traffic on port 80</div>
+                        </div>
+                        
+                        <div class="command-item">
+                            <div class="command-badge">tcp.port == 443</div>
+                            <div class="command-desc">Filter HTTPS traffic on port 443</div>
+                        </div>
+                        
+                        <div class="command-item">
+                            <div class="command-badge">udp.port == 53</div>
+                            <div class="command-desc">Filter DNS traffic on port 53</div>
+                        </div>
+                        
+                        <div class="command-item">
+                            <div class="command-badge">ip.src == x.x.x.x</div>
+                            <div class="command-desc">Filter packets from specific source IP</div>
+                        </div>
+                        
+                        <div class="command-item">
+                            <div class="command-badge">ip.dst == x.x.x.x</div>
+                            <div class="command-desc">Filter packets to specific destination IP</div>
+                        </div>
+                        
+                        <div class="command-item">
+                            <div class="command-badge">ip.addr == x.x.x.x</div>
+                            <div class="command-desc">Filter packets to/from specific IP</div>
+                        </div>
+                        
+                        <div class="command-item">
+                            <div class="command-badge">arp</div>
+                            <div class="command-desc">Show ARP requests and responses</div>
+                        </div>
+                        
+                        <div class="command-item">
+                            <div class="command-badge">icmp</div>
+                            <div class="command-desc">Show ICMP packets (ping, traceroute)</div>
+                        </div>
+                        
+                        <div class="command-item">
+                            <div class="command-badge">tcp.flags.syn == 1</div>
+                            <div class="command-desc">Show TCP SYN packets (connection initiation)</div>
+                        </div>
+                        
+                        <div class="command-item">
+                            <div class="command-badge">tcp.flags.fin == 1</div>
+                            <div class="command-desc">Show TCP FIN packets (connection termination)</div>
+                        </div>
+                        
+                        <div class="command-item">
+                            <div class="command-badge">tcp.stream eq 1</div>
+                            <div class="command-desc">Show specific TCP stream number</div>
+                        </div>
+                        
+                        <div class="command-item">
+                            <div class="command-badge">http.response.code == 200</div>
+                            <div class="command-desc">Show HTTP 200 OK responses</div>
+                        </div>
+                        
+                        <div class="command-item">
+                            <div class="command-badge">http.response.code == 404</div>
+                            <div class="command-desc">Show HTTP 404 Not Found responses</div>
+                        </div>
+                        
+                        <div class="command-item">
+                            <div class="command-badge">http.request.method == "GET"</div>
+                            <div class="command-desc">Show HTTP GET requests only</div>
+                        </div>
+                        
+                        <div class="command-item">
+                            <div class="command-badge">http.request.method == "POST"</div>
+                            <div class="command-desc">Show HTTP POST requests only</div>
+                        </div>
+                        
+                        <div class="command-item">
+                            <div class="command-badge">tls || ssl</div>
+                            <div class="command-desc">Show TLS/SSL encrypted traffic</div>
+                        </div>
+                    </div>
+
+                    <div class="code-explanation">
+                        <b>Question:</b> Capture and filter packets to inspect HTTP/HTTPS/DNS traffic. <br>
+                        <b>Explanation:</b> Use Wireshark display filters to focus on relevant packets. For HTTPS, inspect the TLS handshake (ClientHello, ServerHello, Certificate).
+                    </div>
+
+                    <h3>7. HTTP Packet Analysis - Example (Wireshark)</h3>
+                    <p>
+                        Use the provided test site in the lab or any controlled test server (do not capture or inspect
+                        private traffic you don't own). Inspect the following in Wireshark:
+                    </p>
+                    <ul>
+                        <li>Request line and headers (GET /index.html HTTP/1.1).</li>
+                        <li>Response status (200 OK, 404 Not Found, etc.).</li>
+                        <li>Observe that with HTTPS the application data is encrypted (you will not see HTML in the
+                            packet payload).</li>
+                    </ul>
+
+                    <div class="code-block">
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        <pre><code class="language-python">
+# Example test site used in lab (public test target)
+URL: http://testphp.vulnweb.com/login.php
+Username: test
+Password: test
+# (Used only in lab for educational packet structure analysis)
+</code></pre>
+                    </div>
+                    <div class="code-explanation">
+                        <b>Question:</b> Analyze an HTTP login request and locate the GET/POST request, headers, and
+                        response status. <br>
+                        <b>Explanation:</b> Use Wireshark to find the login request packet, inspect headers and follow
+                        the TCP stream to see the request/response exchange.
+                    </div>
+
+                    <h3>8. Lab Implementation - Interactive Screenshots</h3>
+                    
+                    <!-- HTTP/HTTPS Carousel -->
+                    <div class="protocol-section">
+                        <h4>HTTP/HTTPS Implementation</h4>
+                        <div class="carousel-container">
+                            <div class="carousel" id="http-carousel">
+                                <div class="carousel-images">
+                                    <img src="images/lab4ss1.jpg" alt="HTTP,HTTPS Configuration in Packet Tracer" class="carousel-image active">
+                                    <img src="images/lab4ss2.jpg" alt="IP Configuration" class="carousel-image">
+                                    <img src="images/lab4ss3.jpg" alt="IP Configuration" class="carousel-image">
+                                    <img src="images/lab4ss4.jpg" alt="IP Configuration" class="carousel-image">
+                                    <img src="images/lab4ss5.jpg" alt="IP Configuration" class="carousel-image">
+                                    <img src="images/lab4ss6.jpg" alt="IP Configuration" class="carousel-image">
+                                    <img src="images/lab4ss7.jpg" alt="Connectivity check using ping" class="carousel-image">
+                                    <img src="images/lab4ss8.jpg" alt="Connectivity check using ping" class="carousel-image">
+                                    <img src="images/lab4ss9.jpg" alt="Enable Services" class="carousel-image">
+                                    <img src="images/lab4ss10.jpg" alt="Access Services" class="carousel-image">
+                                    <img src="images/lab4ss11.jpg" alt="Simulation Mode" class="carousel-image">
+                                    <img src="images/lab4ss12.jpg" alt="Simulation Mode" class="carousel-image">
+                                    <img src="images/lab4ss13.jpg" alt="Simulation Mode" class="carousel-image">
+                                </div>
+                                <div class="carousel-caption">
+                                    <p id="http-caption">Figure 1: HTTP/HTTPS implementation network topology.</p>
+                                </div>
+                                <div class="carousel-controls">
+                                    <button class="carousel-btn" id="http-prev">
+                                        <i class="fas fa-chevron-left"></i> Previous
+                                    </button>
+                                    <span id="http-counter">1 of 13</span>
+                                    <button class="carousel-btn" id="http-next">
+                                        Next <i class="fas fa-chevron-right"></i>
+                                    </button>
+                                </div>
+                                <div class="carousel-indicators" id="http-indicators">
+                                    <!-- Indicators will be generated by JavaScript -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- DNS Carousel -->
+                    <div class="protocol-section">
+                        <h4>DNS Implementation</h4>
+                        <div class="carousel-container">
+                            <div class="carousel" id="dns-carousel">
+                                <div class="carousel-images">
+                                    <img src="images/lab4ss14.jpg" alt="DNS implementation topology" class="carousel-image active">
+                                    <img src="images/lab4ss15.jpg" alt="IP Configuration" class="carousel-image">
+                                    <img src="images/lab4ss16.jpg" alt="HTTP & HTTPS Services" class="carousel-image">
+                                    <img src="images/lab4ss17.jpg" alt="DNS configuration settings" class="carousel-image">
+                                    <img src="images/lab4ss18.jpg" alt="DNS resolves name into IP address" class="carousel-image">
+                                    <img src="images/lab4ss19.jpg" alt="Summary" class="carousel-image">
+                                    <img src="images/lab4ss20.jpg" alt="Simulation Mode" class="carousel-image">
+                                    <img src="images/lab4ss21.jpg" alt="Headers in Simulation Mode" class="carousel-image">
+                                </div>
+                                <div class="carousel-caption">
+                                    <p id="dns-caption">Figure 14: DNS implementation network topology.</p>
+                                </div>
+                                <div class="carousel-controls">
+                                    <button class="carousel-btn" id="dns-prev">
+                                        <i class="fas fa-chevron-left"></i> Previous
+                                    </button>
+                                    <span id="dns-counter">1 of 8</span>
+                                    <button class="carousel-btn" id="dns-next">
+                                        Next <i class="fas fa-chevron-right"></i>
+                                    </button>
+                                </div>
+                                <div class="carousel-indicators" id="dns-indicators">
+                                    <!-- Indicators will be generated by JavaScript -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h3>9. Lab Resources</h3>
+                    <div class="pdf-container">
+                        <h4>Lab 4 Task PDF</h4>
+                        <div id="pdf-viewer-1">
+                            <div class="pdf-placeholder">PDF preview will appear here if available.</div>
+                        </div>
+                        <a href="pdfs/Lab_4_Task.pdf" class="btn" target="_blank">Download PDF</a>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfobject/2.2.8/pdfobject.min.js"></script>
+    <script>
+        // Embed the Lab 4 PDF if present
+        PDFObject.embed("pdfs/Lab_4_Task.pdf#zoom=page-width", "#pdf-viewer-1");
+
+        // Copy button helper for code blocks
+        function copyCode(button) {
+            try {
+                const codeBlock = button.nextElementSibling.querySelector('code');
+                const text = codeBlock.innerText || codeBlock.textContent || '';
+                navigator.clipboard.writeText(text).then(() => {
+                    const original = button.innerText;
+                    button.innerText = 'Copied!';
+                    setTimeout(() => {
+                        button.innerText = original;
+                    }, 1400);
+                }).catch((err) => {
+                    console.error('Copy failed', err);
+                    alert('Copy failed — please select and copy manually.');
+                });
+            } catch (e) {
+                console.error(e);
+                alert('Unable to copy code block.');
+            }
+        }
+
+        // Carousel functionality
+        function initializeCarousel(carouselId, captions) {
+            const carousel = document.getElementById(carouselId);
+            const images = carousel.querySelectorAll('.carousel-image');
+            const prevBtn = carousel.querySelector('#http-prev') || carousel.querySelector('#dns-prev');
+            const nextBtn = carousel.querySelector('#http-next') || carousel.querySelector('#dns-next');
+            const counter = carousel.querySelector('#http-counter') || carousel.querySelector('#dns-counter');
+            const caption = carousel.querySelector('#http-caption') || carousel.querySelector('#dns-caption');
+            const indicatorsContainer = carousel.querySelector('#http-indicators') || carousel.querySelector('#dns-indicators');
+            
+            let currentIndex = 0;
+            const totalImages = images.length;
+            
+            // Create indicators
+            for (let i = 0; i < totalImages; i++) {
+                const indicator = document.createElement('div');
+                indicator.className = 'carousel-indicator' + (i === 0 ? ' active' : '');
+                indicator.addEventListener('click', () => {
+                    goToImage(i);
+                });
+                indicatorsContainer.appendChild(indicator);
+            }
+            
+            const indicators = indicatorsContainer.querySelectorAll('.carousel-indicator');
+            
+            function updateCarousel() {
+                // Hide all images
+                images.forEach(img => img.classList.remove('active'));
+                indicators.forEach(ind => ind.classList.remove('active'));
+                
+                // Show current image
+                images[currentIndex].classList.add('active');
+                indicators[currentIndex].classList.add('active');
+                
+                // Update counter
+                counter.textContent = `${currentIndex + 1} of ${totalImages}`;
+                
+                // Update caption
+                caption.textContent = captions[currentIndex];
+                
+                // Update button states
+                prevBtn.disabled = currentIndex === 0;
+                nextBtn.disabled = currentIndex === totalImages - 1;
+            }
+            
+            function goToImage(index) {
+                currentIndex = index;
+                updateCarousel();
+            }
+            
+            function nextImage() {
+                if (currentIndex < totalImages - 1) {
+                    currentIndex++;
+                    updateCarousel();
+                }
+            }
+            
+            function prevImage() {
+                if (currentIndex > 0) {
+                    currentIndex--;
+                    updateCarousel();
+                }
+            }
+            
+            // Event listeners
+            prevBtn.addEventListener('click', prevImage);
+            nextBtn.addEventListener('click', nextImage);
+            
+            // Keyboard navigation
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowLeft') {
+                    prevImage();
+                } else if (e.key === 'ArrowRight') {
+                    nextImage();
+                }
+            });
+            
+            // Initialize
+            updateCarousel();
+        }
+
+        // Initialize carousels when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            // HTTP/HTTPS carousel captions
+            const httpCaptions = [
+                "Figure 1: HTTP/HTTPS implementation network topology.",
+                "Figure 2: IP configuration on Router interface fa0/0.",
+                "Figure 3: IP configuration on Router interface fa0/1.",
+                "Figure 4: IP configuration on Server.",
+                "Figure 5: IP configuration on PC0.",
+                "Figure 6: IP configuration on PC1.",
+                "Figure 7: Check connectivity using ping.",
+                "Figure 8: Check connectivity using ping.",
+                "Figure 9: Enable HTTP and HTTPS services on server.",
+                "Figure 10: Access Web server services from any PC.",
+                "Figure 11: Simulation mode. Try sending simple PDU to observe HTTP.",
+                "Figure 12: Simulation mode. Try sending simple PDU to observe HTTP.",
+                "Figure 13: Simulation mode. Try sending simple PDU to observe HTTPS."
+            ];
+            
+            // DNS carousel captions
+            const dnsCaptions = [
+                "Figure 14: DNS implementation network topology.",
+                "Figure 15: IP Configuration on Web Server and DNS Server.",
+                "Figure 16: HTTP & HTTPS Services.",
+                "Figure 17: DNS configuration settings.",
+                "Figure 18: DNS resolves name into IP address.",
+                "Figure 19: Summary of DNS configuration steps.",
+                "Figure 20: DNS simulation mode.",
+                "Figure 21: DNS packet headers in simulation mode."
+            ];
+            
+            initializeCarousel('http-carousel', httpCaptions);
+            initializeCarousel('dns-carousel', dnsCaptions);
+        });
+    </script>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>About CN Lab Helper</h3>
+                    <p>An interactive platform to help students visualize and understand Computer Networks laboratory
+                        experiments through detailed explanations, screenshots, and animations.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <p><a href="index.html">Home</a></p>
+                    <p><a href="netplay.html">NetPlay</a></p>
+                    <p><a href="about.html">About</a></p>
+                </div>
+                <div class="footer-section">
+                    <h3>Connect With Us</h3>
+                    <div class="social-links">
+                        <a href="https://linkedin.com/in/kinza-afzal7-" target="_blank"><i
+                                class="fab fa-linkedin"></i></a>
+                        <a href="https://github.com/kinza7124" target="_blank"><i class="fab fa-github"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 CN Lab Helper created by Kinza. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
+

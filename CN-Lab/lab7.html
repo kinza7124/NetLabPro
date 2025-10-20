@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lab 07 - TCP Congestion Control | CN Lab Helper</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="style.css" />
+
+    <style>
+        .lab-detail {
+            background-color: white;
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 3rem;
+        }
+
+        .lab-detail-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .lab-detail-header h2 {
+            color: var(--primary);
+        }
+
+        .lab-content {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+
+        .lab-explanation {
+            padding-right: 1rem;
+        }
+
+        .lab-explanation h3 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+            margin-top: 2rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .lab-explanation h3:first-child {
+            margin-top: 0;
+        }
+
+        .lab-explanation p {
+            margin-bottom: 1.2rem;
+        }
+
+        .lab-explanation ul {
+            margin: 1rem 0;
+            padding-left: 2rem;
+        }
+
+        .lab-explanation li {
+            margin: 0.5rem 0;
+        }
+
+        .pdf-container {
+            margin: 2rem 0;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 1rem;
+            background: #f9f9f9;
+        }
+
+        .pdf-container h4 {
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+
+        .pdf-placeholder {
+            width: 100%;
+            height: 500px;
+            background-color: #e9ecef;
+            border-radius: 4px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #6c757d;
+            margin-bottom: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .lab-detail-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+        }
+        .flowchart {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .flowchart-box {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 8px;
+            border-left: 4px solid var(--secondary);
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        
+        .diagram {
+            text-align: center;
+            margin: 2rem 0;
+        }
+
+        .diagram img {
+            max-width: 100%;
+            border-radius: 8px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+        }
+
+          .phase-box {
+            background: #f8f9fa;
+            border-left: 5px solid var(--primary);
+            border-radius: 8px;
+            padding: 1.2rem 1.5rem;
+            margin: 1rem 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .phase-box h4 {
+            color: var(--primary);
+            margin-top: 0;
+        }
+
+
+        @media (max-width: 768px) {            
+            .flowchart {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        #pdf-viewer-1 {
+            width: 100%;
+            height: 500px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        #pdf-viewer-2 {
+            width: 100%;
+            height: 500px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        @media (max-width: 768px) {
+            #pdf-viewer-1 {
+                height: 300px;
+            }
+            #pdf-viewer-2 {
+                height: 300px;
+            }
+        }
+
+
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <img src="images/logo2.png" alt="CN Lab Helper Logo" style="height:90px; width:auto;">
+                    <h1>NetLabPro</h1>
+                </div>
+                <nav>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="netplay.html">NetPlay</a></li>
+                        <li><a href="about.html">About</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Lab Section -->
+    <section class="container">
+        <div class="lab-detail">
+            <div class="lab-detail-header">
+                <h2>Lab 07 - TCP Congestion Control</h2>
+                <a href="index.html" class="btn">Back to Labs</a>
+            </div>
+
+            <div class="lab-explanation">
+                <h3>Lab Objective</h3>
+                <p>To understand the concept of <b>TCP Congestion Control</b>, its phases, mechanisms, and how TCP dynamically adjusts the data transmission rate to prevent congestion in a network.</p>
+
+                <h3>Overview</h3>
+                <p>Congestion occurs when the rate of data sent to the network exceeds the network’s capacity. TCP implements congestion control mechanisms to prevent packet loss and ensure fair bandwidth usage among users.</p>
+                <p>TCP Congestion Control works primarily by adjusting a parameter called <b>Congestion Window (cwnd)</b> based on network feedback (ACKs and packet loss).</p>
+
+                <h3>Phases of TCP Congestion Control</h3>
+
+                <div class="phase-box">
+                    <h4>1. Slow Start (SS)</h4>
+                    <p>• Initially, cwnd starts with 1 MSS (Maximum Segment Size).<br>
+                    • Each ACK received doubles the cwnd — exponential growth.<br>
+                    • Continues until it reaches a threshold called <b>ssthresh</b>.</p>
+                    <p><b>Formula:</b> cwnd = cwnd × 2 (for each RTT)</p>
+                </div>
+
+                <div class="phase-box">
+                    <h4>2. Congestion Avoidance (CA)</h4>
+                    <p>• Once cwnd ≥ ssthresh, TCP enters linear growth mode.<br>
+                    • cwnd increases by 1 MSS for every RTT.<br>
+                    • Aims to find the network’s optimal capacity without causing congestion.</p>
+                    <p><b>Formula:</b> cwnd = cwnd + 1 (per RTT)</p>
+                </div>
+
+                <div class="phase-box">
+                    <h4>3. Congestion Detection</h4>
+                    <p>• When packet loss occurs (timeout or triple duplicate ACKs), TCP detects congestion.<br>
+                    • The response depends on the type of loss detection.</p>
+                </div>
+
+                <div class="phase-box">
+                    <h4>4. Fast Retransmit</h4>
+                    <p>• Triggered by three duplicate ACKs.<br>
+                    • TCP immediately retransmits the lost segment instead of waiting for a timeout.</p>
+                </div>
+
+                <div class="phase-box">
+                    <h4>5. Fast Recovery</h4>
+                    <p>• After retransmitting the lost segment, TCP halves ssthresh and sets cwnd = ssthresh.<br>
+                    • Then continues in congestion avoidance phase to slowly increase cwnd again.</p>
+                </div>
+
+                <div class="diagram">
+                    <h3>TCP Congestion Control Diagram</h3>
+                    <img src="images/Tcp_congestion_control.jpg" alt="TCP Congestion Control Diagram">
+                    <p class="small-note">Figure: The growth of cwnd during Slow Start, Congestion Avoidance, and Fast Recovery phases.</p>
+                </div>
+
+                <h3>Important Terms</h3>
+                <ul>
+                    <li><b>cwnd (Congestion Window):</b> Controls how many bytes can be sent without ACK.</li>
+                    <li><b>ssthresh (Slow Start Threshold):</b> Determines when TCP switches from exponential to linear growth.</li>
+                    <li><b>RTT (Round Trip Time):</b> Time taken for a packet to reach destination and its ACK to return.</li>
+                    <li><b>MSS (Maximum Segment Size):</b> Maximum amount of data TCP can send in one segment.</li>
+                </ul>
+
+                 <h3>Concept of Window Size</h3>
+                <div class="phase-box">
+                    <h4>1. What is Window Size?</h4>
+                    <p>
+                        The <b>window size</b> in TCP defines how much data can be sent before requiring an acknowledgment (ACK)
+                        from the receiver. It ensures that the sender does not overwhelm the receiver or the network by sending
+                        too much data at once.
+                    </p>
+                </div>
+
+                <div class="phase-box">
+                    <h4>2. Types of TCP Windows</h4>
+                    <ul>
+                        <li><b>Congestion Window (cwnd):</b> Maintained by the <b>sender</b> and adjusts dynamically based on network congestion. It increases or decreases depending on ACKs and packet loss.</li>
+                        <li><b>Receiver Window (rwnd):</b> Maintained by the <b>receiver</b> and represents how much data it can buffer. It is sent in every ACK to inform the sender of available space.</li>
+                    </ul>
+                </div>
+
+                <div class="phase-box">
+                    <h4>3. Effective Window Size</h4>
+                    <p>
+                        The actual number of bytes the sender can transmit at any given time is limited by the smaller of the two windows:
+                    </p>
+                    <p><b>Effective Window = min(cwnd, rwnd)</b></p>
+                    <p>
+                        This ensures that the sender respects both the receiver’s capacity and the network’s congestion state.
+                    </p>
+                </div>
+
+                <div class="phase-box">
+                    <h4>4. Role in Congestion Control</h4>
+                    <p>
+                        During the connection, TCP continuously updates <b>cwnd</b>:
+                        <ul>
+                            <li>In <b>Slow Start</b> — cwnd doubles every RTT (exponential growth).</li>
+                            <li>In <b>Congestion Avoidance</b> — cwnd increases linearly by 1 MSS per RTT.</li>
+                            <li>When <b>packet loss</b> occurs — cwnd is reduced, often to half its value or back to 1 MSS.</li>
+                        </ul>
+                        This adaptive adjustment of window size helps TCP maintain a balance between throughput and congestion control.
+                    </p>
+                </div>
+
+                <div class="phase-box">
+                    <h4>5. Example</h4>
+                    <p>
+                        Suppose:
+                        <ul>
+                            <li>cwnd = 8 MSS</li>
+                            <li>rwnd = 6 MSS</li>
+                        </ul>
+                        Then, the sender can send only <b>6 MSS</b> worth of data before waiting for ACKs, because the receiver window
+                        is smaller and limits the flow.
+                    </p>
+                </div>
+
+                <h3>Flow Summary</h3>
+                <div class="flowchart">
+                    <div class="phase-box"><h4>Start</h4><p>cwnd = 1 MSS</p></div>
+                    <div class="phase-box"><h4>Slow Start</h4><p>Exponential increase of cwnd</p></div>
+                    <div class="phase-box"><h4>Threshold Reached</h4><p>cwnd = ssthresh</p></div>
+                    <div class="phase-box"><h4>Congestion Avoidance</h4><p>Linear increase of cwnd</p></div>
+                    <div class="phase-box"><h4>Packet Loss Detected</h4><p>Reduce cwnd & enter Fast Recovery</p></div>
+                    <div class="phase-box"><h4>Resume</h4><p>Return to congestion avoidance</p></div>
+                </div>
+
+                <h3>Lab Resources</h3>
+                <div class="pdf-container">
+                    <h4>TCP Congestion Control (Detailed Notes)</h4>
+                    <div id="pdf-viewer-1" class="pdf-viewer"></div>
+                    <a href="pdfs/TCP_Congestion_Control.pdf" class="btn" target="_blank">Download PDF</a>
+                </div>
+
+                <div class="pdf-container">
+                    <h4>Lab 07 Task</h4>
+                    <div id="pdf-viewer-2" class="pdf-viewer"></div>
+                    <a href="pdfs/Lab_7_Task.pdf" class="btn" target="_blank">Download PDF</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PDF Embed -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfobject/2.2.8/pdfobject.min.js"></script>
+    <script>
+        PDFObject.embed("pdfs/TCP_Congestion_Control.pdf#zoom=page-width", "#pdf-viewer-1");
+        PDFObject.embed("pdfs/Lab_7_Task.pdf#zoom=page-width", "#pdf-viewer-2");
+    </script>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>About CN Lab Helper</h3>
+                    <p>An interactive platform to help students visualize and understand Computer Networks laboratory experiments through detailed explanations, screenshots, and animations.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <p><a href="index.html">Home</a></p>
+                    <p><a href="netplay.html">NetPlay</a></p>
+                    <p><a href="about.html">About</a></p>
+                </div>
+                <div class="footer-section">
+                    <h3>Connect With Us</h3>
+                    <div class="social-links">
+                        <a href="https://linkedin.com/in/kinza-afzal7-" target="_blank"><i class="fab fa-linkedin"></i></a>
+                        <a href="https://github.com/kinza7124" target="_blank"><i class="fab fa-github"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 CN Lab Helper created by Kinza. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

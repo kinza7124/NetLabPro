@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CN Lab Helper – Network Hero RPG</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+:root {
+    --primary: #2c3e50;
+    --secondary: #3498db;
+    --accent: #e74c3c;
+    --light: #ecf0f1;
+    --dark: #1a252f;
+    --success: #2ecc71;
+    --warning: #f39c12;
+}
+
+* { 
+    margin:0; 
+    padding:0; 
+    box-sizing:border-box; 
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+}
+
+body { 
+    background-color:#f5f7fa; 
+    color:#333; 
+    line-height:1.6;
+}
+
+.container { 
+    width:90%; 
+    max-width:1200px; 
+    margin:0 auto; 
+    padding:0 15px; 
+}
+
+header {
+    background:linear-gradient(135deg,var(--primary),var(--secondary)); 
+    color:white;
+    padding:1rem 0; 
+    box-shadow:0 4px 12px rgba(0,0,0,0.1); 
+    position:sticky; 
+    top:0; 
+    z-index:100;
+}
+.header-content { 
+    display:flex; 
+    justify-content:space-between;
+    align-items:center; 
+}
+.logo { 
+    display:flex; 
+    align-items:center; 
+    gap:10px; 
+}
+.logo i { 
+    font-size:2rem; 
+}
+.logo h1 { 
+    font-size:1.8rem; 
+    font-weight:700;
+}
+nav ul { 
+    display:flex; 
+    list-style:none; 
+    gap:2rem; 
+}
+nav a { 
+    color:white; 
+    text-decoration:none; 
+    font-weight:500; 
+    padding:0.5rem 1rem; 
+    border-radius:4px; 
+    transition: all 0.3s ease;
+}
+nav a:hover, nav a.active { 
+    background-color: rgba(255,255,255,0.2); 
+}
+
+.section-title { 
+    text-align:center; 
+    margin:2rem 0 1rem; 
+    color:var(--primary); 
+    position:relative; 
+    font-size:2rem; 
+}
+.section-title:after { 
+    content:''; 
+    display:block; 
+    width:80px; 
+    height:4px; 
+    background-color:var(--secondary);
+    margin:10px auto; 
+}
+
+.game-card, .lab-detail { 
+    background:white; 
+    border-radius:8px; 
+    overflow:hidden; 
+    box-shadow:0 5px 15px rgba(0,0,0,0.1); 
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    max-width:600px;
+    margin:2rem auto; 
+    padding:1rem; 
+}
+.game-card:hover { 
+    transform: translateY(-5px); 
+    box-shadow:0 10px 25px rgba(0,0,0,0.15);
+}
+
+.game-card-header, .lab-detail-header { 
+    background-color: var(--primary); 
+    color:white; 
+    padding:1.5rem; 
+    text-align:center; 
+    border-radius:8px 8px 0 0; 
+}
+.game-card-body, .lab-content { 
+    padding:1.5rem; 
+}
+
+.opt-btn { 
+    display:block; 
+    width:100%; 
+    text-align:left; 
+    margin:0.5rem 0; 
+    padding:10px 15px; 
+    border-radius:6px; 
+    border:2px solid var(--secondary); 
+    background:var(--light); 
+    cursor:pointer; 
+    transition:0.3s; 
+}
+.opt-btn:hover { 
+    background: var(--secondary); 
+    color:white; 
+}
+.opt-correct { 
+    background: var(--success); 
+    color:white; 
+    border-color: var(--success); 
+}
+.opt-wrong { 
+    background: var(--accent); 
+    color:white; 
+    border-color: var(--accent); 
+}
+
+#scorePanel { 
+position: absolute; 
+top:140px;
+right:20px; 
+background:var(--light); 
+padding:12px; 
+border-radius:8px; 
+box-shadow:0 4px 12px rgba(0,0,0,0.1);
+font-weight:700;
+z-index:1000; 
+}
+
+#finalMessage { 
+    text-align:center; 
+    margin-top:2rem; 
+    font-size:1.2rem; 
+}
+
+#timer { 
+    font-weight:bold; 
+    color:var(--accent); 
+    margin-bottom:10px; 
+    text-align:center; 
+    font-size:1rem; 
+}
+
+#progressBarContainer { 
+    background:#ddd; 
+    border-radius:10px; 
+    margin:15px 0; 
+    height:15px; 
+    width:100%; 
+}
+
+#progressBar { 
+    height:15px; 
+    width:0%; 
+    background:var(--success);
+    border-radius:10px; 
+    transition:width 0.3s; 
+}
+
+.btn { 
+    display:inline-block; 
+    background-color:var(--accent); 
+    color:white; 
+    padding:0.8rem 1.5rem; 
+    border-radius:4px; 
+    text-decoration:none; 
+    font-weight:600; 
+    transition: all 0.3s ease; 
+    border:none; 
+    cursor:pointer; 
+    margin-top:1rem; 
+}
+
+.btn:hover {
+    background-color:#c0392b; 
+    transform: translateY(-3px); 
+    box-shadow:0 5px 15px rgba(0,0,0,0.1);
+}
+
+.hint { 
+    background:var(--secondary); 
+    color:white; 
+    padding:6px 10px; 
+    border-radius:6px; 
+    display:inline-block; 
+    margin-bottom:10px; 
+    cursor:pointer; 
+    font-size:0.9rem; 
+}
+
+.lab-detail-header {
+    display:flex; 
+    justify-content:space-between; 
+    align-items:center; 
+    margin-bottom:2rem; 
+    padding-bottom:1rem; 
+    border-bottom:1px solid #eee; 
+}
+
+.lab-detail-header h2 { 
+    color: var(--primary); 
+}
+
+.lab-content { 
+    display:grid; 
+    grid-template-columns:1fr; 
+    gap:2rem; 
+}
+
+.lab-explanation h3 {
+    color: var(--primary); 
+    margin-bottom:1rem; 
+    margin-top:2rem; 
+    padding-bottom:0.5rem; 
+    border-bottom:1px solid #eee;
+}
+
+.lab-explanation p {
+    margin-bottom:1.2rem; 
+}
+
+.code-block {
+    position: relative;
+    background-color: #1e1e1e; 
+    padding: 1rem; 
+    border-radius: 8px; 
+    overflow-x: auto; 
+    font-family: 'Fira Code', monospace;
+    border-left: 5px solid var(--primary); 
+    margin-bottom: 1rem; 
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2); 
+}
+
+.copy-btn {
+    position: absolute;
+    top: 10px; 
+    right: 10px; 
+    background-color: var(--primary); 
+    border: none; 
+    color: white; 
+    padding: 5px 10px; 
+    border-radius: 4px; 
+    cursor: pointer; 
+    font-size: 0.8rem; 
+    transition: background 0.3s;
+}
+
+.copy-btn:hover { 
+    background-color: rgba(52, 152, 219, 0.8); 
+}
+
+.code-explanation { 
+    background-color: #f9f9f9;
+    padding: 0.8rem 1rem; 
+    border-left: 4px solid var(--primary); 
+    border-radius: 5px; 
+    margin-bottom: 1.5rem; 
+    font-size: 0.9rem;
+}
+
+@media(max-width:768px){ 
+    #scorePanel{
+        top:auto; 
+        bottom:20px; 
+        right:20px; 
+    } 
+}
+</style>
+</head>
+<body>
+
+<header>
+<div class="container">
+<div class="header-content">
+    <div class="logo">
+                <img src="images/logo2.png" alt="CN Lab Helper Logo" style="height:90px; width:auto;">
+                    <h1>NetLabPro</h1>
+                </div>
+    <nav>
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="netplay.html" class="active">NetPlay</a></li>
+            <li><a href="about.html">About</a></li>
+        </ul>
+    </nav>
+</div>
+</div>
+</header>
+
+<section class="container">
+<h2 class="section-title">Network Hero RPG</h2>
+<div id="gameArea" class="game-card">
+    <div class="game-card-header"><h3>Welcome Hero!</h3></div>
+    <div class="game-card-body">
+        <p>You are the network administrator. Solve network issues before time runs out!</p>
+        <button class="btn" onclick="startGame()">Start Mission</button>
+    </div>
+</div>
+
+<div id="finalMessage"></div>
+<div id="timer"></div>
+<div id="progressBarContainer">
+    <div id="progressBar"></div>
+</div>
+</section>
+
+<div id="scorePanel">Score: <span id="score">0</span></div>
+
+<script>
+const scenarios = [
+    { title:"DHCP Issue", description:"Users cannot get IP addresses (169.254.x.x). What is the first action?", options:["Restart PC","Check DHCP server","Change DNS","Check router"], answer:1, hint:"DHCP assigns IPs dynamically." },
+    { title:"DNS Failure", description:"A user cannot access www.example.com but can ping 8.8.8.8. First step?", options:["Flush DNS cache","Check DNS server","Restart router","Change wallpaper"], answer:1, hint:"DNS resolves domain names to IPs." },
+    { title:"ACL Problem", description:"Some traffic is unexpectedly blocked. What should you check?", options:["Ping localhost","Review ACL rules","Restart PC","Change DNS"], answer:1, hint:"ACL controls which traffic is allowed or denied." },
+    { title:"Wireshark Analysis", description:"You see retransmissions in TCP flow. What does it indicate?", options:["Packet loss","Fast network","Normal traffic","Low latency"], answer:0, hint:"Retransmissions happen due to lost packets." },
+    { title:"TCP Congestion Control", description:"During slow start, CWND increases how?", options:["Linearly","Exponentially","Randomly","Decreases"], answer:1, hint:"Slow start doubles CWND each RTT until threshold." },
+    { title:"NAT Misconfiguration", description:"Users cannot access the internet behind NAT. First step?", options:["Verify NAT rules","Reboot router","Check DHCP","Disable firewall"], answer:0, hint:"NAT translates private IPs to public." },
+    { title:"HTTP Issue", description:"Website images fail to load. Tool to investigate?", options:["Ping server","Check packet capture","Restart DHCP","Switch browser"], answer:1, hint:"Check if HTTP requests are reaching the server." },
+    { title:"Network Congestion", description:"Network is slow between routers. First inspection?", options:["Check interface stats","Change IPs","Disable DNS","Flush cache"], answer:0, hint:"Interface stats show utilization and errors." },
+    { title:"Firewall Block", description:"Service blocked unexpectedly. First check?", options:["Restart PC","Review firewall rules","Install printer","Disable DNS"], answer:1, hint:"Firewall rules define allowed services." },
+    { title:"Final Challenge", description:"Packets dropping intermittently, multiple services fail. First action?", options:["Check logs & interface","Restart PC","Ping localhost","Change DNS server"], answer:0, hint:"Logs and interface counters give system state." }
+];
+
+let score=0, current=0, timerInterval=null, timeLeft=20;
+
+function startGame(){
+    score=0; current=0;
+    document.getElementById("score").innerText=score;
+    document.getElementById("finalMessage").innerHTML="";
+    loadScenario(current);
+    updateProgress();
+}
+
+function loadScenario(n){
+    clearInterval(timerInterval);
+    timeLeft=20;
+    const sc=scenarios[n];
+    const area=document.getElementById("gameArea");
+    area.innerHTML=`
+        <div class="game-card-header"><h3>${sc.title}</h3></div>
+        <div class="game-card-body">
+            <p>${sc.description}</p>
+            <span class="hint" onclick="alert('${sc.hint}')">💡 Show Hint</span>
+            ${sc.options.map((opt,i)=>`<button class="opt-btn" onclick="selectOption(${i})">${opt}</button>`).join('')}
+        </div>
+    `;
+    document.getElementById("timer").innerText=`Time Left: ${timeLeft}s`;
+    timerInterval=setInterval(()=>{
+        timeLeft--;
+        document.getElementById("timer").innerText=`Time Left: ${timeLeft}s`;
+        if(timeLeft<=0){
+            clearInterval(timerInterval);
+            selectOption(-1);
+        }
+    },1000);
+}
+
+function selectOption(i){
+    clearInterval(timerInterval);
+    const sc=scenarios[current];
+    const buttons=document.querySelectorAll(".opt-btn");
+    if(i===sc.answer){ score+=10; document.getElementById("score").innerText=score; if(i>=0) buttons[i].classList.add('opt-correct'); }
+    else if(i>=0){ buttons[i].classList.add('opt-wrong'); buttons[sc.answer].classList.add('opt-correct'); }
+
+    setTimeout(()=>{
+        current++;
+        updateProgress();
+        if(current<scenarios.length) loadScenario(current);
+        else showFinal();
+    },1000);
+}
+
+function showFinal(){
+    const area=document.getElementById("gameArea");
+    area.innerHTML="";
+    document.getElementById("timer").innerText="";
+    document.getElementById("finalMessage").innerHTML=`
+        <h3>${score===100?'🎉 Perfect! Network Hero!':'🏆 Mission Complete!'}</h3>
+        <p>Your final score is ${score}/${scenarios.length*10}</p>
+        <button class="btn" onclick="startGame()">Retry Mission</button>
+    `;
+}
+
+function updateProgress(){
+    const percent = (current/scenarios.length)*100;
+    document.getElementById("progressBar").style.width=`${percent}%`;
+}
+</script>
+</body>
+</html>

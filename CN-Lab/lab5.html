@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lab 5 - SMTP & FTP Protocols | CN Lab Helper</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="style.css" />
+
+    <!-- Atom One Dark theme for highlight.js -->
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/atom-one-dark.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    <script>
+        hljs.highlightAll();
+    </script>
+
+    <style>
+        .lab-detail {
+            background-color: white;
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 3rem;
+        }
+
+        .lab-detail-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .lab-detail-header h2 {
+            color: var(--primary);
+        }
+
+        .lab-content {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+
+        .lab-explanation {
+            padding-right: 1rem;
+        }
+
+        .lab-explanation h3 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+            margin-top: 2rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .lab-explanation h3:first-child {
+            margin-top: 0;
+        }
+
+        .lab-explanation p {
+            margin-bottom: 1.2rem;
+        }
+
+        .lab-explanation ul {
+            margin: 1rem 0;
+            padding-left: 2rem;
+        }
+
+        .lab-explanation li {
+            margin: 0.5rem 0;
+        }
+
+        .pdf-container {
+            margin: 2rem 0;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 1rem;
+            background: #f9f9f9;
+        }
+
+        .pdf-container h4 {
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+
+        .pdf-placeholder {
+            width: 100%;
+            height: 500px;
+            background-color: #e9ecef;
+            border-radius: 4px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #6c757d;
+            margin-bottom: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .lab-detail-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+        }
+
+        .code-block {
+            position: relative;
+            background-color: #1e1e1e;
+            padding: 1rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: 'Fira Code', monospace;
+            border-left: 5px solid var(--primary);
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: var(--primary);
+            border: none;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: background 0.3s;
+        }
+
+        .copy-btn:hover {
+            background-color: rgba(52, 152, 219, 0.8);
+        }
+
+        .code-explanation {
+            background-color: #f9f9f9;
+            padding: 0.8rem 1rem;
+            border-left: 4px solid var(--primary);
+            border-radius: 5px;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+        }
+
+        .carousel-container {
+            margin: 2rem 0;
+            text-align: center;
+            overflow: hidden;
+        }
+
+        .carousel {
+            position: relative;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .carousel-images {
+            display: flex;
+            overflow: hidden;
+            border-radius: 8px 8px 0 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            background-color: #f8f9fa;
+            min-height: 500px;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .carousel-image {
+            width: 100%;
+            height: auto;
+            max-height: 500px;
+            object-fit: contain;
+            display: none;
+        }
+
+        .carousel-image.active {
+            display: block;
+        }
+
+        .carousel-caption {
+            background-color: var(--primary);
+            color: white;
+            padding: 1rem;
+            border-radius: 0 0 8px 8px;
+            margin-top: -1px;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .carousel-controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 1rem;
+            gap: 1rem;
+        }
+
+        .carousel-btn {
+            background-color: var(--primary);
+            border: none;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background 0.3s;
+        }
+
+        .carousel-btn:hover {
+            background-color: rgba(52, 152, 219, 0.8);
+        }
+
+        .carousel-btn:disabled {
+            background-color: #bdc3c7;
+            cursor: not-allowed;
+        }
+
+        .carousel-indicators {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .carousel-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: #bdc3c7;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .carousel-indicator.active {
+            background-color: var(--primary);
+        }
+
+        .code-explanation2 {
+            background-color: #f9f9f9;
+            padding: 1rem 1.5rem;
+            border-left: 5px solid var(--primary);
+            border-radius: 8px;
+            margin: 1.5rem auto;
+            max-width: 1000px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        .code-explanation2 b {
+            color: var(--primary);
+        }
+
+        .code-explanation2 p {
+            margin-top: 0.5rem;
+            margin-bottom: 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+        }
+
+        table,
+        th,
+        td {
+            border: 1px solid #ddd;
+        }
+
+        th,
+        td {
+            padding: 12px;
+            text-align: left;
+        }
+
+        th {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        .small-note {
+            font-size: 0.9rem;
+            color: #555;
+        }
+
+        .protocol-section {
+            margin: 2rem 0;
+        }
+
+        .protocol-section h4 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--secondary);
+        }
+
+        .wireshark-commands {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-left: 4px solid #f39c12;
+        }
+
+        .command-item {
+            display: flex;
+            margin-bottom: 1rem;
+            align-items: flex-start;
+            padding: 0.8rem;
+            background: white;
+            border-radius: 6px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .command-badge {
+            background-color: var(--primary);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.9rem;
+            margin-right: 1rem;
+            min-width: 200px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .command-desc {
+            flex: 1;
+            color: #333;
+            line-height: 1.5;
+        }
+
+        @media (max-width: 768px) {
+            .command-item {
+                flex-direction: column;
+            }
+            
+            .command-badge {
+                margin-bottom: 0.5rem;
+                margin-right: 0;
+                min-width: auto;
+            }
+        }
+        #pdf-viewer-1 {
+        width: 100%;
+        height: 500px;
+        border:1px solid #ddd; 
+        border-radius:4px
+        }
+
+        @media (max-width: 768px) {
+        #pdf-viewer-1 {
+        height: 300px; 
+        }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                <img src="images/logo2.png" alt="CN Lab Helper Logo" style="height:90px; width:auto;">
+                    <h1>NetLabPro</h1>
+                </div>
+                <nav>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="netplay.html">NetPlay</a></li>
+                        <li><a href="about.html">About</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <section class="container">
+        <div class="lab-detail">
+            <div class="lab-detail-header">
+                <h2>Lab 5: SMTP & FTP Protocols Implementation</h2>
+                <a href="index.html" class="btn">Back to Labs</a>
+            </div>
+
+            <div class="lab-content">
+                <div class="lab-explanation">
+                    <h3>Lab Objective</h3>
+                    <p>
+                        This lab focuses on implementing and analyzing SMTP (Simple Mail Transfer Protocol) and FTP (File Transfer Protocol) 
+                        in Cisco Packet Tracer, along with network traffic analysis using Wireshark for various protocols including HTTP/HTTPS, 
+                        DNS, TCP, and UDP.
+                    </p>
+
+                    <h3>Protocol Overview</h3>
+                    <div class="protocol-comparison">
+                        <div class="protocol-card smtp">
+                            <h4>SMTP - Simple Mail Transfer Protocol</h4>
+                            <ul>
+                                <li><strong>Purpose:</strong> Electronic mail transmission</li>
+                                <li><strong>Port:</strong> 25 (server-to-server), 587 (client-to-server)</li>
+                                <li><strong>Transport:</strong> TCP</li>
+                                <li><strong>Features:</strong> Text-based protocol, uses commands like HELO, MAIL FROM, RCPT TO, DATA</li>
+                            </ul>
+                        </div>
+                        <div class="protocol-card ftp">
+                            <h4>FTP - File Transfer Protocol</h4>
+                            <ul>
+                                <li><strong>Purpose:</strong> File transfer between client and server</li>
+                                <li><strong>Port:</strong> 21 (control), 20 (data - active mode)</li>
+                                <li><strong>Transport:</strong> TCP</li>
+                                <li><strong>Modes:</strong> Active and Passive mode</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <h3>1. SMTP Implementation</h3>
+                    <h3>Introduction to SMTP</h3>
+                    <p>
+                        Simple Mail Transfer Protocol (SMTP) is an Internet standard for electronic mail (email) transmission.
+                        First defined by RFC 821 in 1982, it was last updated in 2008 with Extended SMTP additions by RFC 5321.
+                    </p>
+
+                    <div class="code-block">
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        <pre><code class="language-python">
+# SMTP Key Points:
+- Mail servers use port 25 for communication
+- Clients typically use port 587 for submission
+- Uses TCP for reliable delivery
+- Works with POP3/IMAP for receiving emails
+- Commands: HELO, MAIL FROM, RCPT TO, DATA, QUIT
+                        </code></pre>
+                    </div>
+
+                    <h3>SMTP Implementation Steps</h3>
+                    <p><strong>Topology Setup and Configuration:</strong></p>
+                    
+                    <!-- SMTP Carousel -->
+                    <div class="carousel-container">
+                        <div class="carousel" id="smtp-carousel">
+                            <div class="carousel-images">
+                                <img src="images/lab5ss1.jpg" alt="SMTP Network Topology" class="carousel-image active">
+                                <img src="images/lab5ss2.jpg" alt="IP configuration" class="carousel-image">
+                                <img src="images/lab5ss3.jpg" alt="IP configuration" class="carousel-image">
+                                <img src="images/lab5ss4.jpg" alt="IP configuration" class="carousel-image">
+                                <img src="images/lab5ss5.jpg" alt="IP configuration" class="carousel-image">
+                                <img src="images/lab5ss6.jpg" alt="Email Service on mail server" class="carousel-image">
+                                <img src="images/lab5ss7.jpg" alt="Configuring email service" class="carousel-image">
+                                <img src="images/lab5ss8.jpg" alt="Configuring email service" class="carousel-image">
+                                <img src="images/lab5ss9.jpg" alt="Sending email" class="carousel-image">
+                                <img src="images/lab5ss10.jpg" alt="Check email" class="carousel-image">
+                                <img src="images/lab5ss11.jpg" alt="Inbound PDU Details" class="carousel-image">
+                                <img src="images/lab5ss12.jpg" alt="OSI Model" class="carousel-image">
+                                <img src="images/lab5ss13.jpg" alt="Simulation Panel" class="carousel-image">
+                            </div>
+                            <div class="carousel-caption">
+                                <p id="smtp-caption">Figure 1: SMTP implementation network topology with mail server and client PCs.</p>
+                            </div>
+                            <div class="carousel-controls">
+                                <button class="carousel-btn" id="smtp-prev">
+                                    <i class="fas fa-chevron-left"></i> Previous
+                                </button>
+                                <span id="smtp-counter">1 of 5</span>
+                                <button class="carousel-btn" id="smtp-next">
+                                    Next <i class="fas fa-chevron-right"></i>
+                                </button>
+                            </div>
+                            <div class="carousel-indicators" id="smtp-indicators">
+                                <!-- Indicators will be generated by JavaScript -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <h4>Configure and Verify Email Services:</h4>
+                    <ul>
+                        <li>Click on Mail server</li>
+                        <li>Go to Services → Email Services</li>
+                        <li>Enable SMTP & POP3 Service</li>
+                        <li>Set Domain name (e.g., fast.com)</li>
+                        <li>Add users with credentials:</li>
+                    </ul>
+
+                    <table>
+                        <tr>
+                            <th>Username</th>
+                            <th>Password</th>
+                        </tr>
+                        <tr>
+                            <td>cs</td>
+                            <td>123</td>
+                        </tr>
+                        <tr>
+                            <td>bba</td>
+                            <td>123</td>
+                        </tr>
+                    </table>
+
+                    <h3>2. FTP Implementation</h3>
+                    <h3>Introduction to FTP</h3>
+                    <p>
+                        The File Transfer Protocol (FTP) is a standard network protocol used to transfer computer files 
+                        between a client and server on a computer network. FTP uses separate control and data connections.
+                    </p>
+
+                    <div class="code-block">
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        <pre><code class="language-python">
+# FTP Key Points:
+- Control connection: Port 21
+- Data connection: Port 20 (active mode)
+- Uses TCP for reliability
+- Supports active and passive modes
+- Commands: USER, PASS, LIST, RETR, STOR, QUIT
+                        </code></pre>
+                    </div>
+
+                    <h3>FTP Implementation Steps</h3>
+                    <p><strong>Topology Setup and Configuration:</strong></p>
+                    <p>Let's implement FTP Service on the same topology as above. </p>
+                    <!-- FTP Carousel -->
+                    <div class="carousel-container">
+                        <div class="carousel" id="ftp-carousel">
+                            <div class="carousel-images">
+                                <img src="images/FTP_1.jpg" alt="FTP Network Topology" class="carousel-image active">
+                                <img src="images/FTP_2.jpg" alt="Testing FTP Service" class="carousel-image">
+                                <img src="images/FTP_3.jpg" alt="Testing FTP Service" class="carousel-image">
+                                <img src="images/FTP_4.jpg" alt="Uploading file" class="carousel-image">
+                                <img src="images/FTP_5.jpg" alt="FTP commands" class="carousel-image">
+                                <img src="images/FTP_6.jpg" alt="FTP Simulation" class="carousel-image">
+                                <img src="images/FTP_7.jpg" alt="OSI model" class="carousel-image">
+                                <img src="images/FTP_8.jpg" alt="Inbound PDU Details" class="carousel-image">
+                            </div>
+                            <div class="carousel-caption">
+                                <p id="ftp-caption">Figure 6: FTP implementation network topology with FTP server and client PCs.</p>
+                            </div>
+                            <div class="carousel-controls">
+                                <button class="carousel-btn" id="ftp-prev">
+                                    <i class="fas fa-chevron-left"></i> Previous
+                                </button>
+                                <span id="ftp-counter">1 of 5</span>
+                                <button class="carousel-btn" id="ftp-next">
+                                    Next <i class="fas fa-chevron-right"></i>
+                                </button>
+                            </div>
+                            <div class="carousel-indicators" id="ftp-indicators">
+                                <!-- Indicators will be generated by JavaScript -->
+                            </div>
+                        </div>
+                    </div>
+                        <div class="wireshark-commands">
+                            <h4>Essential Wireshark Display Filters</h4>
+                        
+                        <div class="command-item">
+                            <div class="command-badge">http</div>
+                            <div class="command-desc">Show HTTP requests and responses</div>
+                        </div>
+                        
+                        <div class="command-item">
+                            <div class="command-badge">dns</div>
+                            <div class="command-desc">Show DNS queries and responses</div>
+                        </div>
+                        
+                        <div class="command-item">
+                            <div class="command-badge">tcp.port == 80</div>
+                            <div class="command-desc">Filter HTTP traffic on port 80</div>
+                        </div>
+                        
+                        <div class="command-item">
+                            <div class="command-badge">tcp.port == 443</div>
+                            <div class="command-desc">Filter HTTPS traffic on port 443</div>
+                        </div>
+                        
+                        <div class="command-item">
+                            <div class="command-badge">udp.port == 53</div>
+                            <div class="command-desc">Filter DNS traffic on port 53</div>
+                        </div>
+                        
+                        <div class="command-item">
+                            <div class="command-badge">ip.src == x.x.x.x</div>
+                            <div class="command-desc">Filter packets from specific source IP</div>
+                        </div>
+                        
+                        <div class="command-item">
+                            <div class="command-badge">ip.dst == x.x.x.x</div>
+                            <div class="command-desc">Filter packets to specific destination IP</div>
+                        </div>
+                        
+                        <div class="command-item">
+                            <div class="command-badge">ip.addr == x.x.x.x</div>
+                            <div class="command-desc">Filter packets to/from specific IP</div>
+                        </div>
+                        
+                        <div class="command-item">
+                            <div class="command-badge">arp</div>
+                            <div class="command-desc">Show ARP requests and responses</div>
+                        </div>
+                        
+                        <div class="command-item">
+                            <div class="command-badge">icmp</div>
+                            <div class="command-desc">Show ICMP packets (ping, traceroute)</div>
+                        </div>
+                        
+                        <div class="command-item">
+                            <div class="command-badge">tcp.flags.syn == 1</div>
+                            <div class="command-desc">Show TCP SYN packets (connection initiation)</div>
+                        </div>
+                        
+                        <div class="command-item">
+                            <div class="command-badge">tcp.flags.fin == 1</div>
+                            <div class="command-desc">Show TCP FIN packets (connection termination)</div>
+                        </div>
+                        
+                        <div class="command-item">
+                            <div class="command-badge">tcp.stream eq 1</div>
+                            <div class="command-desc">Show specific TCP stream number</div>
+                        </div>
+                        
+                        <div class="command-item">
+                            <div class="command-badge">http.response.code == 200</div>
+                            <div class="command-desc">Show HTTP 200 OK responses</div>
+                        </div>
+                        
+                        <div class="command-item">
+                            <div class="command-badge">http.response.code == 404</div>
+                            <div class="command-desc">Show HTTP 404 Not Found responses</div>
+                        </div>
+                        
+                        <div class="command-item">
+                            <div class="command-badge">http.request.method == "GET"</div>
+                            <div class="command-desc">Show HTTP GET requests only</div>
+                        </div>
+                        
+                        <div class="command-item">
+                            <div class="command-badge">http.request.method == "POST"</div>
+                            <div class="command-desc">Show HTTP POST requests only</div>
+                        </div>
+                        
+                        <div class="command-item">
+                            <div class="command-badge">tls || ssl</div>
+                            <div class="command-desc">Show TLS/SSL encrypted traffic</div>
+                        </div>
+                    </div>
+                <h4>HTTP GET/Response Interaction</h4>
+                    <div class="code-block">
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        <pre><code class="language-bash">
+# Wireshark HTTP Analysis Steps:
+1. Start Wireshark capture
+2. Enter "http" in display filter
+3. Browse to: http://gaia.cs.umass.edu/wireshark-labs/HTTP-wireshark-file1.html
+4. Stop capture and analyze GET/response messages
+                        </code></pre>
+                    </div>
+
+                    <h4>DNS Traffic Analysis</h4>
+                    <div class="code-block">
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        <pre><code class="language-bash">
+# DNS Analysis with nslookup and Wireshark:
+1. Clear DNS cache: ipconfig /flushdns
+2. Start Wireshark capture
+3. Run: nslookup www.mit.edu
+4. Analyze DNS query/response packets
+5. Note: DNS uses UDP port 53
+                        </code></pre>
+                    </div>
+
+                    <h3>4. Lab Questions & Exercises</h3>
+                    
+                    <div class="code-explanation">
+                        <b>SMTP Questions:</b>
+                        <p>
+                            1. What ports does SMTP use for server-to-server and client-to-server communication?<br>
+                            2. Explain the purpose of POP3 in email systems.<br>
+                            3. What are the main SMTP commands and their functions?
+                        </p>
+                    </div>
+
+                    <div class="code-explanation">
+                        <b>FTP Questions:</b>
+                        <p>
+                            1. Differentiate between FTP active and passive modes.<br>
+                            2. Why does FTP use separate control and data connections?<br>
+                            3. What security concerns exist with standard FTP?
+                        </p>
+                    </div>
+
+                    <h3>5. Lab Resources</h3>
+                    <div class="pdf-container">
+                        <h4>Lab 5 Task PDF</h4>
+                        <div id="pdf-viewer-1">
+                            <div class="pdf-placeholder">PDF preview will appear here if available.</div>
+                        </div>
+                        <a href="pdfs/Lab_5_Task.pdf" class="btn" target="_blank">Download PDF</a>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfobject/2.2.8/pdfobject.min.js"></script>
+    <script>
+        // Embed the Lab 5 PDF if present
+        PDFObject.embed("pdfs/Lab_5_Task.pdf#zoom=page-width", "#pdf-viewer-1");
+
+        function copyCode(button) {
+            try {
+                const codeBlock = button.nextElementSibling.querySelector('code');
+                const text = codeBlock.innerText || codeBlock.textContent || '';
+                navigator.clipboard.writeText(text).then(() => {
+                    const original = button.innerText;
+                    button.innerText = 'Copied!';
+                    setTimeout(() => {
+                        button.innerText = original;
+                    }, 1400);
+                }).catch((err) => {
+                    console.error('Copy failed', err);
+                    alert('Copy failed — please select and copy manually.');
+                });
+            } catch (e) {
+                console.error(e);
+                alert('Unable to copy code block.');
+            }
+        }
+
+        // Carousel functionality
+        function initializeCarousel(carouselId, captions) {
+            const carousel = document.getElementById(carouselId);
+            const images = carousel.querySelectorAll('.carousel-image');
+            const prevBtn = carousel.querySelector('#smtp-prev') || carousel.querySelector('#ftp-prev');
+            const nextBtn = carousel.querySelector('#smtp-next') || carousel.querySelector('#ftp-next');
+            const counter = carousel.querySelector('#smtp-counter') || carousel.querySelector('#ftp-counter');
+            const caption = carousel.querySelector('#smtp-caption') || carousel.querySelector('#ftp-caption');
+            const indicatorsContainer = carousel.querySelector('#smtp-indicators') || carousel.querySelector('#ftp-indicators');
+            
+            let currentIndex = 0;
+            const totalImages = images.length;
+            
+            // Create indicators
+            for (let i = 0; i < totalImages; i++) {
+                const indicator = document.createElement('div');
+                indicator.className = 'carousel-indicator' + (i === 0 ? ' active' : '');
+                indicator.addEventListener('click', () => {
+                    goToImage(i);
+                });
+                indicatorsContainer.appendChild(indicator);
+            }
+            
+            const indicators = indicatorsContainer.querySelectorAll('.carousel-indicator');
+            
+            function updateCarousel() {
+                // Hide all images
+                images.forEach(img => img.classList.remove('active'));
+                indicators.forEach(ind => ind.classList.remove('active'));
+                
+                // Show current image
+                images[currentIndex].classList.add('active');
+                indicators[currentIndex].classList.add('active');
+                
+                // Update counter
+                counter.textContent = `${currentIndex + 1} of ${totalImages}`;
+                
+                // Update caption
+                caption.textContent = captions[currentIndex];
+                
+                // Update button states
+                prevBtn.disabled = currentIndex === 0;
+                nextBtn.disabled = currentIndex === totalImages - 1;
+            }
+            
+            function goToImage(index) {
+                currentIndex = index;
+                updateCarousel();
+            }
+            
+            function nextImage() {
+                if (currentIndex < totalImages - 1) {
+                    currentIndex++;
+                    updateCarousel();
+                }
+            }
+            
+            function prevImage() {
+                if (currentIndex > 0) {
+                    currentIndex--;
+                    updateCarousel();
+                }
+            }
+            
+            // Event listeners
+            prevBtn.addEventListener('click', prevImage);
+            nextBtn.addEventListener('click', nextImage);
+            
+            // Keyboard navigation
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowLeft') {
+                    prevImage();
+                } else if (e.key === 'ArrowRight') {
+                    nextImage();
+                }
+            });
+            
+            // Initialize
+            updateCarousel();
+        }
+
+        // Initialize carousels when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            // SMTP carousel captions
+            const smtpCaptions = [
+                "Figure 1: SMTP implementation network topology with mail server and client PCs.",
+                "Figure 2: IP configuration of CS PC.",
+                "Figure 3: IP configuration of BBA PC.",
+                "Figure 4: IP configuration of Server.",
+                "Figure 5: IP configuration on Router interface Gig0/0.",
+                "Figure 6: Setting up email service on mail server.",
+                "Figure 7: Configuring email client on CS PC.",
+                "Figure 8: Configuring email client on BBA PC.",
+                "Figure 9: Sending email from BBA to CS user.",
+                "Figure 10: Checking email on CS PC.",
+                "Figure 11: Inbound PDU Details at CS PC, observe use of POP3 at receiver's side.",
+                "Figure 12: OSI Model at Device CS PC.",
+                "Figure 13: Event list on simulation panel,observe use of SMTP at sender's side and POP3 at receiver's side."
+            ];
+            
+            // FTP carousel captions
+            const ftpCaptions = [
+                "Figure 1: Configuration of FTP server on Server PC.",
+                "Figure 2: Testing ftp service from CS PC using command ftp",
+                "Figure 3: Testing ftp service from BBA PC using command ftp",
+                "Figure 4: Uploading file from CS PC to FTP server.",
+                "Figure 5: Using put <filename> command to upload file to FTP server and dir to view list of files.",
+                "Figure 6: Simulating FTP service on Packet Tracer.",
+                "Figure 7: OSI model at Device CS PC during FTP file upload.",
+                "Figure 8: Inbound PDU details at FTP server during file upload from CS PC."
+            ];
+            
+            initializeCarousel('smtp-carousel', smtpCaptions);
+            initializeCarousel('ftp-carousel', ftpCaptions);
+        });
+    </script>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>About CN Lab Helper</h3>
+                    <p>An interactive platform to help students visualize and understand Computer Networks laboratory
+                        experiments through detailed explanations, screenshots, and animations.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <p><a href="index.html">Home</a></p>
+                    <p><a href="netplay.html">NetPlay</a></p>
+                    <p><a href="about.html">About</a></p>
+                </div>
+                <div class="footer-section">
+                    <h3>Connect With Us</h3>
+                    <div class="social-links">
+                        <a href="https://linkedin.com/in/kinza-afzal7-" target="_blank"><i
+                                class="fab fa-linkedin"></i></a>
+                        <a href="https://github.com/kinza7124" target="_blank"><i class="fab fa-github"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 CN Lab Helper created by Kinza. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

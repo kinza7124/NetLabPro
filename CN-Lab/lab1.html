@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab 1 - Introduction to Networking Concepts | CN Lab Helper</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .osi-images {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+            margin: 1.5rem 0;
+            justify-content: center;
+        }
+
+        .osi-image {
+            text-align: center;
+            flex: 1 1 45%;
+            max-width: 500px;
+        }
+
+        .osi-image img {
+            width: 100%;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .osi-image p {
+            margin-top: 0.5rem;
+            color: #555;
+            font-size: 0.95rem;
+        }
+
+        .lab-detail {
+            background-color: white;
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 3rem;
+        }
+
+        .lab-detail-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .lab-detail-header h2 {
+            color: var(--primary);
+        }
+
+        .lab-content {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+
+        .lab-explanation {
+            padding-right: 1rem;
+        }
+
+        .lab-explanation h3 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+            margin-top: 2rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .lab-explanation h3:first-child {
+            margin-top: 0;
+        }
+
+        .lab-explanation p {
+            margin-bottom: 1.5rem;
+        }
+
+        .lab-explanation ul {
+            margin: 1rem 0;
+            padding-left: 2rem;
+        }
+
+        .lab-explanation li {
+            margin: 0.5rem 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+        }
+
+        table,
+        th,
+        td {
+            border: 1px solid #ddd;
+        }
+
+        th,
+        td {
+            padding: 12px;
+            text-align: left;
+        }
+
+        th {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        .pdf-container {
+            margin: 2rem 0;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 1rem;
+            background: #f9f9f9;
+        }
+
+        .pdf-container h4 {
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+
+        .pdf-placeholder {
+            width: 100%;
+            height: 500px;
+            background-color: #e9ecef;
+            border-radius: 4px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #6c757d;
+            margin-bottom: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .lab-detail-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+        }
+
+        #pdf-viewer-1 {
+            width: 100%;
+            height: 500px;
+            border: 1px solid #ddd;
+            border-radius: 4px
+        }
+
+        #pdf-viewer-2 {
+            width: 100%;
+            height: 500px;
+            border: 1px solid #ddd;
+            border-radius: 4px
+        }
+
+        @media (max-width: 768px) {
+            #pdf-viewer-1 {
+                height: 300px;
+            }
+
+            #pdf-viewer-2 {
+                height: 300px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+               <div class="logo">
+                <img src="images/logo2.png" alt="CN Lab Helper Logo" style="height:90px; width:auto;">
+                    <h1>NetLabPro</h1>
+                </div>
+                <nav>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="netplay.html">NetPlay</a></li>
+                        <li><a href="about.html">About</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Lab Detail Section -->
+    <section class="container">
+        <div class="lab-detail">
+            <div class="lab-detail-header">
+                <h2>Lab 1: Introduction to Networking Concepts</h2>
+                <a href="index.html" class="btn">Back to Labs</a>
+            </div>
+            <div class="lab-content">
+                <div class="lab-explanation">
+                    <h3>1. Network Basics</h3>
+                    <p><strong>Network:</strong> System of interconnected devices or people.</p>
+                    <p><strong>Computer Network:</strong> Telecommunications network allowing devices to share data and
+                        resources via cables or wireless media.</p>
+
+                    <h3>2. Types of Networks</h3>
+                    <ul>
+                        <li><strong>LAN (Local Area Network):</strong> Small geographic area</li>
+                        <li><strong>MAN (Metropolitan Area Network):</strong> City-wide</li>
+                        <li><strong>WAN (Wide Area Network):</strong> Covers large distances, like the Internet</li>
+                    </ul>
+
+                    <h3>3. Hosts and Topology</h3>
+                    <p><strong>Host:</strong> Any device (PC, server) connected to a network with a unique identifier
+                        (IP).</p>
+                    <p><strong>Topology:</strong> Arrangement of network elements (bus, ring, star, tree, mesh).</p>
+
+                    <h3>4. Network Hardware</h3>
+                    <ul>
+                        <li><strong>NIC:</strong> Network Interface Card</li>
+                        <li><strong>Hub:</strong> Basic device that connects multiple devices; broadcasts data to all
+                        </li>
+                        <li><strong>Switch:</strong> Connects devices using packet switching to forward data to correct
+                            destination</li>
+                        <li><strong>Router:</strong> Routes packets between networks and to the Internet</li>
+                        <li><strong>RJ45 Connector:</strong> 8-pin Ethernet connector; uses T568A or T568B wiring</li>
+                    </ul>
+
+                    <h3>5. Cables</h3>
+                    <ul>
+                        <li><strong>Straight Cable:</strong> Connects different types of devices (PC → switch, router →
+                            modem)</li>
+                        <li><strong>Crossover Cable:</strong> Connects same-type devices (PC → PC, switch → switch),
+                            unless auto MDI/MDI-X is supported</li>
+                    </ul>
+
+                    <h3>6. Network Terminologies</h3>
+                    <table>
+                        <tr>
+                            <th>Term</th>
+                            <th>Description</th>
+                        </tr>
+                        <tr>
+                            <td>MAC</td>
+                            <td>Physical address of a device</td>
+                        </tr>
+                        <tr>
+                            <td>IP Address</td>
+                            <td>Unique address assigned to host/router (e.g., 192.168.0.1)</td>
+                        </tr>
+                        <tr>
+                            <td>Hub</td>
+                            <td>A hub is a basic networking device that connects multiple devices in a LAN and operates
+                                at the physical layer. When a device sends data to the hub, it broadcasts the data to
+                                all connected devices, regardless of the intended recipient. Only the correct device
+                                processes the data, while others ignore it.</td>
+                        </tr>
+                        <tr>
+                            <td>Port</td>
+                            <td>65,535 ports on host for different applications</td>
+                        </tr>
+                        <tr>
+                            <td>Gateway</td>
+                            <td>Router address connecting network to other networks</td>
+                        </tr>
+                        <tr>
+                            <td>DNS Server</td>
+                            <td>Converts domain names to IP addresses</td>
+                        </tr>
+                        <tr>
+                            <td>DHCP</td>
+                            <td>Dynamically assigns IPs and DNS addresses</td>
+                        </tr>
+                    </table>
+
+                    <h3>7. OSI Model</h3>
+                    <p>A 7-layer conceptual model standardizing how systems communicate.</p>
+
+                    <div class="osi-images">
+                        <div class="osi-image">
+                            <img src="images/OSImodel.jpg" alt="OSI Model Diagram 1">
+                            <p><strong>Figure 1:</strong> OSI Model – 7 Layer Architecture Overview</p>
+                        </div>
+
+                        <div class="osi-image">
+                            <img src="images/OSI_Advanced.jpg" alt="OSI Model Diagram 2">
+                            <p><strong>Figure 2:</strong>OSI Model and Headers at each stage.</p>
+                        </div>
+                    </div>
+
+                    <h3>8. IP Address Classes</h3>
+                    <p>IPv4 addresses divided into Class A, B, C for different network sizes.</p>
+                    <p>Default subnet masks: all network bits set to 1, host bits set to 0 (no subnetting).</p>
+
+                    <h4>IP Address Classes Details</h4>
+                    <table>
+                        <tr>
+                            <th>Class</th>
+                            <th>Range</th>
+                            <th>Network ID</th>
+                            <th>Host ID</th>
+                            <th>Default Subnet Mask</th>
+                            <th>Purpose</th>
+                        </tr>
+                        <tr>
+                            <td>A</td>
+                            <td>1.0.0.0 to 127.0.0.0</td>
+                            <td>First octet</td>
+                            <td>Last three octets</td>
+                            <td>255.0.0.0</td>
+                            <td>Large networks</td>
+                        </tr>
+                        <tr>
+                            <td>B</td>
+                            <td>128.0.0.0 to 191.255.0.0</td>
+                            <td>First two octets</td>
+                            <td>Last two octets</td>
+                            <td>255.255.0.0</td>
+                            <td>Medium networks</td>
+                        </tr>
+                        <tr>
+                            <td>C</td>
+                            <td>192.0.0.0 to 223.255.255.0</td>
+                            <td>First three octets</td>
+                            <td>Last octet</td>
+                            <td>255.255.255.0</td>
+                            <td>Small networks</td>
+                        </tr>
+                        <tr>
+                            <td>D</td>
+                            <td>224.0.0.0 to 239.255.255.255</td>
+                            <td>N/A</td>
+                            <td>N/A</td>
+                            <td>N/A</td>
+                            <td>Multicasting</td>
+                        </tr>
+                        <tr>
+                            <td>E</td>
+                            <td>240.0.0.0 to 255.255.255.255</td>
+                            <td>N/A</td>
+                            <td>N/A</td>
+                            <td>N/A</td>
+                            <td>Experimental</td>
+                        </tr>
+                    </table>
+
+
+
+
+                    <h4>Private Address Space IPs</h4>
+                    <table>
+                        <tr>
+                            <th>Class</th>
+                            <th>Private IP Range</th>
+                            <th>Default Subnet Mask</th>
+                            <th>Number of Networks</th>
+                            <th>Number of Hosts per Network</th>
+                            <th>Purpose</th>
+                        </tr>
+                        <tr>
+                            <td>A</td>
+                            <td>10.0.0.0 – 10.255.255.255</td>
+                            <td>255.0.0.0</td>
+                            <td>1</td>
+                            <td>16,777,214</td>
+                            <td>Used for very large private networks</td>
+                        </tr>
+                        <tr>
+                            <td>B</td>
+                            <td>172.16.0.0 – 172.31.255.255</td>
+                            <td>255.255.0.0</td>
+                            <td>16</td>
+                            <td>65,534</td>
+                            <td>Used for medium-sized private networks</td>
+                        </tr>
+                        <tr>
+                            <td>C</td>
+                            <td>192.168.0.0 – 192.168.255.255</td>
+                            <td>255.255.255.0</td>
+                            <td>256</td>
+                            <td>254</td>
+                            <td>Used for small home or office networks</td>
+                        </tr>
+                    </table>
+
+                    <h3>9. Basic Networking Commands</h3>
+                    <p>These are essential Windows command-line tools that every IT or CS student should know. They are
+                        commonly used for network configuration, diagnostics, and analysis.</p>
+
+                    <table>
+                        <tr>
+                            <th>Task</th>
+                            <th>Command</th>
+                            <th>Description / Purpose</th>
+                            <th>Example Output / Use</th>
+                        </tr>
+                        <tr>
+                            <td>1) View IP configuration</td>
+                            <td><code>ipconfig</code></td>
+                            <td>Displays the IP address, subnet mask, and default gateway for all adapters.</td>
+                            <td>Used to check current network configuration.</td>
+                        </tr>
+                        <tr>
+                            <td>2) View detailed IP configuration</td>
+                            <td><code>ipconfig /all</code></td>
+                            <td>Shows full adapter info including MAC address, DHCP, and DNS details.</td>
+                            <td>Used to get complete system network info.</td>
+                        </tr>
+                        <tr>
+                            <td>3) Display system hostname</td>
+                            <td><code>hostname</code></td>
+                            <td>Displays the name of the computer on the network.</td>
+                            <td>Used to identify the device.</td>
+                        </tr>
+                        <tr>
+                            <td>4) Check any one port on TCP (e.g., Port 80)</td>
+                            <td><code>netstat -an | findstr ":80"</code></td>
+                            <td>Searches for active connections using TCP port 80.</td>
+                            <td>Verifies if web service or HTTP port is active.</td>
+                        </tr>
+                        <tr>
+                            <td>5) Display number of datagrams sent and received</td>
+                            <td><code>netstat -s</code></td>
+                            <td>Shows statistics for TCP, UDP, ICMP, and IP protocols.</td>
+                            <td>Useful for analyzing packet transmission and errors.</td>
+                        </tr>
+                        <tr>
+                            <td>6) Display active network connections</td>
+                            <td><code>netstat</code></td>
+                            <td>Lists all active TCP connections and listening ports.</td>
+                            <td>Shows who your system is communicating with.</td>
+                        </tr>
+                        <tr>
+                            <td>7) Display all active connections with process IDs</td>
+                            <td><code>netstat -ano</code></td>
+                            <td>Displays active connections along with their corresponding process IDs (PIDs).</td>
+                            <td>Used to identify which application is using a port.</td>
+                        </tr>
+                        <tr>
+                            <td>8) Trace route to a destination</td>
+                            <td><code>tracert &lt;destination&gt;</code></td>
+                            <td>Traces the path packets take to reach a host.</td>
+                            <td><code>tracert google.com</code> shows route hops to Google.</td>
+                        </tr>
+                        <tr>
+                            <td>9) Find all other hosts available on the network</td>
+                            <td><code>arp -a</code></td>
+                            <td>Displays the ARP table mapping IP addresses to MAC addresses.</td>
+                            <td>Lists devices currently communicating with your system.</td>
+                        </tr>
+                        <tr>
+                            <td>10) Find DNS information for a domain</td>
+                            <td><code>nslookup &lt;domain_name&gt;</code></td>
+                            <td>Queries DNS to find the IP address or other DNS records of a domain.</td>
+                            <td>Helps resolve domain names to IP addresses and troubleshoot DNS issues.</td>
+                        </tr>
+
+                    </table>
+
+                    <h3>Lab Resources</h3>
+                    <div class="pdf-container">
+                        <h4>Lab 1 Task 1 PDF</h4>
+                        <div id="pdf-viewer-1"></div>
+                        <a href="pdfs/Edited_Lab_1_Task.pdf" class="btn" target="_blank">Download PDF</a>
+                    </div>
+
+                    <div class="pdf-container">
+                        <h4>Lab 1 Task 2 PDF</h4>
+                        <div id="pdf-viewer-2"></div>
+                        <a href="pdfs/Lab_01_Task_23k-0842.pdf" class="btn" target="_blank">Download PDF</a>
+                    </div>
+
+                    <!-- PDFObject Library -->
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfobject/2.2.8/pdfobject.min.js"></script>
+                    <script>
+                        PDFObject.embed("pdfs/Edited_Lab_1_Task.pdf#zoom=page-width", "#pdf-viewer-1");
+                        PDFObject.embed("pdfs/Lab_01_Task_23k-0842.pdf#zoom=page-width", "#pdf-viewer-2");
+                    </script>
+
+
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>About CN Lab Helper</h3>
+                    <p>An interactive platform to help students visualize and understand Computer Networks laboratory
+                        experiments through detailed explanations, screenshots, and animations.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <p><a href="index.html">Home</a></p>
+                    <p><a href="netplay.html">NetPlay</a></p>
+                    <p><a href="about.html">About</a></p>
+                </div>
+                <div class="footer-section">
+                    <h3>Connect With Us</h3>
+                    <div class="social-links">
+                        <a href="https://linkedin.com/in/kinza-afzal7-" target="_blank"><i
+                                class="fab fa-linkedin"></i></a>
+                        <a href="https://github.com/kinza7124" target="_blank"><i class="fab fa-github"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 CN Lab Helper created by Kinza.All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+
+</html>

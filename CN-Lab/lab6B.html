@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lab 06B - Access Control Lists (ACL) | CN Lab Helper</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="style.css" />
+
+    <!-- Highlight.js Theme -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/atom-one-dark.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    <script>
+        hljs.highlightAll();
+    </script>
+
+    <style>
+        .lab-detail {
+            background-color: white;
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 3rem;
+        }
+
+        .lab-detail-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .lab-detail-header h2 {
+            color: var(--primary);
+        }
+
+        .lab-content {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+
+        .lab-explanation {
+            padding-right: 1rem;
+        }
+
+        .lab-explanation h3 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+            margin-top: 2rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .lab-explanation h3:first-child {
+            margin-top: 0;
+        }
+
+        .lab-explanation p {
+            margin-bottom: 1.2rem;
+        }
+
+        .lab-explanation ul {
+            margin: 1rem 0;
+            padding-left: 2rem;
+        }
+
+        .lab-explanation li {
+            margin: 0.5rem 0;
+        }
+
+        .pdf-container {
+            margin: 2rem 0;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 1rem;
+            background: #f9f9f9;
+        }
+
+        .pdf-container h4 {
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+
+        .pdf-placeholder {
+            width: 100%;
+            height: 500px;
+            background-color: #e9ecef;
+            border-radius: 4px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #6c757d;
+            margin-bottom: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .lab-detail-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+        }
+
+        .code-block {
+            position: relative;
+            background-color: #1e1e1e;
+            padding: 1rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: 'Fira Code', monospace;
+            border-left: 5px solid var(--primary);
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: var(--primary);
+            border: none;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: background 0.3s;
+        }
+
+        .copy-btn:hover {
+            background-color: rgba(52, 152, 219, 0.8);
+        }
+
+        .code-explanation {
+            background-color: #f9f9f9;
+            padding: 0.8rem 1rem;
+            border-left: 4px solid var(--primary);
+            border-radius: 5px;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+        }
+
+        .code-explanation2 {
+            background-color: #f9f9f9;
+            padding: 1rem 1.5rem;
+            border-left: 5px solid var(--primary);
+            border-radius: 8px;
+            margin: 1.5rem auto;
+            max-width: 1000px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        .code-explanation2 b {
+            color: var(--primary);
+        }
+
+        .code-explanation2 p {
+            margin-top: 0.5rem;
+            margin-bottom: 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+        }
+
+        table,
+        th,
+        td {
+            border: 1px solid #ddd;
+        }
+
+        th,
+        td {
+            padding: 12px;
+            text-align: left;
+        }
+
+        th {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        .small-note {
+            font-size: 0.9rem;
+            color: #555;
+        }
+
+        .protocol-section {
+            margin: 2rem 0;
+        }
+
+        .protocol-section h4 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--secondary);
+        }
+
+        .acl-commands {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-left: 4px solid #e74c3c;
+        }
+
+        .command-item {
+            display: flex;
+            margin-bottom: 1rem;
+            align-items: flex-start;
+            padding: 0.8rem;
+            background: white;
+            border-radius: 6px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .command-badge {
+            background-color: var(--primary);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.9rem;
+            margin-right: 1rem;
+            min-width: 200px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .command-desc {
+            flex: 1;
+            color: #333;
+            line-height: 1.5;
+        }
+
+        .flowchart {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .flowchart-box {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 8px;
+            border-left: 4px solid var(--secondary);
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .acl-example {
+            background: #e8f4fd;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-left: 4px solid #3498db;
+        }
+
+        @media (max-width: 768px) {
+            .command-item {
+                flex-direction: column;
+            }
+            
+            .command-badge {
+                margin-bottom: 0.5rem;
+                margin-right: 0;
+                min-width: auto;
+            }
+            
+            .flowchart {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        #pdf-viewer-1 {
+            width: 100%;
+            height: 500px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        #pdf-viewer-2 {
+            width: 100%;
+            height: 500px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        @media (max-width: 768px) {
+            #pdf-viewer-1 {
+                height: 300px;
+            }
+            #pdf-viewer-1 {
+                height: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                <img src="images/logo2.png" alt="CN Lab Helper Logo" style="height:90px; width:auto;">
+                    <h1>NetLabPro</h1>
+                </div>
+                <nav>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="netplay.html">NetPlay</a></li>
+                        <li><a href="about.html">About</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <section class="container">
+        <div class="lab-detail">
+            <div class="lab-detail-header">
+                <h2>Lab 06B - Access Control Lists (ACL)</h2>
+                <a href="index.html" class="btn">Back to Labs</a>
+            </div>
+
+            <div class="lab-content">
+                <div class="lab-explanation">
+                    <h3>Lab Objective</h3>
+                    <p>Introduction to ACL & configuration of ACL in Cisco Packet Tracer. Learn to implement security policies using Standard and Extended Access Control Lists.</p>
+
+                    <h3>Summary of ACL</h3>
+                    <p>Access Control Lists (ACLs) are used to filter network traffic and enhance security. Key points:</p>
+
+                    <ul>
+                        <li>Sequential rule matching; first match applied</li>
+                        <li>Implicit deny at the end of every ACL</li>
+                        <li>Can be applied inbound or outbound on interfaces</li>
+                        <li>Used for traffic filtering, security, and QoS</li>
+                    </ul>
+
+                    <h3>Types of ACL</h3>
+                    <table>
+                        <tr>
+                            <th>Type</th>
+                            <th>Description</th>
+                            <th>Range</th>
+                        </tr>
+                        <tr>
+                            <td>Standard ACL</td>
+                            <td>Filters traffic using source IP only; cannot distinguish protocols</td>
+                            <td>1-99, 1300-1999</td>
+                        </tr>
+                        <tr>
+                            <td>Extended ACL</td>
+                            <td>Filters traffic using source & destination IP, ports, and protocols</td>
+                            <td>100-199, 2000-2699</td>
+                        </tr>
+                        <tr>
+                            <td>Reflexive ACL</td>
+                            <td>Uses upper-layer session information; also called IP session ACL</td>
+                            <td>N/A</td>
+                        </tr>
+                        <tr>
+                            <td>Dynamic ACL</td>
+                            <td>Grants access after authentication (Telnet); based on extended ACL</td>
+                            <td>N/A</td>
+                        </tr>
+                    </table>
+
+                    <h3>ACL Categories</h3>
+                    <table>
+                        <tr>
+                            <th>Category</th>
+                            <th>Description</th>
+                        </tr>
+                        <tr>
+                            <td>Numbered ACL</td>
+                            <td>Identified by number; cannot delete specific rules, deleting removes whole ACL</td>
+                        </tr>
+                        <tr>
+                            <td>Named ACL</td>
+                            <td>Identified by name; specific rules can be deleted</td>
+                        </tr>
+                    </table>
+
+                    <h3>Rules for ACL Implementation</h3>
+                    <ul>
+                        <li>Standard ACLs applied closer to destination</li>
+                        <li>Extended ACLs applied closer to source</li>
+                        <li>Only one ACL per interface per protocol per direction</li>
+                        <li>New rules added at the bottom; always include at least one permit statement</li>
+                        <li>Standard and extended ACLs cannot share the same name</li>
+                    </ul>
+
+                    <h3>ACL Configuration Commands</h3>
+                    <div class="acl-commands">
+                        <h4>Cisco ACL Configuration Commands</h4>
+                        
+                        <div class="command-item">
+                            <div class="command-badge">access-list 1 permit 192.168.1.0 0.0.0.255</div>
+                            <div class="command-desc">Standard ACL permitting entire 192.168.1.0/24 network</div>
+                        </div>
+                        
+                        <div class="command-item">
+                            <div class="command-badge">access-list 101 permit tcp any any eq 80</div>
+                            <div class="command-desc">Extended ACL permitting HTTP traffic from any to any</div>
+                        </div>
+                        
+                        <div class="command-item">
+                            <div class="command-badge">access-list 101 deny ip 192.168.1.0 0.0.0.255 10.0.0.0 0.255.255.255</div>
+                            <div class="command-desc">Extended ACL denying traffic between specific networks</div>
+                        </div>
+                        
+                        <div class="command-item">
+                            <div class="command-badge">ip access-list extended WEB_TRAFFIC</div>
+                            <div class="command-desc">Creating a named extended ACL</div>
+                        </div>
+                        
+                        <div class="command-item">
+                            <div class="command-badge">permit tcp any any eq 80</div>
+                            <div class="command-desc">Rule inside named ACL (HTTP permission)</div>
+                        </div>
+                        
+                        <div class="command-item">
+                            <div class="command-badge">interface gigabitethernet0/0</div>
+                            <div class="command-desc">Enter interface configuration mode</div>
+                        </div>
+                        
+                        <div class="command-item">
+                            <div class="command-badge">ip access-group 101 in</div>
+                            <div class="command-desc">Apply ACL 101 to interface inbound</div>
+                        </div>
+                        
+                        <div class="command-item">
+                            <div class="command-badge">show access-lists</div>
+                            <div class="command-desc">Display all configured ACLs</div>
+                        </div>
+                        
+                        <div class="command-item">
+                            <div class="command-badge">show ip interface</div>
+                            <div class="command-desc">Show ACLs applied to interfaces</div>
+                        </div>
+                    </div>
+
+                    <h3>Practical ACL Examples</h3>
+                    
+                    <div class="acl-example">
+                        <h4>Example 1: Standard ACL</h4>
+                        <div class="code-block">
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                            <pre><code class="language-bash">
+                                ! Allow only specific network
+                                access-list 10 permit 192.168.1.0 0.0.0.255
+                                access-list 10 deny any
+
+                                ! Apply to interface
+                                interface gigabitethernet0/0
+                                ip access-group 10 in
+                            </code></pre>
+                        </div>
+                        <p><strong>Explanation:</strong> This standard ACL permits traffic only from the 192.168.1.0/24 network and denies all other traffic.</p>
+                    </div>
+
+                    <div class="acl-example">
+                        <h4>Example 2: Extended ACL</h4>
+                        <div class="code-block">
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                            <pre><code class="language-bash">
+                                ! Allow HTTP but deny FTP
+                                access-list 101 permit tcp any any eq 80
+                                access-list 101 deny tcp any any eq 21
+                                access-list 101 permit ip any any
+
+                                ! Apply to interface
+                                interface gigabitethernet0/1
+                                ip access-group 101 out
+                            </code></pre>
+                        </div>
+                        <p><strong>Explanation:</strong> This extended ACL allows HTTP traffic, blocks FTP traffic, and permits all other IP traffic outbound.</p>
+                    </div>
+
+                    <h3>Flowchart Summary</h3>
+                    <div class="flowchart">
+                        <div class="flowchart-box">
+                            <h4>Standard ACL</h4>
+                            <p>Source IP only</p>
+                            <small>Range: 1-99, 1300-1999</small>
+                        </div>
+                        <div class="flowchart-box">
+                            <h4>Extended ACL</h4>
+                            <p>Source & Destination IP, ports, protocols</p>
+                            <small>Range: 100-199, 2000-2699</small>
+                        </div>
+                        <div class="flowchart-box">
+                            <h4>Reflexive ACL</h4>
+                            <p>Uses session info</p>
+                            <small>Session-based filtering</small>
+                        </div>
+                        <div class="flowchart-box">
+                            <h4>Dynamic ACL</h4>
+                            <p>Grants access after Telnet authentication</p>
+                            <small>Authentication required</small>
+                        </div>
+                    </div>
+
+                    <h3>Lab Resources</h3>
+                    <div class="pdf-container">
+                        <h4>ACL</h4>
+                        <div id="pdf-viewer-1" style="height:500px; border:1px solid #ddd; border-radius:4px;">
+                            <div class="pdf-placeholder">PDF preview will appear here if available</div>
+                        </div>
+                        <a href="pdfs/ACL.pdf" class="btn" target="_blank">Download PDF</a>
+                    </div>
+
+                <div class="pdf-container">
+                        <h4>Lab 06A+06B Task</h4>
+                        <div id="pdf-viewer-2" style="height:500px; border:1px solid #ddd; border-radius:4px;">
+                            <div class="pdf-placeholder">PDF preview will appear here if available</div>
+                        </div>
+                        <a href="pdfs/Lab_6_Task.pdf" class="btn" target="_blank">Download PDF</a>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfobject/2.2.8/pdfobject.min.js"></script>
+    <script>
+        PDFObject.embed("pdfs/ACL.pdf#zoom=page-width", "#pdf-viewer-1");
+        PDFObject.embed("pdfs/Lab_6_Task.pdf#zoom=page-width", "#pdf-viewer-2");
+
+        function copyCode(button) {
+            try {
+                const codeBlock = button.nextElementSibling.querySelector('code');
+                const text = codeBlock.innerText || codeBlock.textContent || '';
+                navigator.clipboard.writeText(text).then(() => {
+                    const original = button.innerText;
+                    button.innerText = 'Copied!';
+                    setTimeout(() => {
+                        button.innerText = original;
+                    }, 1400);
+                }).catch((err) => {
+                    console.error('Copy failed', err);
+                    alert('Copy failed — please select and copy manually.');
+                });
+            } catch (e) {
+                console.error(e);
+                alert('Unable to copy code block.');
+            }
+        }
+    
+    </script>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>About CN Lab Helper</h3>
+                    <p>An interactive platform to help students visualize and understand Computer Networks laboratory experiments through detailed explanations, screenshots, and animations.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <p><a href="index.html">Home</a></p>
+                    <p><a href="netplay.html">NetPlay</a></p>
+                    <p><a href="about.html">About</a></p>
+                </div>
+                <div class="footer-section">
+                    <h3>Connect With Us</h3>
+                    <div class="social-links">
+                        <a href="https://linkedin.com/in/kinza-afzal7-" target="_blank"><i class="fab fa-linkedin"></i></a>
+                        <a href="https://github.com/kinza7124" target="_blank"><i class="fab fa-github"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 CN Lab Helper created by Kinza. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
