@@ -30,6 +30,8 @@ body {
     max-width:1200px;
     margin:0 auto;
 }
+
+/* HEADER */
 header {
     background:linear-gradient(135deg,var(--primary),var(--secondary));
     color:white;
@@ -43,18 +45,25 @@ header {
     display:flex;
     justify-content:space-between;
     align-items:center;
+    flex-wrap: wrap;
 }
 .logo {
     display:flex;
     align-items:center;
     gap:10px;
 }
-.logo i {
-    font-size:2rem;
+.logo img {
+    height:70px;
+    width:auto;
 }
 .logo h1 {
-    font-size:1.8rem;
+    font-size:1.6rem;
     font-weight:700;
+}
+
+/* Desktop Nav */
+nav {
+    display:flex;
 }
 nav ul {
     display:flex;
@@ -73,6 +82,17 @@ nav a:hover,nav a.active {
     background-color:rgba(255,255,255,0.2);
 }
 
+/* Mobile Toggle Button */
+.menu-toggle {
+    display:none;
+    background:none;
+    border:none;
+    color:white;
+    font-size:1.8rem;
+    cursor:pointer;
+}
+
+/* ABOUT SECTION */
 .about-section {
     background-color:white;
     border-radius:8px;
@@ -91,12 +111,31 @@ nav a:hover,nav a.active {
 .about-header p {
     color:#555;
 }
-.about-content {
-    display:grid;
-    grid-template-columns:1fr;
-    gap:2rem;
+.about-text ul {
+    list-style:none;
+    padding-left:0;
+    margin-bottom:1.5rem;
+}
+.about-text ul li {
+    position:relative;
+    padding-left:1.8rem;
+    margin-bottom:0.8rem;
+    color:#333;
+    line-height:1.5;
+    font-size:1rem;
+}
+.about-text ul li::before {
+    content:"\2022";
+    position:absolute;
+    left:0;
+    top:0;
+    color:var(--secondary);
+    font-weight:bold;
+    font-size:1.2rem;
+    line-height:1.2;
 }
 
+/* PROJECT CARDS */
 .project-grid {
     display:grid;
     grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
@@ -147,30 +186,7 @@ nav a:hover,nav a.active {
     background-color:var(--secondary);
 }
 
-.about-text ul {
-    list-style: none;
-    padding-left: 0;
-    margin-bottom: 1.5rem;
-}
-.about-text ul li {
-    position: relative;
-    padding-left: 1.8rem;
-    margin-bottom: 0.8rem;
-    color: #333;
-    line-height: 1.5;
-    font-size: 1rem;
-}
-.about-text ul li::before {
-    content: "\2022";
-    position: absolute;
-    left: 0;
-    top: 0;
-    color: var(--secondary);
-    font-weight: bold;
-    font-size: 1.2rem;
-    line-height: 1.2;
-}
-
+/* FOOTER */
 footer {
     background-color:var(--dark);
     color:white;
@@ -182,6 +198,7 @@ footer {
     gap:2rem;
     margin-bottom:2rem;
 }
+
 .footer-section h3 {
     margin-bottom:1rem;
     position:relative;
@@ -194,11 +211,12 @@ footer {
     width:50px;
     height:2px;
     background-color:var(--secondary);
-}
+} 
 .footer-section a {
     color:white;
     text-decoration:none;
 }
+
 .footer-section a:hover {
     text-decoration:underline;
 }
@@ -218,7 +236,65 @@ footer {
     text-align:center;
     padding-top:1.5rem;
     border-top:1px solid rgba(255,255,255,0.1);
+}
+
+/* MEDIA QUERIES */
+@media (max-width: 768px) {
+    .menu-toggle {
+        display:block;
     }
+    nav {
+        display:none;
+        width:100%;
+        background:linear-gradient(135deg,var(--primary),var(--secondary));
+        margin-top:1rem;
+        border-radius:8px;
+    }
+    nav.active {
+        display:block;
+    }
+    nav ul {
+        flex-direction:column;
+        gap:0.5rem;
+        padding:1rem 0;
+    }
+    nav li {
+        text-align:center;
+    }
+    .header-content {
+        flex-direction:column;
+        align-items:flex-start;
+    }
+    .logo {
+        justify-content:space-between;
+        width:100%;
+    }
+    .about-section {
+        padding:1.5rem;
+    }
+    .footer-section {
+        text-align: left;
+        margin-left: 20px;
+    }
+    .footer-section h3::after {
+        left: 0;
+        transform: none;
+    }
+
+}
+
+@media (max-width: 480px) {
+    .logo h1 {
+        font-size:1.3rem;
+    }
+    .project-card {
+        padding:1rem;
+    }
+    .footer-content {
+        grid-template-columns:1fr;
+        text-align:center;
+    }
+}
 </style>
 </head>
 <body>
@@ -228,13 +304,14 @@ footer {
     <div class="container">
         <div class="header-content">
             <div class="logo">
-                <img src="images/logo2.png" alt="CN Lab Helper Logo" style="height:90px; width:auto;">
-                    <h1>NetLabPro</h1>
-                </div>
-            <nav>
+                <img src="images/logo2.png" alt="CN Lab Helper Logo">
+                <h1>NetLabPro</h1>
+                <button class="menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></button>
+            </div>
+            <nav id="mainNav">
                 <ul>
                     <li><a href="index.html">Home</a></li>
-                    <li><a href="Netplay.html">NetPlay</a></li>
+                    <li><a href="netplay.html">NetPlay</a></li>
                     <li><a href="about.html" class="active">About</a></li>
                 </ul>
             </nav>
@@ -249,12 +326,11 @@ footer {
             <h2>About NetLabPro</h2>
             <p>A student-friendly platform to learn and visualize Computer Networks labs with guided explanations.</p>
         </div>
+
         <div class="about-content">
             <div class="about-text">
                <h3>Lab Features</h3>
-               <br>
                <p>NetLabPro simplifies complex networking concepts by providing:</p>
-               <br>
                <ul>
                     <li>Step-by-step explanations for each lab experiment</li>
                     <li>Detailed screenshots, diagrams, and pdfs for clarity</li>
@@ -262,63 +338,50 @@ footer {
                     <li>Guidance on Access Control Lists (ACLs)</li>
                     <li>Analysis of network traffic using Wireshark for practical understanding</li>
                </ul>
-               <p><em>Note:</em> The platform follows the Computer Networks lab curriculum of FAST University, Karachi, covering essential topics while encouraging practical learning.The lab tasks pdfs attached in it might not be perfectly correct, the only sole purpose is to aid learning and this doesnot act as a shortcut to prepare for exams.
-                </p>
+               <p><em>Note:</em> The platform follows the Computer Networks lab curriculum of FAST University, Karachi. It aims to assist learning — not to replace actual lab practice.</p>
             </div>
-<h2 style="text-align:center; margin-top:2rem; color:var(--primary);">My Other Projects</h2>
 
+            <h2 style="text-align:center; margin-top:2rem; color:var(--primary);">My Other Projects</h2>
             <div class="project-grid">
                 <div class="project-card">
                     <h3>Transport Fee Generation System</h3>
                     <p>C system for managing transport fees using Programming Fundamentals concepts.</p>
-                    <div class="tech-tags">
-                        <span>C</span><span>PF</span><span>File Handling</span>
-                    </div>
+                    <div class="tech-tags"><span>C</span><span>PF</span><span>File Handling</span></div>
                     <a href="https://github.com/kinza7124/PFproject-TransportFee-Generation-System" target="_blank" class="view-btn">View Code</a>
                 </div>
 
                 <div class="project-card">
                     <h3>Data Analysis Project</h3>
                     <p>Statistical analysis and visualization of complex datasets.</p>
-                    <div class="tech-tags">
-                        <span>Python</span><span>Pandas</span><span>NumPy</span><span>Statistics</span>
-                    </div>
+                    <div class="tech-tags"><span>Python</span><span>Pandas</span><span>NumPy</span></div>
                     <a href="https://github.com/kinza7124/HeartDisease-Dataset-Analysis" target="_blank" class="view-btn">View Code</a>
                 </div>
 
                 <div class="project-card">
                     <h3>Algorithm Visualiser</h3>
                     <p>Interactive visualization tool for sorting algorithms.</p>
-                    <div class="tech-tags">
-                        <span>JavaScript</span><span>Algorithms</span><span>Data Structures</span>
-                    </div>
+                    <div class="tech-tags"><span>JavaScript</span><span>Algorithms</span></div>
                     <a href="https://github.com/kinza7124/Algorithm-Visualiser" target="_blank" class="view-btn">View Code</a>
                 </div>
 
                 <div class="project-card">
                     <h3>Regex to DFA, CFG and PDA Converter</h3>
-                    <p>Full-stack website that converts regular expressions to DFA, CFG, and PDA.</p>
-                    <div class="tech-tags">
-                        <span>HTML</span><span>CSS</span><span>JavaScript</span><span>Python</span><span>Automata</span>
-                    </div>
+                    <p>Full-stack website that converts regular expressions to automata models.</p>
+                    <div class="tech-tags"><span>HTML</span><span>CSS</span><span>JS</span><span>Python</span></div>
                     <a href="https://github.com/kinza7124/RegexToDFA-CFG-TOAProject" target="_blank" class="view-btn">View Code</a>
                 </div>
 
                 <div class="project-card">
                     <h3>Traffic Control Simulation</h3>
-                    <p>Simulation of traffic control at intersections using system-level programming.</p>
-                    <div class="tech-tags">
-                        <span>C</span><span>Operating Systems</span><span>Makefile</span>
-                    </div>
+                    <p>Simulation of traffic control at intersections using OS concepts.</p>
+                    <div class="tech-tags"><span>C</span><span>Operating Systems</span></div>
                     <a href="https://github.com/kinza7124/Traffic_Simulation-OS_Project" target="_blank" class="view-btn">View Code</a>
                 </div>
 
                 <div class="project-card">
                     <h3>ML: Predicting Bug Type from Commits</h3>
                     <p>ML model analyzing commit messages to classify bug types from textual data.</p>
-                    <div class="tech-tags">
-                        <span>Python</span><span>Machine Learning</span><span>Scikit-learn</span>
-                    </div>
+                    <div class="tech-tags"><span>Python</span><span>ML</span><span>Scikit-learn</span></div>
                     <a href="#" class="view-btn coming-soon">Coming Soon</a>
                 </div>
             </div>
@@ -331,12 +394,12 @@ footer {
         <div class="footer-content">
             <div class="footer-section">
                 <h3>About CN Lab Helper</h3>
-                <p>Interactive platform to help students visualize and understand Computer Networks labs with detailed explanations, screenshots, and animations.</p>
+                <p>Interactive platform to help students visualize and understand CN labs with explanations, screenshots, and animations.</p>
             </div>
             <div class="footer-section">
                 <h3>Quick Links</h3>
                 <p><a href="index.html">Home</a></p>
-                <p><a href="Netplay.html">NetPlay</a></p>
+                <p><a href="netplay.html">NetPlay</a></p>
                 <p><a href="about.html">About</a></p>
             </div>
             <div class="footer-section">
@@ -352,7 +415,18 @@ footer {
         </div>
     </div>
 </footer>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const menuToggle = document.getElementById('menuToggle');
+    const mainNav = document.getElementById('mainNav');
+    menuToggle.addEventListener('click', function() {
+        mainNav.classList.toggle('active');
+        const icon = menuToggle.querySelector('i');
+        icon.classList.toggle('fa-bars');
+        icon.classList.toggle('fa-times');
+    });
+});
+</script>
 </body>
 </html>
-
-
