@@ -35,31 +35,33 @@ body {
     margin:0 auto; 
     padding:0 15px; 
 }
-
+/* HEADER */
 header {
-    background:linear-gradient(135deg,var(--primary),var(--secondary)); 
+    background:linear-gradient(135deg,var(--primary),var(--secondary));
     color:white;
-    padding:1rem 0; 
-    box-shadow:0 4px 12px rgba(0,0,0,0.1); 
-    position:sticky; 
-    top:0; 
+    padding:1rem 0;
+    box-shadow:0 4px 12px rgba(0,0,0,0.1);
+    position:sticky;
+    top:0;
     z-index:100;
 }
-.header-content { 
-    display:flex; 
+.header-content {
+    display:flex;
     justify-content:space-between;
-    align-items:center; 
+    align-items:center;
+    flex-wrap: wrap;
 }
-.logo { 
-    display:flex; 
-    align-items:center; 
-    gap:10px; 
+.logo {
+    display:flex;
+    align-items:center;
+    gap:10px;
 }
-.logo i { 
-    font-size:2rem; 
+.logo img {
+    height:70px;
+    width:auto;
 }
-.logo h1 { 
-    font-size:1.8rem; 
+.logo h1 {
+    font-size:1.6rem;
     font-weight:700;
 }
 nav ul { 
@@ -420,3 +422,4 @@ function updateProgress(){
 </script>
 </body>
 </html>
+
