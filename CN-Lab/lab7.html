@@ -152,19 +152,9 @@
             border: 1px solid #ddd;
             border-radius: 4px;
         }
-
-        #pdf-viewer-2 {
-            width: 100%;
-            height: 500px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-
+        
         @media (max-width: 768px) {
             #pdf-viewer-1 {
-                height: 300px;
-            }
-            #pdf-viewer-2 {
                 height: 300px;
             }
         }
@@ -326,15 +316,9 @@
 
                 <h3>Lab Resources</h3>
                 <div class="pdf-container">
-                    <h4>TCP Congestion Control (Detailed Notes)</h4>
-                    <div id="pdf-viewer-1" class="pdf-viewer"></div>
-                    <a href="pdfs/TCP_Congestion_Control.pdf" class="btn" target="_blank">Download PDF</a>
-                </div>
-
-                <div class="pdf-container">
                     <h4>Lab 07 Task</h4>
-                    <div id="pdf-viewer-2" class="pdf-viewer"></div>
-                    <a href="pdfs/Lab_7_Task.pdf" class="btn" target="_blank">Download PDF</a>
+                    <div id="pdf-viewer-1" class="pdf-viewer"></div>
+                    <a href="pdfs/Lab7_Task.pdf" class="btn" target="_blank">Download PDF</a>
                 </div>
             </div>
         </div>
@@ -343,8 +327,7 @@
     <!-- PDF Embed -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfobject/2.2.8/pdfobject.min.js"></script>
     <script>
-        PDFObject.embed("pdfs/TCP_Congestion_Control.pdf#zoom=page-width", "#pdf-viewer-1");
-        PDFObject.embed("pdfs/Lab_7_Task.pdf#zoom=page-width", "#pdf-viewer-2");
+        PDFObject.embed("pdfs/Lab7_Task.pdf#zoom=page-width", "#pdf-viewer-1");
     </script>
 
     <!-- Footer -->
@@ -377,4 +360,5 @@
 </body>
 
 </html>
+
 
