@@ -300,6 +300,82 @@ z-index:1000;
         right:20px; 
     } 
 }
+    /* MOBILE RESPONSIVENESS FIXES */
+@media(max-width: 768px) {
+
+    header {
+        padding: 0.8rem 0;
+    }
+
+    .header-content {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    nav ul {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    nav a {
+        padding: 0.5rem 0.8rem;
+        font-size: 0.9rem;
+    }
+
+    .game-card, .lab-detail {
+        width: 100%;
+        margin: 1rem auto;
+        padding: 1rem;
+    }
+
+    .opt-btn {
+        font-size: 0.9rem;
+        padding: 8px 12px;
+    }
+
+    #scorePanel {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        top: auto;
+        font-size: 0.9rem;
+        padding: 8px 12px;
+    }
+
+    #progressBarContainer {
+        height: 12px;
+    }
+
+    #progressBar {
+        height: 12px;
+    }
+
+    h1, h2, .section-title {
+        font-size: 1.4rem;
+    }
+}
+
+/* VERY SMALL SCREENS */
+@media(max-width: 480px) {
+
+    .logo img {
+        height: 50px;
+    }
+
+    .logo h1 {
+        font-size: 1.2rem;
+    }
+
+    .opt-btn {
+        font-size: 0.8rem;
+    }
+
+    .btn {
+        padding: 0.6rem 1.2rem;
+        font-size: 0.9rem;
+    }
+}
+
 </style>
 </head>
 <body>
@@ -422,5 +498,6 @@ function updateProgress(){
 </script>
 </body>
 </html>
+
 
 
