@@ -310,41 +310,64 @@ z-index:1000;
     
 @media(max-width: 768px) {
 
+    /* Menu toggle button visible */
     .menu-toggle {
-        display:block;
+        display: block;
     }
+
+    /* Navigation styles */
     nav {
-        display:none;
-        width:100%;
-        background:linear-gradient(135deg,var(--primary),var(--secondary));
-        margin-top:1rem;
-        border-radius:8px;
+        width: 100%;
+        display: none; /* hidden by default */
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        margin-top: 0.8rem;
+        border-radius: 8px;
+        padding: 0.5rem 0;
     }
+
     nav.active {
-        display:block;
+        display: block; /* shown when toggled */
     }
-    /* nav ul {
-        flex-direction:column;
-        gap:0.5rem;
-        padding:1rem 0;
+
+    nav ul {
+        flex-direction: column;
+        gap: 0.6rem;
+        text-align: center;
+        width: 100%;
+        padding: 0.5rem 0;
     }
-    nav li {
-        text-align:center;
-    } */
-    
+
+    nav ul li {
+        margin: 0.6rem 0;
+    }
+
+    /* Header content adjustments */
+    .header-content {
+        flex-direction: column;
+        gap: 10px;
+        align-items: stretch;
+    }
+
+    /* Logo adjustments */
     .logo {
-        justify-content:space-between;
-        width:100%;
+        justify-content: space-between;
+        width: 100%;
+        gap: 10px;
+    }
+
+    .logo img {
+        height: 60px;
+    }
+
+    .logo h1 {
+        font-size: 1.4rem;
     }
 
     header {
         padding: 0.8rem 0;
     }
 
-    .header-content {
-        flex-direction: column;
-        gap: 10px;
-    }
+
     .game-card, .lab-detail {
         width: 100%;
         margin: 1rem auto;
@@ -354,28 +377,6 @@ z-index:1000;
     .opt-btn {
         font-size: 0.9rem;
         padding: 8px 12px;
-    }
-    nav ul {
-        flex-direction: column;
-        background: var(--primary);
-        width: 100%;
-        text-align: center;
-        padding: 1rem 0;
-        display: none;
-    }
-
-    nav ul li {
-        margin: 0.8rem 0;
-    }
-
-    nav.active ul {
-        display: block;
-    }
-
-
-    .header-content {
-        flex-direction: row;
-        justify-content: space-between;
     }
 
     #scorePanel {
@@ -557,6 +558,7 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 </body>
 </html>
+
 
 
 
