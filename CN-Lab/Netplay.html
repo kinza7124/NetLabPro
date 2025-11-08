@@ -308,64 +308,41 @@ z-index:1000;
     font-size: 0.9rem;
 }
     
-@media(max-width: 768px) {
 
-    /* Menu toggle button visible */
+/* MEDIA QUERIES */
+@media (max-width: 768px) {
     .menu-toggle {
-        display: block;
+        display:block;
     }
-
-    /* Navigation styles */
     nav {
-        width: 100%;
-        display: none; /* hidden by default */
-        background: linear-gradient(135deg, var(--primary), var(--secondary));
-        margin-top: 0.8rem;
-        border-radius: 8px;
-        padding: 0.5rem 0;
+        display:none;
+        width:100%;
+        background:linear-gradient(135deg,var(--primary),var(--secondary));
+        margin-top:1rem;
+        border-radius:8px;
     }
-
     nav.active {
-        display: block; /* shown when toggled */
+        display:block;
     }
-
     nav ul {
-        flex-direction: column;
-        gap: 0.6rem;
-        text-align: center;
-        width: 100%;
-        padding: 0.5rem 0;
+        flex-direction:column;
+        gap:0.5rem;
+        padding:1rem 0;
     }
-
-    nav ul li {
-        margin: 0.6rem 0;
+    nav li {
+        text-align:center;
     }
-
-    /* Header content adjustments */
     .header-content {
-        flex-direction: column;
-        gap: 10px;
-        align-items: stretch;
+        flex-direction:column;
+        align-items:flex-start;
     }
-
-    /* Logo adjustments */
     .logo {
-        justify-content: flex-start;
-        width: 100%;
-        gap: 10px;
+        justify-content:space-between;
+        width:100%;
     }
-
-    .logo img {
-        height: 60px;
-    }
-
-    .logo h1 {
-        font-size: 1.4rem;
-    }
-
-    header {
-        padding: 0.8rem 0;
-    }
+}
+@media(max-width: 768px) {
+    /* Game cards and lab details full width */
 
 
     /* Game cards and lab details full width */
@@ -440,11 +417,8 @@ z-index:1000;
       <div class="logo">
           <img src="images/logo2.png" alt="CN Lab Helper Logo">
           <h1>NetLabPro</h1>
+          <button class="menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></button>
       </div>
-      <button class="menu-toggle" id="menuToggle">
-          <i class="fas fa-bars"></i>
-      </button>
-
       <nav id="mainNav">
           <ul>
               <li><a href="index.html">Home</a></li>
@@ -567,10 +541,3 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 </body>
 </html>
-
-
-
-
-
-
-
