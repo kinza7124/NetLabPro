@@ -218,22 +218,41 @@
                 </div>
 
                 <div class="phase-box">
-                    <h4>3. Congestion Detection</h4>
-                    <p>• When packet loss occurs (timeout or triple duplicate ACKs), TCP detects congestion.<br>
-                    • The response depends on the type of loss detection.</p>
-                </div>
+            <h4>3. Congestion Detection</h4>
+            <p>TCP detects congestion when it notices packet loss. This can happen in two ways:</p>
+            <ul>
+            <li><b>Timeout:</b> No ACK is received within the expected time.</li>
+            <li><b>Triple Duplicate ACKs (3 DUP ACK):</b> Receiver keeps acknowledging the same segment, indicating one segment is lost.</li>
+            </ul>
+            </div>
 
-                <div class="phase-box">
-                    <h4>4. Fast Retransmit</h4>
-                    <p>• Triggered by three duplicate ACKs.<br>
-                    • TCP immediately retransmits the lost segment instead of waiting for a timeout.</p>
-                </div>
+            <div class="phase-box">
+            <h4>4. Fast Retransmit</h4>
+            <p><b>Triggered when 3 Duplicate ACKs are received.</b></p>
+            <ul>
+            <li>The sender <b>retransmits the missing segment immediately</b> without waiting for a timeout.</li>
+            <li>This indicates mild congestion, not full collapse.</li>
+            </ul>
+        </div>
 
-                <div class="phase-box">
-                    <h4>5. Fast Recovery</h4>
-                    <p>• After retransmitting the lost segment, TCP halves ssthresh and sets cwnd = ssthresh.<br>
-                    • Then continues in congestion avoidance phase to slowly increase cwnd again.</p>
-                </div>
+<div class="phase-box">
+    <h4>5. Fast Recovery & Reaction to Loss</h4>
+    <p><b>⚡ Case 1: Packet Loss Detected by Timeout</b></p>
+    <ul>
+        <li>Interpreted as <b>severe congestion</b>.</li>
+        <li><b>ssthresh = cwnd / 2</b></li>
+        <li><b>cwnd is reset to 1 MSS</b> (Restart Slow Start)</li>
+    </ul>
+
+    <p><b>⚡ Case 2: Packet Loss Detected by Triple Duplicate ACKs</b></p>
+    <ul>
+        <li>Interpreted as <b>mild congestion</b>.</li>
+        <li><b>ssthresh = cwnd / 2</b></li>
+        <li><b>cwnd = ssthresh</b> (or some TCP variants use <b>cwnd = ssthresh + 3 MSS</b> to continue sending)</li>
+        <li>Then continue with <b>Congestion Avoidance (linear increase)</b>.</li>
+    </ul>
+</div>
+
 
                 <div class="diagram">
                     <h3>TCP Congestion Control Diagram</h3>
@@ -360,5 +379,6 @@
 </body>
 
 </html>
+
 
 
