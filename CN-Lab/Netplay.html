@@ -325,18 +325,15 @@ z-index:1000;
     nav.active {
         display:block;
     }
-    nav ul {
+    /* nav ul {
         flex-direction:column;
         gap:0.5rem;
         padding:1rem 0;
     }
     nav li {
         text-align:center;
-    }
-    .header-content {
-        flex-direction:column;
-        align-items:flex-start;
-    }
+    } */
+    
     .logo {
         justify-content:space-between;
         width:100%;
@@ -359,6 +356,28 @@ z-index:1000;
     .opt-btn {
         font-size: 0.9rem;
         padding: 8px 12px;
+    }
+    nav ul {
+        flex-direction: column;
+        background: var(--primary);
+        width: 100%;
+        text-align: center;
+        padding: 1rem 0;
+        display: none;
+    }
+
+    nav ul li {
+        margin: 0.8rem 0;
+    }
+
+    nav.active ul {
+        display: block;
+    }
+
+
+    .header-content {
+        flex-direction: row;
+        justify-content: space-between;
     }
 
     #scorePanel {
@@ -533,6 +552,7 @@ menuToggle.addEventListener("click", () => {
 </script>
 </body>
 </html>
+
 
 
 
