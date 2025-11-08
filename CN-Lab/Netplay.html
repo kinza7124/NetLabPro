@@ -64,21 +64,36 @@ header {
     font-size:1.6rem;
     font-weight:700;
 }
-nav ul { 
-    display:flex; 
-    list-style:none; 
-    gap:2rem; 
+
+/* Desktop Nav */
+nav {
+    display:flex;
 }
-nav a { 
-    color:white; 
-    text-decoration:none; 
-    font-weight:500; 
-    padding:0.5rem 1rem; 
-    border-radius:4px; 
-    transition: all 0.3s ease;
+nav ul {
+    display:flex;
+    list-style:none;
+    gap:2rem;
 }
-nav a:hover, nav a.active { 
-    background-color: rgba(255,255,255,0.2); 
+nav a {
+    color:white;
+    text-decoration:none;
+    font-weight:500;
+    padding:0.5rem 1rem;
+    border-radius:4px;
+    transition:all 0.3s ease;
+}
+nav a:hover,nav a.active {
+    background-color:rgba(255,255,255,0.2);
+}
+
+/* Mobile Toggle Button */
+.menu-toggle {
+    display:none;
+    background:none;
+    border:none;
+    color:white;
+    font-size:1.8rem;
+    cursor:pointer;
 }
 
 .section-title { 
@@ -292,24 +307,7 @@ z-index:1000;
     margin-bottom: 1.5rem; 
     font-size: 0.9rem;
 }
-
-/* NAVBAR RESPONSIVE FIX */
-.menu-toggle {
-    display: none;
-    font-size: 1.6rem;
-    color: white;
-    cursor: pointer;
-}
-
-
-@media(max-width:768px){ 
-    #scorePanel{
-        top:auto; 
-        bottom:20px; 
-        right:20px; 
-    } 
-}
-    /* MOBILE RESPONSIVENESS FIXES */
+    
 @media(max-width: 768px) {
 
     .menu-toggle {
@@ -552,6 +550,7 @@ menuToggle.addEventListener("click", () => {
 </script>
 </body>
 </html>
+
 
 
 
