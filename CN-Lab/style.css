@@ -310,7 +310,7 @@ footer {
 /* Logo text */
 .header-content .logo h1 {
     font-size: 1.8rem;
-    color: #0a74da; /* techy blue, can change */
+    color: white; /* techy blue, can change */
     font-weight: 700;
     margin: 0;
 }
@@ -337,4 +337,5 @@ footer {
         text-align: center;
     }
 }
+
 }
