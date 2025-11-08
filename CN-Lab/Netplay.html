@@ -303,6 +303,36 @@ z-index:1000;
     /* MOBILE RESPONSIVENESS FIXES */
 @media(max-width: 768px) {
 
+    .menu-toggle {
+        display:block;
+    }
+    nav {
+        display:none;
+        width:100%;
+        background:linear-gradient(135deg,var(--primary),var(--secondary));
+        margin-top:1rem;
+        border-radius:8px;
+    }
+    nav.active {
+        display:block;
+    }
+    nav ul {
+        flex-direction:column;
+        gap:0.5rem;
+        padding:1rem 0;
+    }
+    nav li {
+        text-align:center;
+    }
+    .header-content {
+        flex-direction:column;
+        align-items:flex-start;
+    }
+    .logo {
+        justify-content:space-between;
+        width:100%;
+    }
+
     header {
         padding: 0.8rem 0;
     }
@@ -311,17 +341,6 @@ z-index:1000;
         flex-direction: column;
         gap: 10px;
     }
-
-    nav ul {
-        flex-direction: column;
-        gap: 0.5rem;
-    }
-
-    nav a {
-        padding: 0.5rem 0.8rem;
-        font-size: 0.9rem;
-    }
-
     .game-card, .lab-detail {
         width: 100%;
         margin: 1rem auto;
@@ -381,21 +400,22 @@ z-index:1000;
 <body>
 
 <header>
-<div class="container">
-<div class="header-content">
-    <div class="logo">
+    <div class="container">
+        <div class="header-content">
+            <div class="logo">
                 <img src="images/logo2.png" alt="CN Lab Helper Logo">
-                    <h1>NetLabPro</h1>
-                </div>
-    <nav>
-        <ul>
-            <li><a href="index.html">Home</a></li>
-            <li><a href="netplay.html" class="active">NetPlay</a></li>
-            <li><a href="about.html">About</a></li>
-        </ul>
-    </nav>
-</div>
-</div>
+                <h1>NetLabPro</h1>
+                <button class="menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></button>
+            </div>
+            <nav id="mainNav">
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="Netplay.html" class="active">NetPlay</a></li>
+                    <li><a href="about.html">About</a></li>
+                </ul>
+            </nav>
+        </div>
+    </div>
 </header>
 
 <section class="container">
@@ -498,6 +518,7 @@ function updateProgress(){
 </script>
 </body>
 </html>
+
 
 
 
