@@ -164,6 +164,7 @@
             border-radius: 4px
         }
 
+        
         @media (max-width: 768px) {
             #pdf-viewer-1 {
                 height: 300px;
@@ -172,7 +173,74 @@
             #pdf-viewer-2 {
                 height: 300px;
             }
-        }
+        }  
+
+        /* MOBILE RESPONSIVENESS */
+@media (max-width: 768px) {
+    /* Lab header adjustment */
+    .lab-detail-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    /* Lab content layout */
+    .lab-content {
+        display: block;
+        gap: 1rem;
+    }
+
+    .lab-explanation {
+        padding-right: 0;
+    }
+
+    /* Flowchart to single column */
+    .flowchart {
+        grid-template-columns: 1fr;
+        margin: 1rem 0;
+    }
+
+    /* Diagrams */
+    .diagram img {
+        max-width: 100%;
+        height: auto;
+    }
+
+    /* PDF viewers */
+    #pdf-viewer-1,
+    #pdf-viewer-2 {
+        height: 300px;
+    }
+
+    /* Tables */
+    table {
+        width: 100%;
+        font-size: 0.85rem;
+        overflow-x: auto;
+        display: block;
+    }
+
+    th, td {
+        padding: 8px;
+    }
+
+    /* Phase box spacing */
+    .phase-box {
+        padding: 1rem;
+        margin: 0.8rem 0;
+    }
+
+    /* Footer social links */
+    .footer-content {
+        display: block;
+        gap: 1.2rem;
+    }
+
+    .footer-section {
+        margin-bottom: 1rem;
+    }
+}
+
     </style>
 </head>
 
@@ -463,7 +531,7 @@
                         </tr>
 
                     </table>
-
+<!-- 
                     <h3>Lab Resources</h3>
                     <div class="pdf-container">
                         <h4>Lab 1 Task 1 PDF</h4>
@@ -475,17 +543,61 @@
                         <h4>Lab 1 Task 2 PDF</h4>
                         <div id="pdf-viewer-2"></div>
                         <a href="pdfs/Lab_01_Task_23k-0842.pdf" class="btn" target="_blank">Download PDF</a>
-                    </div>
+                    </div> -->
+<h3>Lab Resources</h3>
 
+<div class="pdf-container">
+    <h4>Lab 1 Task 1 PDF</h4>
+    <!-- Desktop embed -->
+    <div id="pdf-viewer-1" class="desktop-pdf"></div>
+    <!-- Mobile-friendly iframe fallback -->
+    <iframe 
+    class="mobile-pdf" 
+    src="pdfs/Edited_Lab_1_Task.pdf" 
+    style="width:100%; height:400px; display:none;" 
+    frameborder="0">
+</iframe>
+
+    <a href="pdfs/Edited_Lab_1_Task.pdf" class="btn" target="_blank">Open / Download PDF</a>
+</div>
+
+<div class="pdf-container">
+    <h4>Lab 1 Task 2 PDF</h4>
+    <!-- Desktop embed -->
+    <div id="pdf-viewer-2" class="desktop-pdf"></div>
+    <!-- Mobile-friendly iframe fallback -->
+<iframe 
+    class="mobile-pdf" 
+    src="pdfs/Edited_Lab_1_Task.pdf" 
+    style="width:100%; height:400px; display:none;" 
+    frameborder="0">
+</iframe>
+
+    <a href="pdfs/Lab_01_Task_23k-0842.pdf" class="btn" target="_blank">Open / Download PDF</a>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfobject/2.2.8/pdfobject.min.js"></script>
+<script>
+function isMobile() {
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+}
+
+if (!isMobile()) {
+    // Desktop: embed PDFs
+    PDFObject.embed("pdfs/Edited_Lab_1_Task.pdf#zoom=page-width", "#pdf-viewer-1");
+    PDFObject.embed("pdfs/Lab_01_Task_23k-0842.pdf#zoom=page-width", "#pdf-viewer-2");
+} else {
+    // Mobile: show Google Docs iframe
+    document.querySelectorAll('.desktop-pdf').forEach(el => el.style.display = 'none');
+    document.querySelectorAll('.mobile-pdf').forEach(el => el.style.display = 'block');
+}
+</script>
                     <!-- PDFObject Library -->
-                    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfobject/2.2.8/pdfobject.min.js"></script>
+                    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfobject/2.2.8/pdfobject.min.js"></script>
                     <script>
                         PDFObject.embed("pdfs/Edited_Lab_1_Task.pdf#zoom=page-width", "#pdf-viewer-1");
                         PDFObject.embed("pdfs/Lab_01_Task_23k-0842.pdf#zoom=page-width", "#pdf-viewer-2");
-                    </script>
-
-
-
+                    </script> -->
                 </div>
             </div>
         </div>
@@ -521,7 +633,4 @@
         </div>
     </footer>
 </body>
-
-
 </html>
-
