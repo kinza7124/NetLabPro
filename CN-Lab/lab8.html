@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lab 08 - Wireless Networks & NAT | CN Lab Helper</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="style.css" />
+
+    <!-- Highlight.js Theme -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/atom-one-dark.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    <script>
+        hljs.highlightAll();
+    </script>
+
+    <style>
+        .lab-detail {
+            background-color: white;
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 3rem;
+        }
+
+        .lab-detail-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .lab-detail-header h2 {
+            color: var(--primary);
+        }
+
+        .lab-content {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+
+        .lab-explanation {
+            padding-right: 1rem;
+        }
+
+        .lab-explanation h3 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+            margin-top: 2rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .lab-explanation h3:first-child {
+            margin-top: 0;
+        }
+
+        .lab-explanation p {
+            margin-bottom: 1.2rem;
+        }
+
+        .lab-explanation ul {
+            margin: 1rem 0;
+            padding-left: 2rem;
+        }
+
+        .lab-explanation li {
+            margin: 0.5rem 0;
+        }
+
+        .pdf-container {
+            margin: 1rem 0;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            padding: 0.8rem;
+            background: #f9f9f9;
+        }
+
+        .pdf-container h4 {
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+
+        .pdf-placeholder {
+            width: 100%;
+            height: 500px;
+            background-color: #e9ecef;
+            border-radius: 4px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #6c757d;
+            margin-bottom: 1rem;
+        }
+
+        .code-block {
+            position: relative;
+            background-color: #1e1e1e;
+            padding: 1rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: 'Fira Code', monospace;
+            border-left: 5px solid var(--primary);
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: var(--primary);
+            border: none;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: background 0.3s;
+        }
+
+        .copy-btn:hover {
+            background-color: rgba(52, 152, 219, 0.8);
+        }
+
+        .code-explanation {
+            background-color: #f9f9f9;
+            padding: 0.8rem 1rem;
+            border-left: 4px solid var(--primary);
+            border-radius: 5px;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+        }
+
+        .code-explanation2 {
+            background-color: #f9f9f9;
+            padding: 1rem 1.5rem;
+            border-left: 5px solid var(--primary);
+            border-radius: 8px;
+            margin: 1.5rem auto;
+            max-width: 1000px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        .code-explanation2 b {
+            color: var(--primary);
+        }
+
+        .code-explanation2 p {
+            margin-top: 0.5rem;
+            margin-bottom: 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+        }
+
+        table,
+        th,
+        td {
+            border: 1px solid #ddd;
+        }
+
+        th,
+        td {
+            padding: 12px;
+            text-align: left;
+        }
+
+        th {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        .small-note {
+            font-size: 0.9rem;
+            color: #555;
+        }
+
+        .protocol-section {
+            margin: 2rem 0;
+        }
+
+        .protocol-section h4 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--secondary);
+        }
+
+        .nat-commands {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-left: 4px solid #e74c3c;
+        }
+
+        .command-item {
+            display: flex;
+            margin-bottom: 1rem;
+            align-items: flex-start;
+            padding: 0.8rem;
+            background: white;
+            border-radius: 6px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .command-badge {
+            background-color: var(--primary);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.9rem;
+            margin-right: 1rem;
+            min-width: 200px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .command-desc {
+            flex: 1;
+            color: #333;
+            line-height: 1.5;
+        }
+
+        .flowchart {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .flowchart-box {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 8px;
+            border-left: 4px solid var(--secondary);
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .nat-example {
+            background: #e8f4fd;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-left: 4px solid #3498db;
+        }
+
+        .wireless-setup {
+            background: #fff3cd;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-left: 4px solid #ffc107;
+        }
+
+        .step-box {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 1.2rem;
+            margin: 1rem 0;
+            border-left: 4px solid var(--primary);
+        }
+
+        #pdf-viewer-1 {
+            width: 100%;
+            height: 500px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        /* MOBILE RESPONSIVENESS - Same as Lab 1 */
+        @media (max-width: 768px) {
+            /* Lab header adjustment */
+            .lab-detail-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            /* Lab content layout */
+            .lab-content {
+                display: block;
+                gap: 1rem;
+            }
+
+            .lab-explanation {
+                padding-right: 0;
+            }
+
+            /* Flowchart to single column */
+            .flowchart {
+                grid-template-columns: 1fr;
+                margin: 1rem 0;
+            }
+
+            /* Diagrams */
+            .diagram img {
+                max-width: 100%;
+                height: auto;
+            }
+
+            /* Tables */
+            table {
+                width: 100%;
+                font-size: 0.85rem;
+                overflow-x: auto;
+                display: block;
+            }
+
+            th, td {
+                padding: 8px;
+            }
+
+            /* Command items */
+            .command-item {
+                flex-direction: column;
+            }
+            
+            .command-badge {
+                margin-bottom: 0.5rem;
+                margin-right: 0;
+                min-width: auto;
+            }
+
+            /* Step box spacing */
+            .step-box {
+                padding: 1rem;
+                margin: 0.8rem 0;
+            }
+
+            /* Code blocks */
+            .code-block {
+                padding: 0.8rem;
+                margin: 1rem 0;
+            }
+
+            /* Footer social links */
+            .footer-content {
+                display: block;
+                gap: 1.2rem;
+            }
+
+            .footer-section {
+                margin-bottom: 1rem;
+            }
+            
+     }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                <img src="images/logo2.png" alt="CN Lab Helper Logo" style="height:90px; width:auto;">
+                    <h1>NetLabPro</h1>
+                </div>
+                <nav>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="netplay.html">NetPlay</a></li>
+                        <li><a href="about.html">About</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <section class="container">
+        <div class="lab-detail">
+            <div class="lab-detail-header">
+                <h2>Lab 08 - Wireless Networks & NAT</h2>
+                <a href="index.html" class="btn">Back to Labs</a>
+            </div>
+
+            <div class="lab-content">
+                <div class="lab-explanation">
+                    <h3>Lab Objective</h3>
+                    <p>Introduction to Wireless Networks and Network Address Translation (NAT). Learn to configure wireless networks in Packet Tracer and implement different types of NAT for network connectivity and security.</p>
+
+                    <h3>1. Wireless Network</h3>
+                    <h4>1.1 Introduction</h4>
+                    <p>A wireless network allows devices to connect without physical cables. Devices communicate using Radio Frequency (RF) signals via Access Points (APs).</p>
+                    <ul>
+                        <li>AP broadcasts Wi-Fi signals</li>
+                        <li>Devices use wireless adapters (built-in or USB) to connect</li>
+                        <li>Common example: Wi-Fi in cafés, universities, offices</li>
+                    </ul>
+
+                    <h4>Difference from Wired Network</h4>
+                    <table>
+                        <tr>
+                            <th>Wired</th>
+                            <th>Wireless</th>
+                        </tr>
+                        <tr>
+                            <td>Needs cables</td>
+                            <td>No cables</td>
+                        </tr>
+                        <tr>
+                            <td>Less mobility</td>
+                            <td>High mobility</td>
+                        </tr>
+                        <tr>
+                            <td>Setup cost higher</td>
+                            <td>Setup cost lower</td>
+                        </tr>
+                        <tr>
+                            <td>Stable connection</td>
+                            <td>Can face interference</td>
+                        </tr>
+                    </table>
+
+                    <h4>1.2 Importance of Wireless Technology</h4>
+                    <ul>
+                        <li><strong>Mobility:</strong> Move freely while staying connected</li>
+                        <li><strong>Flexibility:</strong> Easy installation, no cabling needed</li>
+                        <li><strong>Reduced Cost:</strong> Less hardware needed</li>
+                        <li><strong>Scalability:</strong> Easily add more devices</li>
+                    </ul>
+
+                    <h4>1.3 Working of Wireless Network</h4>
+                    <p>WLAN works similar to LAN but with RF waves. AP sends wireless signals; PCs detect and join using SSID. AP often connects to wired network → provides Internet.</p>
+
+                    <h4>1.4 Configuration of Wireless Network (Packet Tracer)</h4>
+                    <p>Topology uses Linksys Wireless Router + 6 PCs.</p>
+
+                    <div class="wireless-setup">
+                        <h4>Default Router Settings:</h4>
+                        <ul>
+                            <li><strong>DHCP:</strong> Enabled</li>
+                            <li><strong>DHCP Pool:</strong> 192.168.0.100 – 192.168.0.150</li>
+                            <li><strong>Router IP:</strong> 192.168.0.1</li>
+                            <li><strong>SSID:</strong> Default</li>
+                            <li><strong>Security:</strong> None</li>
+                        </ul>
+                    </div>
+
+                    <h4>Tasks Performed</h4>
+                    <ul>
+                        <li>Change SSID</li>
+                        <li>Disable DHCP</li>
+                        <li>Change Router IP</li>
+                        <li>Assign Static IPs</li>
+                        <li>Configure WEP Security</li>
+                        <li>Connect PCs using WEP key</li>
+                    </ul>
+
+                    <h4>Configuration Steps</h4>
+                    
+                    <div class="step-box">
+                        <h4>Step 1 — Login to Router</h4>
+                        <p>Go to browser → 192.168.0.1</p>
+                        <p>Username: admin | Password: admin</p>
+                    </div>
+
+                    <div class="step-box">
+                        <h4>Step 2 — Disable DHCP</h4>
+                        <p>Setup → DHCP → Disable → Save</p>
+                    </div>
+
+                    <div class="step-box">
+                        <h4>Step 3 — Change Password</h4>
+                        <p>Administration → Password → test</p>
+                    </div>
+
+                    <div class="step-box">
+                        <h4>Step 4 — Change SSID</h4>
+                        <p>Wireless → Basic Wireless → Set SSID = FastNetwork</p>
+                    </div>
+
+                    <div class="step-box">
+                        <h4>Step 5 — Configure WEP Security</h4>
+                        <p>Wireless → Wireless Security → Security Mode = WEP → Key = 0123456789</p>
+                    </div>
+
+                    <div class="step-box">
+                        <h4>Step 6 — Set Static IPs for PCs</h4>
+                        <table>
+                            <tr>
+                                <th>PC</th>
+                                <th>IP</th>
+                                <th>Mask</th>
+                                <th>Gateway</th>
+                            </tr>
+                            <tr>
+                                <td>1</td>
+                                <td>192.168.0.2</td>
+                                <td>255.255.255.0</td>
+                                <td>192.168.0.1</td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td>192.168.0.4</td>
+                                <td>255.255.255.0</td>
+                                <td>192.168.0.1</td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td>192.168.0.5</td>
+                                <td>255.255.255.0</td>
+                                <td>192.168.0.1</td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td>192.168.0.6</td>
+                                <td>255.255.255.0</td>
+                                <td>192.168.0.1</td>
+                            </tr>
+                            <tr>
+                                <td>5</td>
+                                <td>192.168.0.7</td>
+                                <td>255.255.255.0</td>
+                                <td>192.168.0.1</td>
+                            </tr>
+                            <tr>
+                                <td>6</td>
+                                <td>192.168.0.8</td>
+                                <td>255.255.255.0</td>
+                                <td>192.168.0.1</td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div class="step-box">
+                        <h4>Step 7 — Connect PC to Wi-Fi</h4>
+                        <p>Desktop → PC Wireless → Refresh → Select FastNetwork → Enter WEP key → Connect</p>
+                    </div>
+
+                    <h3>2. NAT (Network Address Translation)</h3>
+                    <h4>2.1 What is NAT?</h4>
+                    <p>NAT maps private IPs ↔ public IPs.</p>
+                    <p><strong>Why NAT?</strong></p>
+                    <ul>
+                        <li>Save IPv4 addresses</li>
+                        <li>Allow many devices to share 1 public IP</li>
+                        <li>Provides basic protection</li>
+                    </ul>
+                    <p class="small-note">(NOTE: NAT ≠ Firewall)</p>
+
+                    <h4>2.2 Types of NAT</h4>
+                    
+                    <div class="nat-example">
+                        <h4>1. Static NAT</h4>
+                        <p>One private IP ↔ One public IP</p>
+                        <p><strong>Used for:</strong> Servers needing public access (Example: Web server)</p>
+                        <div class="code-block">
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                            <pre><code class="language-bash">ip nat inside source static 192.168.0.10 209.165.200.10</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="nat-example">
+                        <h4>2. Dynamic NAT</h4>
+                        <p>Many private IPs map to pool of public IPs</p>
+                        <p>One-to-one mapping but public IP varies</p>
+                        <div class="code-block">
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                            <pre><code class="language-bash">ip nat pool MYPOOL 209.165.200.226 209.165.200.240 netmask 255.255.255.224
+access-list 1 permit 192.168.0.0 0.0.0.255
+ip nat inside source list 1 pool MYPOOL</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="nat-example">
+                        <h4>3. PAT (NAT Overload)</h4>
+                        <p>Many private IPs share one public IP</p>
+                        <p>Uses different port numbers</p>
+                        <p><strong>Most common in homes/offices</strong></p>
+                        <div class="code-block">
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                            <pre><code class="language-bash">access-list 1 permit 192.168.0.0 0.0.0.255
+ip nat inside source list 1 interface serial 0/0/0 overload</code></pre>
+                        </div>
+                    </div>
+
+                    <h3>3. NAT Configuration Example</h3>
+                    
+                    <div class="nat-example">
+                        <h4>Karachi Router (R1) – PAT</h4>
+                        <p><strong>Interfaces:</strong></p>
+                        <ul>
+                            <li>Fa0/0 → 192.168.1.1</li>
+                            <li>S2/0 → 192.168.2.1</li>
+                        </ul>
+                        <div class="code-block">
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                            <pre><code class="language-bash">access-list 1 permit 192.168.1.2 0.0.0.0
+access-list 1 permit 192.168.1.3 0.0.0.0
+ip nat pool ccna 50.0.0.1 50.0.0.1 netmask 255.0.0.0
+ip nat inside source list 1 pool ccna overload
+interface fa0/0
+ ip nat inside
+interface s0/0/0
+ ip nat outside</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="nat-example">
+                        <h4>Lahore Router (R2) – Static NAT</h4>
+                        <p><strong>Interfaces:</strong></p>
+                        <ul>
+                            <li>Fa0/0 → 192.168.3.1</li>
+                            <li>S2/0 → 192.168.2.2</li>
+                        </ul>
+                        <div class="code-block">
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                            <pre><code class="language-bash">ip nat inside source static 192.168.3.1 200.0.0.10</code></pre>
+                        </div>
+                    </div>
+
+                    <h4>Routing Configuration</h4>
+                    
+                    <div class="nat-example">
+                        <h4>R1 Static Route</h4>
+                        <div class="code-block">
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                            <pre><code class="language-bash">ip route 200.0.0.0 255.255.255.0 100.0.0.2</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="nat-example">
+                        <h4>R2 Static Route</h4>
+                        <div class="code-block">
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                            <pre><code class="language-bash">ip route 50.0.0.0 255.0.0.0 100.0.0.1</code></pre>
+                        </div>
+                    </div>
+
+                    <h3>4. Verification Commands</h3>
+                    <div class="nat-commands">
+                        <h4>NAT Verification Commands</h4>
+                        
+                        <div class="command-item">
+                            <div class="command-badge">show ip nat translations</div>
+                            <div class="command-desc">Check NAT translations</div>
+                        </div>
+                        
+                        <div class="command-item">
+                            <div class="command-badge">show ip nat statistics</div>
+                            <div class="command-desc">Check NAT statistics</div>
+                        </div>
+                        
+                        <div class="command-item">
+                            <div class="command-badge">show ip interface brief</div>
+                            <div class="command-desc">Check interfaces</div>
+                        </div>
+                        
+                        <div class="command-item">
+                            <div class="command-badge">ping &lt;IP&gt;</div>
+                            <div class="command-desc">Ping test</div>
+                        </div>
+                    </div>
+
+                    <h3>Flowchart Summary</h3>
+                    <div class="flowchart">
+                        <div class="flowchart-box">
+                            <h4>Static NAT</h4>
+                            <p>One-to-one mapping</p>
+                            <small>For servers</small>
+                        </div>
+                        <div class="flowchart-box">
+                            <h4>Dynamic NAT</h4>
+                            <p>Pool-based mapping</p>
+                            <small>Many-to-many</small>
+                        </div>
+                        <div class="flowchart-box">
+                            <h4>PAT</h4>
+                            <p>Port-based mapping</p>
+                            <small>Many-to-one</small>
+                        </div>
+                        <div class="flowchart-box">
+                            <h4>Wireless</h4>
+                            <p>RF communication</p>
+                            <small>No cables needed</small>
+                        </div>
+                    </div>
+
+                    <h3>Lab Resources</h3>
+                    <div class="pdf-container">
+                        <h4>Wireless Networks & NAT Guide</h4>
+                        <!-- Desktop embed -->
+                        <div id="pdf-viewer-1" class="desktop-pdf"></div>
+                        <!-- Mobile-friendly iframe fallback -->
+                        <iframe 
+                            class="mobile-pdf" 
+                            src="pdfs/k230842 Kinza Afzal - Lab 8 Task.pdf" 
+                            style="width:100%; height:400px; display:none;" 
+                            frameborder="0">
+                        </iframe>
+                        <a href="pdfs/k230842 Kinza Afzal - Lab 8 Task.pdf" class="btn" target="_blank">Download PDF</a>
+                    </div>
+            </div>
+        </div>
+    </section>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfobject/2.2.8/pdfobject.min.js"></script>
+    <script>
+        function isMobile() {
+            return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        }
+
+        if (!isMobile()) {
+            // Desktop: embed PDFs
+            PDFObject.embed("pdfs/k230842 Kinza Afzal - Lab 8 Task.pdf#zoom=page-fit", "#pdf-viewer-1");
+        } else {
+            // Mobile: show iframe
+            document.querySelectorAll('.desktop-pdf').forEach(el => el.style.display = 'none');
+            document.querySelectorAll('.mobile-pdf').forEach(el => el.style.display = 'block');
+        }
+
+        function copyCode(button) {
+            try {
+                const codeBlock = button.nextElementSibling.querySelector('code');
+                const text = codeBlock.innerText || codeBlock.textContent || '';
+                navigator.clipboard.writeText(text).then(() => {
+                    const original = button.innerText;
+                    button.innerText = 'Copied!';
+                    setTimeout(() => {
+                        button.innerText = original;
+                    }, 1400);
+                }).catch((err) => {
+                    console.error('Copy failed', err);
+                    alert('Copy failed — please select and copy manually.');
+                });
+            } catch (e) {
+                console.error(e);
+                alert('Unable to copy code block.');
+            }
+        }
+    </script>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>About CN Lab Helper</h3>
+                    <p>An interactive platform to help students visualize and understand Computer Networks laboratory experiments through detailed explanations, screenshots, and animations.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <p><a href="index.html">Home</a></p>
+                    <p><a href="Netplay.html">NetPlay</a></p>
+                    <p><a href="about.html">About</a></p>
+                </div>
+                <div class="footer-section">
+                    <h3>Connect With Us</h3>
+                    <div class="social-links">
+                        <a href="https://linkedin.com/in/kinza-afzal7-" target="_blank"><i class="fab fa-linkedin"></i></a>
+                        <a href="https://github.com/kinza7124" target="_blank"><i class="fab fa-github"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 CN Lab Helper created by Kinza. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

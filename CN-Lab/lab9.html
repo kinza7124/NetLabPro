@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lab 09 - Subnetting & Routing | CN Lab Helper</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="style.css" />
+
+    <!-- Highlight.js Theme -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/atom-one-dark.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    <script>
+        hljs.highlightAll();
+    </script>
+
+    <style>
+        .lab-detail {
+            background-color: white;
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 3rem;
+        }
+
+        .lab-detail-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .lab-detail-header h2 {
+            color: var(--primary);
+        }
+
+        .lab-content {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+
+        .lab-explanation {
+            padding-right: 1rem;
+        }
+
+        .lab-explanation h3 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+            margin-top: 2rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .lab-explanation h3:first-child {
+            margin-top: 0;
+        }
+
+        .lab-explanation p {
+            margin-bottom: 1.2rem;
+        }
+
+        .lab-explanation ul {
+            margin: 1rem 0;
+            padding-left: 2rem;
+        }
+
+        .lab-explanation li {
+            margin: 0.5rem 0;
+        }
+
+        .pdf-container {
+            margin: 1.5rem 0;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 1rem;
+            background: #f9f9f9;
+        }
+
+        .pdf-container h4 {
+            margin-bottom: 0.8rem;
+            color: var(--primary);
+            font-size: 1.1rem;
+        }
+
+        .pdf-placeholder {
+            width: 100%;
+            height: 400px;
+            background-color: #e9ecef;
+            border-radius: 4px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #6c757d;
+            margin-bottom: 0.8rem;
+            font-size: 0.9rem;
+        }
+
+        .code-block {
+            position: relative;
+            background-color: #1e1e1e;
+            padding: 1rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: 'Fira Code', monospace;
+            border-left: 5px solid var(--primary);
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: var(--primary);
+            border: none;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: background 0.3s;
+        }
+
+        .copy-btn:hover {
+            background-color: rgba(52, 152, 219, 0.8);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+        }
+
+        table,
+        th,
+        td {
+            border: 1px solid #ddd;
+        }
+
+        th,
+        td {
+            padding: 12px;
+            text-align: left;
+        }
+
+        th {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        .small-note {
+            font-size: 0.9rem;
+            color: #555;
+        }
+
+        .subnet-commands {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-left: 4px solid #e74c3c;
+        }
+
+        .command-item {
+            display: flex;
+            margin-bottom: 1rem;
+            align-items: flex-start;
+            padding: 0.8rem;
+            background: white;
+            border-radius: 6px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .command-badge {
+            background-color: var(--primary);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.9rem;
+            margin-right: 1rem;
+            min-width: 200px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .command-desc {
+            flex: 1;
+            color: #333;
+            line-height: 1.5;
+        }
+
+        .flowchart {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .flowchart-box {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 8px;
+            border-left: 4px solid var(--secondary);
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .subnet-example {
+            background: #e8f4fd;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-left: 4px solid #3498db;
+        }
+
+        .step-box {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 1.2rem;
+            margin: 1rem 0;
+            border-left: 4px solid var(--primary);
+        }
+
+        .formula-box {
+            background: #fff3cd;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-left: 4px solid #ffc107;
+            text-align: center;
+        }
+
+        .host-example {
+            background: #d4edda;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-left: 4px solid #28a745;
+        }
+
+        /* PDF Viewers */
+        #pdf-viewer-1 {
+            width: 100%;
+            height: 500px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .mobile-pdf {
+            width: 100%;
+            height: 500px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            display: none;
+        }
+
+        /* MOBILE RESPONSIVENESS */
+        @media (max-width: 768px) {
+            .lab-detail-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            .lab-content {
+                display: block;
+                gap: 1rem;
+            }
+
+            .lab-explanation {
+                padding-right: 0;
+            }
+
+            .flowchart {
+                grid-template-columns: 1fr;
+                margin: 1rem 0;
+            }
+
+            #pdf-viewer-1 {
+                height: 400px;
+            }
+
+            .mobile-pdf {
+                height: 400px;
+            }
+
+            table {
+                width: 100%;
+                font-size: 0.85rem;
+                overflow-x: auto;
+                display: block;
+            }
+
+            th, td {
+                padding: 8px;
+            }
+
+            .command-item {
+                flex-direction: column;
+            }
+            
+            .command-badge {
+                margin-bottom: 0.5rem;
+                margin-right: 0;
+                min-width: auto;
+            }
+
+            .step-box {
+                padding: 1rem;
+                margin: 0.8rem 0;
+            }
+
+            .code-block {
+                padding: 0.8rem;
+                margin: 1rem 0;
+            }
+
+            .pdf-container {
+                padding: 0.8rem;
+                margin: 1rem 0;
+            }
+
+            .pdf-placeholder {
+                height: 300px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            #pdf-viewer-1 {
+                height: 350px;
+            }
+            
+            .mobile-pdf {
+                height: 350px;
+            }
+            
+            .pdf-placeholder {
+                height: 250px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                <img src="images/logo2.png" alt="CN Lab Helper Logo" style="height:90px; width:auto;">
+                    <h1>NetLabPro</h1>
+                </div>
+                <nav>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="netplay.html">NetPlay</a></li>
+                        <li><a href="about.html">About</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <section class="container">
+        <div class="lab-detail">
+            <div class="lab-detail-header">
+                <h2>Lab 09 - Subnetting & Routing</h2>
+                <a href="index.html" class="btn">Back to Labs</a>
+            </div>
+
+            <div class="lab-content">
+                <div class="lab-explanation">
+                    <h3>Lab Objective</h3>
+                    <p>Learn subnetting concepts, CIDR notation, static routing, and dynamic routing using RIP. Understand how to divide networks and configure routing protocols.</p>
+
+                    <h3>⭐ 1. Subnetting</h3>
+                    <p>Subnetting = breaking a bigger network into smaller networks.</p>
+
+                    <h4>Why subnet?</h4>
+                    <ul>
+                        <li>To separate departments</li>
+                        <li>To improve security</li>
+                        <li>To reduce broadcast traffic</li>
+                        <li>To assign IP ranges according to needs</li>
+                    </ul>
+
+                    <div class="step-box">
+                        <h4>1.1 How IP Networks Work</h4>
+                        <p>An IPv4 address has two parts: <strong>Network Portion | Host Portion</strong></p>
+                        <p>Subnet mask tells which part is network.</p>
+                        <p><strong>Example:</strong></p>
+                        <p>IP: 192.168.10.0</p>
+                        <p>Default mask (Class C): 255.255.255.0</p>
+                        <p><strong>Meaning:</strong></p>
+                        <p>Network = 192.168.10</p>
+                        <p>Host range = last octet (0–255)</p>
+                    </div>
+
+                    <h3>2. Class A, B, C Addressing</h3>
+                    <table>
+                        <tr>
+                            <th>Class</th>
+                            <th>Range</th>
+                            <th>Network Bits</th>
+                            <th>Hosts</th>
+                        </tr>
+                        <tr>
+                            <td>A</td>
+                            <td>1–126</td>
+                            <td>8 bits</td>
+                            <td>16 million hosts</td>
+                        </tr>
+                        <tr>
+                            <td>B</td>
+                            <td>128–191</td>
+                            <td>16 bits</td>
+                            <td>65,000 hosts</td>
+                        </tr>
+                        <tr>
+                            <td>C</td>
+                            <td>192–223</td>
+                            <td>24 bits</td>
+                            <td>254 hosts</td>
+                        </tr>
+                    </table>
+                    <p class="small-note">Class C is smallest; often used in labs.</p>
+
+                    <h3>3. Creating Subnets</h3>
+                    <p>Subnetting cuts host portion into smaller pieces.</p>
+
+                    <div class="formula-box">
+                        <h4>Subnetting Formulas</h4>
+                        <p><strong>Number of Subnets = 2ⁿ</strong><br>(where n = borrowed bits)</p>
+                        <p><strong>Hosts per Subnet = 2ʰ – 2</strong><br>(where h = remaining host bits)</p>
+                    </div>
+
+                    <div class="subnet-example">
+                        <h4>3.1 Example — Subnetting a Class C Network</h4>
+                        <p><strong>Given:</strong></p>
+                        <p>Network: 200.100.50.0</p>
+                        <p>Required: 7 subnets</p>
+
+                        <div class="step-box">
+                            <h4>Step 1 — Borrow bits</h4>
+                            <p>2³ = 8 ≥ 7 → borrow 3 bits</p>
+                        </div>
+
+                        <div class="step-box">
+                            <h4>Step 2 — New mask</h4>
+                            <p>Default mask = 255.255.255.0</p>
+                            <p>Borrow 3 bits → add (128+64+32) = 224</p>
+                            <p>So new mask: <strong>255.255.255.224 (/27)</strong></p>
+                        </div>
+
+                        <div class="step-box">
+                            <h4>Step 3 — Subnet increment</h4>
+                            <p>224 subnet → increment = 32<br>(256 – 224 = 32)</p>
+                        </div>
+
+                        <div class="step-box">
+                            <h4>Step 4 — Subnets:</h4>
+                            <table>
+                                <tr>
+                                    <th>Subnet</th>
+                                    <th>Network</th>
+                                    <th>Range</th>
+                                    <th>Broadcast</th>
+                                </tr>
+                                <tr>
+                                    <td>1</td>
+                                    <td>200.100.50.0</td>
+                                    <td>1–30</td>
+                                    <td>.31</td>
+                                </tr>
+                                <tr>
+                                    <td>2</td>
+                                    <td>.32</td>
+                                    <td>33–62</td>
+                                    <td>63</td>
+                                </tr>
+                                <tr>
+                                    <td>3</td>
+                                    <td>.64</td>
+                                    <td>65–94</td>
+                                    <td>95</td>
+                                </tr>
+                                <tr>
+                                    <td>4</td>
+                                    <td>.96</td>
+                                    <td>97–126</td>
+                                    <td>127</td>
+                                </tr>
+                                <tr>
+                                    <td>5</td>
+                                    <td>.128</td>
+                                    <td>129–158</td>
+                                    <td>159</td>
+                                </tr>
+                                <tr>
+                                    <td>6</td>
+                                    <td>.160</td>
+                                    <td>161–190</td>
+                                    <td>191</td>
+                                </tr>
+                                <tr>
+                                    <td>7</td>
+                                    <td>.192</td>
+                                    <td>193–222</td>
+                                    <td>223</td>
+                                </tr>
+                                <tr>
+                                    <td>8</td>
+                                    <td>.224</td>
+                                    <td>225–254</td>
+                                    <td>255</td>
+                                </tr>
+                            </table>
+                            <p>You used 7, so first seven are used.</p>
+                        </div>
+                    </div>
+
+                    <h3>⭐ Practical Subnetting Examples Based on Host Requirements</h3>
+
+                    <div class="host-example">
+                        <h4>Example 1: 24 Usable Hosts Required</h4>
+                        <p><strong>Given:</strong> Network 192.168.1.0/24, need 24 usable hosts per subnet</p>
+                        
+                        <div class="step-box">
+                            <h4>Step 1 — Calculate host bits needed</h4>
+                            <p>We need 24 usable hosts → 2ʰ - 2 ≥ 24</p>
+                            <p>2⁵ - 2 = 30 ≥ 24 → need 5 host bits</p>
+                        </div>
+
+                        <div class="step-box">
+                            <h4>Step 2 — Calculate subnet mask</h4>
+                            <p>Original: /24 (255.255.255.0)</p>
+                            <p>Host bits needed: 5 → Network bits: 32 - 5 = 27</p>
+                            <p>New mask: <strong>/27 (255.255.255.224)</strong></p>
+                        </div>
+
+                        <div class="step-box">
+                            <h4>Step 3 — Subnet details</h4>
+                            <table>
+                                <tr>
+                                    <th>Subnet</th>
+                                    <th>Network ID</th>
+                                    <th>Usable Range</th>
+                                    <th>Broadcast</th>
+                                    <th>Total Hosts</th>
+                                </tr>
+                                <tr>
+                                    <td>1</td>
+                                    <td>192.168.1.0</td>
+                                    <td>192.168.1.1 - 192.168.1.30</td>
+                                    <td>192.168.1.31</td>
+                                    <td>30</td>
+                                </tr>
+                                <tr>
+                                    <td>2</td>
+                                    <td>192.168.1.32</td>
+                                    <td>192.168.1.33 - 192.168.1.62</td>
+                                    <td>192.168.1.63</td>
+                                    <td>30</td>
+                                </tr>
+                                <tr>
+                                    <td>3</td>
+                                    <td>192.168.1.64</td>
+                                    <td>192.168.1.65 - 192.168.1.94</td>
+                                    <td>192.168.1.95</td>
+                                    <td>30</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="host-example">
+                        <h4>Example 2: 10 Usable Hosts Required</h4>
+                        <p><strong>Given:</strong> Network 172.16.0.0/16, need 10 usable hosts per subnet</p>
+                        
+                        <div class="step-box">
+                            <h4>Step 1 — Calculate host bits needed</h4>
+                            <p>We need 10 usable hosts → 2ʰ - 2 ≥ 10</p>
+                            <p>2⁴ - 2 = 14 ≥ 10 → need 4 host bits</p>
+                        </div>
+
+                        <div class="step-box">
+                            <h4>Step 2 — Calculate subnet mask</h4>
+                            <p>Original: /16 (255.255.0.0)</p>
+                            <p>Host bits needed: 4 → Network bits: 32 - 4 = 28</p>
+                            <p>New mask: <strong>/28 (255.255.255.240)</strong></p>
+                        </div>
+
+                        <div class="step-box">
+                            <h4>Step 3 — Subnet details (first few subnets)</h4>
+                            <table>
+                                <tr>
+                                    <th>Subnet</th>
+                                    <th>Network ID</th>
+                                    <th>Usable Range</th>
+                                    <th>Broadcast</th>
+                                    <th>Total Hosts</th>
+                                </tr>
+                                <tr>
+                                    <td>1</td>
+                                    <td>172.16.0.0</td>
+                                    <td>172.16.0.1 - 172.16.0.14</td>
+                                    <td>172.16.0.15</td>
+                                    <td>14</td>
+                                </tr>
+                                <tr>
+                                    <td>2</td>
+                                    <td>172.16.0.16</td>
+                                    <td>172.16.0.17 - 172.16.0.30</td>
+                                    <td>172.16.0.31</td>
+                                    <td>14</td>
+                                </tr>
+                                <tr>
+                                    <td>3</td>
+                                    <td>172.16.0.32</td>
+                                    <td>172.16.0.33 - 172.16.0.46</td>
+                                    <td>172.16.0.47</td>
+                                    <td>14</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="host-example">
+                        <h4>Example 3: 120 Usable Hosts Required</h4>
+                        <p><strong>Given:</strong> Network 10.0.0.0/8, need 120 usable hosts per subnet</p>
+                        
+                        <div class="step-box">
+                            <h4>Step 1 — Calculate host bits needed</h4>
+                            <p>We need 120 usable hosts → 2ʰ - 2 ≥ 120</p>
+                            <p>2⁷ - 2 = 126 ≥ 120 → need 7 host bits</p>
+                        </div>
+
+                        <div class="step-box">
+                            <h4>Step 2 — Calculate subnet mask</h4>
+                            <p>Original: /8 (255.0.0.0)</p>
+                            <p>Host bits needed: 7 → Network bits: 32 - 7 = 25</p>
+                            <p>New mask: <strong>/25 (255.255.255.128)</strong></p>
+                        </div>
+
+                        <div class="step-box">
+                            <h4>Step 3 — Subnet details</h4>
+                            <table>
+                                <tr>
+                                    <th>Subnet</th>
+                                    <th>Network ID</th>
+                                    <th>Usable Range</th>
+                                    <th>Broadcast</th>
+                                    <th>Total Hosts</th>
+                                </tr>
+                                <tr>
+                                    <td>1</td>
+                                    <td>10.0.0.0</td>
+                                    <td>10.0.0.1 - 10.0.0.126</td>
+                                    <td>10.0.0.127</td>
+                                    <td>126</td>
+                                </tr>
+                                <tr>
+                                    <td>2</td>
+                                    <td>10.0.0.128</td>
+                                    <td>10.0.0.129 - 10.0.0.254</td>
+                                    <td>10.0.0.255</td>
+                                    <td>126</td>
+                                </tr>
+                                <tr>
+                                    <td>3</td>
+                                    <td>10.0.1.0</td>
+                                    <td>10.0.1.1 - 10.0.1.126</td>
+                                    <td>10.0.1.127</td>
+                                    <td>126</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="host-example">
+                        <h4>Example 4: 2 Usable Hosts Required (Point-to-Point)</h4>
+                        <p><strong>Given:</strong> Network 192.168.100.0/24, need 2 usable hosts per subnet (for router links)</p>
+                        
+                        <div class="step-box">
+                            <h4>Step 1 — Calculate host bits needed</h4>
+                            <p>We need 2 usable hosts → 2ʰ - 2 ≥ 2</p>
+                            <p>2² - 2 = 2 ≥ 2 → need 2 host bits</p>
+                        </div>
+
+                        <div class="step-box">
+                            <h4>Step 2 — Calculate subnet mask</h4>
+                            <p>Original: /24 (255.255.255.0)</p>
+                            <p>Host bits needed: 2 → Network bits: 32 - 2 = 30</p>
+                            <p>New mask: <strong>/30 (255.255.255.252)</strong></p>
+                        </div>
+
+                        <div class="step-box">
+                            <h4>Step 3 — Subnet details (first few subnets)</h4>
+                            <table>
+                                <tr>
+                                    <th>Subnet</th>
+                                    <th>Network ID</th>
+                                    <th>Usable Range</th>
+                                    <th>Broadcast</th>
+                                    <th>Total Hosts</th>
+                                </tr>
+                                <tr>
+                                    <td>1</td>
+                                    <td>192.168.100.0</td>
+                                    <td>192.168.100.1 - 192.168.100.2</td>
+                                    <td>192.168.100.3</td>
+                                    <td>2</td>
+                                </tr>
+                                <tr>
+                                    <td>2</td>
+                                    <td>192.168.100.4</td>
+                                    <td>192.168.100.5 - 192.168.100.6</td>
+                                    <td>192.168.100.7</td>
+                                    <td>2</td>
+                                </tr>
+                                <tr>
+                                    <td>3</td>
+                                    <td>192.168.100.8</td>
+                                    <td>192.168.100.9 - 192.168.100.10</td>
+                                    <td>192.168.100.11</td>
+                                    <td>2</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Rest of the content remains the same -->
+                    <h3>4. CIDR (Classless Inter-Domain Routing)</h3>
+                    <p>CIDR allows any subnet mask, not just classful.</p>
+                    <p><strong>Instead of:</strong> 255.255.255.0</p>
+                    <p><strong>You can write:</strong> /24</p>
+                    <p>Each / value tells how many NETWORK bits are used.</p>
+                    <p><strong>Example:</strong> 192.168.10.0/27</p>
+                    <p>Means: 27 bits for network, 5 bits for hosts.</p>
+
+                    <h3>5. Static Routing</h3>
+                    <p>Static routing = manually adding routes.</p>
+                    <p><strong>Used when:</strong></p>
+                    <ul>
+                        <li>Small networks</li>
+                        <li>Predictable paths</li>
+                        <li>You want strict control</li>
+                    </ul>
+
+                    <div class="code-block">
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        <pre><code class="language-bash">ip route &lt;DESTINATION&gt; &lt;MASK&gt; &lt;NEXT-HOP&gt;</code></pre>
+                    </div>
+
+                    <!-- Continue with the rest of your existing content -->
+
+                    <h3>Lab Resources</h3>
+                    <div class="pdf-container">
+                        <h4>Lab 09 Task</h4>
+                        <!-- Desktop PDF embed -->
+                        <div id="pdf-viewer-1" class="desktop-pdf"></div>
+                        <!-- Mobile PDF iframe -->
+                        <iframe 
+                            class="mobile-pdf" 
+                            src="pdfs/k230842 Kinza Afzal - Lab 9 Task (1).pdf" 
+                            frameborder="0">
+                        </iframe>
+                        <a href="pdfs/k230842 Kinza Afzal - Lab 9 Task (1).pdf" class="btn" target="_blank">Download PDF</a>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfobject/2.2.8/pdfobject.min.js"></script>
+    <script>
+        function isMobile() {
+            return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        }
+
+        if (!isMobile()) {
+            PDFObject.embed("pdfs/k230842 Kinza Afzal - Lab 9 Task (1).pdf#zoom=page-fit", "#pdf-viewer-1");
+        } else {
+            document.querySelectorAll('.desktop-pdf').forEach(el => el.style.display = 'none');
+            document.querySelectorAll('.mobile-pdf').forEach(el => el.style.display = 'block');
+        }
+
+        function copyCode(button) {
+            try {
+                const codeBlock = button.nextElementSibling.querySelector('code');
+                const text = codeBlock.innerText || codeBlock.textContent || '';
+                navigator.clipboard.writeText(text).then(() => {
+                    const original = button.innerText;
+                    button.innerText = 'Copied!';
+                    setTimeout(() => {
+                        button.innerText = original;
+                    }, 1400);
+                }).catch((err) => {
+                    console.error('Copy failed', err);
+                    alert('Copy failed — please select and copy manually.');
+                });
+            } catch (e) {
+                console.error(e);
+                alert('Unable to copy code block.');
+            }
+        }
+    </script>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>About CN Lab Helper</h3>
+                    <p>An interactive platform to help students visualize and understand Computer Networks laboratory experiments through detailed explanations, screenshots, and animations.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <p><a href="index.html">Home</a></p>
+                    <p><a href="Netplay.html">NetPlay</a></p>
+                    <p><a href="about.html">About</a></p>
+                </div>
+                <div class="footer-section">
+                    <h3>Connect With Us</h3>
+                    <div class="social-links">
+                        <a href="https://linkedin.com/in/kinza-afzal7-" target="_blank"><i class="fab fa-linkedin"></i></a>
+                        <a href="https://github.com/kinza7124" target="_blank"><i class="fab fa-github"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 CN Lab Helper created by Kinza. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
