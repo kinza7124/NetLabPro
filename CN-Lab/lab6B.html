@@ -73,7 +73,7 @@
         }
 
         .pdf-container {
-            margin: 2rem 0;
+            margin: 1.5rem 0;
             border: 1px solid #e0e0e0;
             border-radius: 8px;
             padding: 1rem;
@@ -81,28 +81,22 @@
         }
 
         .pdf-container h4 {
-            margin-bottom: 1rem;
+            margin-bottom: 0.8rem;
             color: var(--primary);
+            font-size: 1.1rem;
         }
 
         .pdf-placeholder {
             width: 100%;
-            height: 500px;
+            height: 400px;
             background-color: #e9ecef;
             border-radius: 4px;
             display: flex;
             justify-content: center;
             align-items: center;
             color: #6c757d;
-            margin-bottom: 1rem;
-        }
-
-        @media (max-width: 768px) {
-            .lab-detail-header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 1rem;
-            }
+            margin-bottom: 0.8rem;
+            font-size: 0.9rem;
         }
 
         .code-block {
@@ -142,28 +136,6 @@
             border-radius: 5px;
             margin-bottom: 1.5rem;
             font-size: 0.9rem;
-        }
-
-        .code-explanation2 {
-            background-color: #f9f9f9;
-            padding: 1rem 1.5rem;
-            border-left: 5px solid var(--primary);
-            border-radius: 8px;
-            margin: 1.5rem auto;
-            max-width: 1000px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-            font-size: 0.95rem;
-            line-height: 1.6;
-            color: #333;
-        }
-
-        .code-explanation2 b {
-            color: var(--primary);
-        }
-
-        .code-explanation2 p {
-            margin-top: 0.5rem;
-            margin-bottom: 0;
         }
 
         table {
@@ -270,7 +242,52 @@
             border-left: 4px solid #3498db;
         }
 
+        /* PDF Viewers */
+        #pdf-viewer-1, #pdf-viewer-2 {
+            width: 100%;
+            height: 500px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .mobile-pdf {
+            width: 100%;
+            height: 500px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            display: none;
+        }
+
+        /* MOBILE RESPONSIVENESS */
         @media (max-width: 768px) {
+            .lab-detail {
+                padding: 1.5rem;
+            }
+            
+            .lab-detail-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            .lab-content {
+                display: block;
+                gap: 1rem;
+            }
+
+            .lab-explanation {
+                padding-right: 0;
+            }
+
+            .flowchart {
+                grid-template-columns: 1fr;
+                margin: 1rem 0;
+            }
+
+            .flowchart-box {
+                padding: 1rem;
+            }
+
             .command-item {
                 flex-direction: column;
             }
@@ -280,32 +297,84 @@
                 margin-right: 0;
                 min-width: auto;
             }
+
+            #pdf-viewer-1, #pdf-viewer-2 {
+                height: 400px;
+            }
+
+            .mobile-pdf {
+                height: 400px;
+            }
+
+            .pdf-container {
+                padding: 0.8rem;
+                margin: 1rem 0;
+            }
+
+            .pdf-placeholder {
+                height: 300px;
+            }
             
-            .flowchart {
-                grid-template-columns: 1fr;
+            .lab-explanation ul {
+                padding-left: 1.5rem;
+            }
+            
+            .lab-explanation h3 {
+                margin-top: 1.5rem;
+            }
+            
+            table {
+                width: 100%;
+                font-size: 0.85rem;
+                overflow-x: auto;
+                display: block;
+            }
+
+            th, td {
+                padding: 8px;
+            }
+            
+            .acl-commands {
+                padding: 1rem;
+            }
+            
+            .acl-example {
+                padding: 1rem;
             }
         }
 
-        #pdf-viewer-1 {
-            width: 100%;
-            height: 500px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-
-        #pdf-viewer-2 {
-            width: 100%;
-            height: 500px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-
-        @media (max-width: 768px) {
-            #pdf-viewer-1 {
-                height: 300px;
+        @media (max-width: 480px) {
+            .lab-detail {
+                padding: 1rem;
             }
-            #pdf-viewer-1 {
-                height: 300px;
+            
+            #pdf-viewer-1, #pdf-viewer-2 {
+                height: 350px;
+            }
+            
+            .mobile-pdf {
+                height: 350px;
+            }
+            
+            .pdf-placeholder {
+                height: 250px;
+            }
+            
+            .flowchart-box {
+                padding: 0.8rem;
+            }
+            
+            .command-badge {
+                font-size: 0.8rem;
+                padding: 0.4rem 0.8rem;
+            }
+            
+            .acl-commands {
+                padding: 0.8rem;
+            }
+            
+            .acl-example {
+                padding: 0.8rem;
             }
         }
     </style>
@@ -517,23 +586,34 @@
                         </div>
                     </div>
 
+
                     <h3>Lab Resources</h3>
                     <div class="pdf-container">
                         <h4>ACL</h4>
-                        <div id="pdf-viewer-1" style="height:500px; border:1px solid #ddd; border-radius:4px;">
-                            <div class="pdf-placeholder">PDF preview will appear here if available</div>
-                        </div>
+                        <!-- Desktop PDF embed -->
+                        <div id="pdf-viewer-1" class="desktop-pdf"></div>
+                        <!-- Mobile PDF iframe -->
+                        <iframe 
+                            class="mobile-pdf" 
+                            src="pdfs/ACL.pdf" 
+                            frameborder="0">
+                        </iframe>
                         <a href="pdfs/ACL.pdf" class="btn" target="_blank">Download PDF</a>
                     </div>
 
-                <div class="pdf-container">
+                    <div class="pdf-container">
                         <h4>Lab 06A+06B Task</h4>
-                        <div id="pdf-viewer-2" style="height:500px; border:1px solid #ddd; border-radius:4px;">
-                            <div class="pdf-placeholder">PDF preview will appear here if available</div>
-                        </div>
+                        <!-- Desktop PDF embed -->
+                        <div id="pdf-viewer-2" class="desktop-pdf"></div>
+                        <!-- Mobile PDF iframe -->
+                        <iframe 
+                            class="mobile-pdf" 
+                            src="pdfs/Lab_6_Task.pdf" 
+                            frameborder="0">
+                        </iframe>
                         <a href="pdfs/Lab_6_Task.pdf" class="btn" target="_blank">Download PDF</a>
                     </div>
-
+                    
                 </div>
             </div>
         </div>
@@ -541,8 +621,17 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfobject/2.2.8/pdfobject.min.js"></script>
     <script>
-        PDFObject.embed("pdfs/ACL.pdf#zoom=page-width", "#pdf-viewer-1");
-        PDFObject.embed("pdfs/Lab_6_Task.pdf#zoom=page-width", "#pdf-viewer-2");
+        function isMobile() {
+            return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        }
+
+        if (!isMobile()) {
+            PDFObject.embed("pdfs/ACL.pdf#zoom=page-width", "#pdf-viewer-1");
+            PDFObject.embed("pdfs/Lab_6_Task.pdf#zoom=page-width", "#pdf-viewer-2");
+        } else {
+            document.querySelectorAll('.desktop-pdf').forEach(el => el.style.display = 'none');
+            document.querySelectorAll('.mobile-pdf').forEach(el => el.style.display = 'block');
+        }
 
         function copyCode(button) {
             try {
@@ -596,4 +685,5 @@
 </body>
 
 </html>
+
 
