@@ -254,28 +254,50 @@
                             <td>High cost</td>
                         </tr>
                     </table>
+                    
                     <h3>5. Lab Resources</h3>
 
                     <div class="pdf-container">
                         <h4>Lab 2 Task 1 PDF</h4>
-                        <div id="pdf-viewer-1"></div>
+                        <!-- Desktop PDF embed -->
+                        <div id="pdf-viewer-1" class="desktop-pdf"></div>
+                        <!-- Mobile PDF iframe -->
+                        <iframe 
+                            class="mobile-pdf" 
+                            src="pdfs/Lab_02_Task.pdf" 
+                            frameborder="0">
+                        </iframe>
                         <a href="pdfs/Lab_02_Task.pdf" class="btn" target="_blank">Download PDF</a>
                     </div>
 
                     <div class="pdf-container">
                         <h4>DHCP Lab PDF</h4>
-                        <div id="pdf-viewer-2"></div>
+                        <!-- Desktop PDF embed -->
+                        <div id="pdf-viewer-2" class="desktop-pdf"></div>
+                        <!-- Mobile PDF iframe -->
+                        <iframe 
+                            class="mobile-pdf" 
+                            src="pdfs/DHCP.pdf" 
+                            frameborder="0">
+                        </iframe>
                         <a href="pdfs/DHCP.pdf" class="btn" target="_blank">Download PDF</a>
                     </div>
-    </section>
 
+    </section>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfobject/2.2.8/pdfobject.min.js"></script>
     <script>
-        // Embed both PDFs properly
-        PDFObject.embed("pdfs/Lab_02_Task.pdf#zoom=page-width", "#pdf-viewer-1");
-        PDFObject.embed("pdfs/DHCP.pdf#zoom=page-width", "#pdf-viewer-2");
-    </script>
+        function isMobile() {
+            return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        }
 
+        if (!isMobile()) {
+            PDFObject.embed("pdfs/Lab_02_Task.pdf#zoom=page-width", "#pdf-viewer-1");
+            PDFObject.embed("pdfs/DHCP.pdf#zoom=page-width", "#pdf-viewer-2");
+        } else {
+            document.querySelectorAll('.desktop-pdf').forEach(el => el.style.display = 'none');
+            document.querySelectorAll('.mobile-pdf').forEach(el => el.style.display = 'block');
+        }
+    </script>    
     <!-- Footer -->
     <footer>
         <div class="container">
@@ -307,4 +329,5 @@
 </body>
 
 </html>
+
 
