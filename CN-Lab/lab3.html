@@ -72,7 +72,7 @@
         }
 
         .pdf-container {
-            margin: 2rem 0;
+            margin: 1.5rem 0;
             border: 1px solid #e0e0e0;
             border-radius: 8px;
             padding: 1rem;
@@ -80,28 +80,22 @@
         }
 
         .pdf-container h4 {
-            margin-bottom: 1rem;
+            margin-bottom: 0.8rem;
             color: var(--primary);
+            font-size: 1.1rem;
         }
 
         .pdf-placeholder {
             width: 100%;
-            height: 500px;
+            height: 400px;
             background-color: #e9ecef;
             border-radius: 4px;
             display: flex;
             justify-content: center;
             align-items: center;
             color: #6c757d;
-            margin-bottom: 1rem;
-        }
-
-        @media (max-width: 768px) {
-            .lab-detail-header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 1rem;
-            }
+            margin-bottom: 0.8rem;
+            font-size: 0.9rem;
         }
 
         .code-block {
@@ -142,16 +136,137 @@
             margin-bottom: 1.5rem;
             font-size: 0.9rem;
         }
-        
+
+        /* Configuration Steps */
+        .config-steps {
+            margin: 1.5rem 0;
+            padding-left: 2rem;
+            line-height: 1.6;
+        }
+
+        .config-steps li {
+            margin-bottom: 0.8rem;
+            padding-left: 0.5rem;
+        }
+
+        /* PDF Viewers */
         #pdf-viewer-1 {
             width: 100%;
             height: 500px;
             border: 1px solid #ddd;
-            border-radius: 4px
+            border-radius: 4px;
         }
+
+        .mobile-pdf {
+            width: 100%;
+            height: 500px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            display: none;
+        }
+
+        /* MOBILE RESPONSIVENESS */
         @media (max-width: 768px) {
+            .lab-detail {
+                padding: 1.5rem;
+            }
+            
+            .lab-detail-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            .lab-content {
+                display: block;
+                gap: 1rem;
+            }
+
+            .lab-explanation {
+                padding-right: 0;
+            }
+
             #pdf-viewer-1 {
+                height: 400px;
+            }
+
+            .mobile-pdf {
+                height: 400px;
+            }
+
+            .pdf-container {
+                padding: 0.8rem;
+                margin: 1rem 0;
+            }
+
+            .pdf-placeholder {
                 height: 300px;
+            }
+            
+            .lab-explanation ul {
+                padding-left: 1.5rem;
+            }
+            
+            .lab-explanation h3 {
+                margin-top: 1.5rem;
+            }
+            
+            .code-block {
+                padding: 0.8rem;
+            }
+            
+            .code-explanation {
+                padding: 0.6rem 0.8rem;
+                font-size: 0.85rem;
+            }
+            
+            .config-steps {
+                margin: 1rem 0;
+                padding-left: 1.5rem;
+            }
+            
+            .config-steps li {
+                margin-bottom: 0.6rem;
+                padding-left: 0.3rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .lab-detail {
+                padding: 1rem;
+            }
+            
+            #pdf-viewer-1 {
+                height: 350px;
+            }
+            
+            .mobile-pdf {
+                height: 350px;
+            }
+            
+            .pdf-placeholder {
+                height: 250px;
+            }
+            
+            .code-block {
+                padding: 0.6rem;
+            }
+            
+            .copy-btn {
+                padding: 4px 8px;
+                font-size: 0.75rem;
+            }
+            
+            .config-steps li {
+                margin-bottom: 0.5rem;
+            }
+            
+            .lab-explanation p {
+                margin-bottom: 1rem;
+            }
+            
+            .lab-explanation ul {
+                padding-left: 1.2rem;
             }
         }
     </style>
@@ -196,16 +311,18 @@
                     <p>Python also has libraries that provide higher-level access to application-level network
                         protocols,
                         such as FTP, HTTP, etc. TCP connection steps:</p>
-                    <p><strong>STEP I: </strong>Server instantiates a ServerSocket with a port number.</p>
-                    <p><strong>STEP II: </strong>Server calls accept() to wait for a client connection.</p>
-                    <p><strong>STEP III: </strong>Client instantiates a Socket specifying server address and port.</p>
-                    <p><strong>STEP IV: </strong>Socket attempts to connect to the server. If successful, a Socket
-                        object is ready.</p>
-                    <p><strong>STEP V: </strong>Server accept() returns a socket connected to the client.</p>
+                    <ol class="config-steps">
+                        <li><strong>STEP I: </strong>Server instantiates a ServerSocket with a port number.</li>
+                        <li><strong>STEP II: </strong>Server calls accept() to wait for a client connection.</li>
+                        <li><strong>STEP III: </strong>Client instantiates a Socket specifying server address and port.</li>
+                        <li><strong>STEP IV: </strong>Socket attempts to connect to the server. If successful, a Socket
+                            object is ready.</li>
+                        <li><strong>STEP V: </strong>Server accept() returns a socket connected to the client.</li>
+                    </ol>
                     <p>Data can now be sent bidirectionally using <code>send</code>/<code>recv</code>.</p>
 
                     <h3>3. Important Socket Terms</h3>
-                    <ul>
+                    <ul class="config-steps">
                         <li><strong>Domain:</strong> Protocol family (AF_INET, PF_UNIX, etc.)</li>
                         <li><strong>Type:</strong> Communication type: SOCK_STREAM (TCP) or SOCK_DGRAM (UDP)</li>
                         <li><strong>Protocol:</strong> Usually 0, identifies protocol variant</li>
@@ -343,7 +460,7 @@ c.close()
                         <b>Question:</b> Build a TCP Grading Server and Client where the client sends a GPA value, and
                         the server responds with the corresponding letter grade and remark.<br>
                         <b>Explanation:</b> The server compares the GPA with predefined grade boundaries and returns a
-                        message like “A (Excellent)” or “A- (Very Good).”
+                        message like "A (Excellent)" or "A- (Very Good)."
                     </div>
 
                     <!-- Example 5: File Transfer TCP -->
@@ -389,7 +506,7 @@ c.close()
                         <b>Question:</b> Implement a TCP-based File Transfer system where the client sends a file to the
                         server.<br>
                         <b>Explanation:</b> The client reads a file and transmits its contents to the server in chunks
-                        of 1024 bytes. The server receives and stores the file with a “recv_” prefix.
+                        of 1024 bytes. The server receives and stores the file with a "recv_" prefix.
                     </div>
                     <!-- Example 6: Chat + File Transfer Server + Client -->
                     <div class="code-block">
@@ -461,20 +578,53 @@ c.close()
                     <h3>5. Lab Resources</h3>
                     <div class="pdf-container">
                         <h4>Lab 3 Task PDF</h4>
-                        <div id="pdf-viewer-1"></div>
+                        <!-- Desktop PDF embed -->
+                        <div id="pdf-viewer-1" class="desktop-pdf"></div>
+                        <!-- Mobile PDF iframe -->
+                        <iframe 
+                            class="mobile-pdf" 
+                            src="pdfs/Lab_03_Task.pdf" 
+                            frameborder="0">
+                        </iframe>
                         <a href="pdfs/Lab_03_Task.pdf" class="btn" target="_blank">Download PDF</a>
                     </div>
 
                 </div>
             </div>
+        </div>
     </section>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfobject/2.2.8/pdfobject.min.js"></script>
     <script>
-        PDFObject.embed("pdfs/Lab_03_Task.pdf#zoom=page-width", "#pdf-viewer-1");
+        function isMobile() {
+            return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        }
+
+        if (!isMobile()) {
+            PDFObject.embed("pdfs/Lab_03_Task.pdf#zoom=page-width", "#pdf-viewer-1");
+        } else {
+            document.querySelectorAll('.desktop-pdf').forEach(el => el.style.display = 'none');
+            document.querySelectorAll('.mobile-pdf').forEach(el => el.style.display = 'block');
+        }
+
         function copyCode(button) {
-            const codeBlock = button.nextElementSibling.querySelector('code');
-            navigator.clipboard.writeText(codeBlock.innerText).then(() => { button.innerText = 'Copied!'; setTimeout(() => { button.innerText = 'Copy'; }, 1500); });
+            try {
+                const codeBlock = button.nextElementSibling.querySelector('code');
+                const text = codeBlock.innerText || codeBlock.textContent || '';
+                navigator.clipboard.writeText(text).then(() => {
+                    const original = button.innerText;
+                    button.innerText = 'Copied!';
+                    setTimeout(() => {
+                        button.innerText = original;
+                    }, 1500);
+                }).catch((err) => {
+                    console.error('Copy failed', err);
+                    alert('Copy failed — please select and copy manually.');
+                });
+            } catch (e) {
+                console.error(e);
+                alert('Unable to copy code block.');
+            }
         }
     </script>
 
@@ -508,5 +658,4 @@ c.close()
         </div>
     </footer>
 </body>
-
 </html>
