@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lab 10 - Routing Protocols | CN Lab Helper</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="style.css" />
+
+    <!-- Highlight.js Theme -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/atom-one-dark.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    <script>
+        hljs.highlightAll();
+    </script>
+
+    <style>
+        .lab-detail {
+            background-color: white;
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 3rem;
+        }
+
+        .lab-detail-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .lab-detail-header h2 {
+            color: var(--primary);
+        }
+
+        .lab-content {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+
+        .lab-explanation {
+            padding-right: 1rem;
+        }
+
+        .lab-explanation h3 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+            margin-top: 2rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .lab-explanation h3:first-child {
+            margin-top: 0;
+        }
+
+        .lab-explanation p {
+            margin-bottom: 1.2rem;
+        }
+
+        .lab-explanation ul {
+            margin: 1rem 0;
+            padding-left: 2rem;
+        }
+
+        .lab-explanation li {
+            margin: 0.5rem 0;
+        }
+
+        .pdf-container {
+            margin: 1.5rem 0;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 1rem;
+            background: #f9f9f9;
+        }
+
+        .pdf-container h4 {
+            margin-bottom: 0.8rem;
+            color: var(--primary);
+            font-size: 1.1rem;
+        }
+
+        .pdf-placeholder {
+            width: 100%;
+            height: 400px;
+            background-color: #e9ecef;
+            border-radius: 4px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #6c757d;
+            margin-bottom: 0.8rem;
+            font-size: 0.9rem;
+        }
+
+        .code-block {
+            position: relative;
+            background-color: #1e1e1e;
+            padding: 1rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: 'Fira Code', monospace;
+            border-left: 5px solid var(--primary);
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: var(--primary);
+            border: none;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: background 0.3s;
+        }
+
+        .copy-btn:hover {
+            background-color: rgba(52, 152, 219, 0.8);
+        }
+
+        .code-explanation {
+            background-color: #f9f9f9;
+            padding: 0.8rem 1rem;
+            border-left: 4px solid var(--primary);
+            border-radius: 5px;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+        }
+
+        table,
+        th,
+        td {
+            border: 1px solid #ddd;
+        }
+
+        th,
+        td {
+            padding: 12px;
+            text-align: left;
+        }
+
+        th {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        .small-note {
+            font-size: 0.9rem;
+            color: #555;
+        }
+
+        .protocol-section {
+            margin: 2rem 0;
+        }
+
+        .protocol-section h4 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--secondary);
+        }
+
+        .routing-commands {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-left: 4px solid #e74c3c;
+        }
+
+        .command-item {
+            display: flex;
+            margin-bottom: 1rem;
+            align-items: flex-start;
+            padding: 0.8rem;
+            background: white;
+            border-radius: 6px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .command-badge {
+            background-color: var(--primary);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.9rem;
+            margin-right: 1rem;
+            min-width: 200px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .command-desc {
+            flex: 1;
+            color: #333;
+            line-height: 1.5;
+        }
+
+        .phase-box {
+            background: #f8f9fa;
+            border-left: 5px solid var(--primary);
+            border-radius: 8px;
+            padding: 1.2rem 1.5rem;
+            margin: 1rem 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .phase-box h4 {
+            color: var(--primary);
+            margin-top: 0;
+        }
+
+        /* Configuration Steps */
+        .config-steps {
+            margin: 1.5rem 0;
+            padding-left: 2rem;
+            line-height: 1.6;
+        }
+
+        .config-steps li {
+            margin-bottom: 0.8rem;
+            padding-left: 0.5rem;
+        }
+
+        /* PDF Viewers */
+        #pdf-viewer-1 {
+            width: 100%;
+            height: 500px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .mobile-pdf {
+            width: 100%;
+            height: 500px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            display: none;
+        }
+
+        /* MOBILE RESPONSIVENESS */
+        @media (max-width: 768px) {
+            .lab-detail {
+                padding: 1.5rem;
+            }
+            
+            .lab-detail-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            .lab-content {
+                display: block;
+                gap: 1rem;
+            }
+
+            .lab-explanation {
+                padding-right: 0;
+            }
+
+            .command-item {
+                flex-direction: column;
+            }
+            
+            .command-badge {
+                margin-bottom: 0.5rem;
+                margin-right: 0;
+                min-width: auto;
+            }
+
+            #pdf-viewer-1 {
+                height: 400px;
+            }
+
+            .mobile-pdf {
+                height: 400px;
+            }
+
+            .pdf-container {
+                padding: 0.8rem;
+                margin: 1rem 0;
+            }
+
+            .pdf-placeholder {
+                height: 300px;
+            }
+            
+            .lab-explanation ul {
+                padding-left: 1.5rem;
+            }
+            
+            .lab-explanation h3 {
+                margin-top: 1.5rem;
+            }
+            
+            table {
+                width: 100%;
+                font-size: 0.85rem;
+                overflow-x: auto;
+                display: block;
+            }
+
+            th, td {
+                padding: 8px;
+            }
+            
+            .routing-commands {
+                padding: 1rem;
+            }
+            
+            .phase-box {
+                padding: 1rem;
+                margin: 0.8rem 0;
+            }
+            
+            .config-steps {
+                margin: 1rem 0;
+                padding-left: 1.5rem;
+            }
+            
+            .config-steps li {
+                margin-bottom: 0.6rem;
+                padding-left: 0.3rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .lab-detail {
+                padding: 1rem;
+            }
+            
+            #pdf-viewer-1 {
+                height: 350px;
+            }
+            
+            .mobile-pdf {
+                height: 350px;
+            }
+            
+            .pdf-placeholder {
+                height: 250px;
+            }
+            
+            .command-badge {
+                font-size: 0.8rem;
+                padding: 0.4rem 0.8rem;
+            }
+            
+            .routing-commands {
+                padding: 0.8rem;
+            }
+            
+            .phase-box {
+                padding: 0.8rem;
+            }
+            
+            .code-block {
+                padding: 0.8rem;
+            }
+            
+            .code-explanation {
+                padding: 0.6rem 0.8rem;
+            }
+            
+            .config-steps li {
+                margin-bottom: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <img src="images/logo2.png" alt="CN Lab Helper Logo" style="height:70px; width:auto;">
+                    <h1>NetLabPro</h1>
+                </div>
+                <nav>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="Netplay.html">NetPlay</a></li>
+                        <li><a href="about.html">About</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Lab Section -->
+    <section class="container">
+        <div class="lab-detail">
+            <div class="lab-detail-header">
+                <h2>Lab 10 - Routing Protocols (Static, OSPF, BGP)</h2>
+                <a href="index.html" class="btn">Back to Labs</a>
+            </div>
+
+            <div class="lab-explanation">
+                <h3>Lab Objective</h3>
+                <p>To understand and implement different routing protocols including static routing, OSPF (Open Shortest Path First), and BGP (Border Gateway Protocol) in network configurations.</p>
+
+                <h3>1. Routing Protocols Overview</h3>
+                
+                <div class="phase-box">
+                    <h4>Default Route</h4>
+                    <p>A default route is used to forward packets whose destination is not in the routing table.</p>
+                    <p>Typically used on stub networks (networks with only one exit path).</p>
+                </div>
+
+                <div class="phase-box">
+                    <h4>Static Routes</h4>
+                    <p>Used when the router is connected to multiple networks and you want to manually define paths to reach them.</p>
+                </div>
+
+                <h3>2. Router Interface Configuration</h3>
+                <p><strong>Example commands:</strong></p>
+
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><code class="language-bash">Router(config)#interface fa0/0
+Router(config-if)#ip address 192.168.1.129 255.255.255.192
+Router(config-if)#no shutdown</code></pre>
+                </div>
+
+                <div class="code-explanation">
+                    <b>Explanation:</b><br>
+                    • <code>fa0/0</code> → Router interface being configured<br>
+                    • <code>ip address 192.168.1.129 255.255.255.192</code> → Assigns IP and subnet mask<br>
+                    • <code>no shutdown</code> → Activates the interface (routers are shut down by default)<br>
+                    Repeat for all interfaces with appropriate IP addresses.
+                </div>
+
+                <h3>3. Default Route Example (Router 3)</h3>
+                
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><code class="language-bash">Router(config)#ip route 0.0.0.0 0.0.0.0 192.168.1.221</code></pre>
+                </div>
+
+                <div class="code-explanation">
+                    <b>Explanation:</b><br>
+                    • <code>0.0.0.0 0.0.0.0</code> → Matches all destinations (default)<br>
+                    • <code>192.168.1.221</code> → Next-hop router to forward packets<br>
+                    Router 3 only has one exit path, so default routing is enough.
+                </div>
+
+                <h3>4. Static Routes Example (Router 0)</h3>
+                
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><code class="language-bash">ip route 192.168.1.64 255.255.255.192 192.168.1.214
+ip route 192.168.1.160 255.255.255.224 192.168.1.209
+ip route 192.168.1.192 255.255.255.240 192.168.1.209
+ip route 192.168.1.224 255.255.255.252 192.168.1.222</code></pre>
+                </div>
+
+                <div class="code-explanation">
+                    <b>Explanation:</b><br>
+                    • Router 0 is connected to multiple networks<br>
+                    • Each command defines a destination network, subnet mask, and next-hop router<br>
+                    • Example: "To reach 192.168.1.64/26, send packets to 192.168.1.214"<br>
+                    Repeat similar configurations on all routers.
+                </div>
+
+                <h3>5. Viewing the Routing Table</h3>
+                
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><code class="language-bash">show ip route</code></pre>
+                </div>
+
+                <div class="code-explanation">
+                    <b>Shows:</b><br>
+                    • Directly connected networks<br>
+                    • Static routes<br>
+                    • Default routes<br>
+                    • Dynamically learned routes (OSPF/BGP)<br>
+                    Alternative: Use Packet Tracer Inspect Tool → Routing Table.
+                </div>
+
+                <h3>6. Troubleshooting Routing Issues</h3>
+                <ul class="config-steps">
+                    <li><strong>Request timed out</strong> → Packet could not return to source; typically the return path is missing.</li>
+                    <li><strong>Destination host unreachable</strong> → Router does not know the path to the destination; forward path is missing.</li>
+                </ul>
+
+                <h3>7. Dynamic Routing: OSPF</h3>
+                
+                <div class="phase-box">
+                    <h4>Overview</h4>
+                    <p>Open Shortest Path First (OSPF) uses Dijkstra's algorithm to find the shortest path.</p>
+                    <p><strong>Supports:</strong></p>
+                    <ul class="config-steps">
+                        <li>Fast convergence</li>
+                        <li>Multi-area and multi-vendor deployment</li>
+                        <li>VLSM/CIDR</li>
+                        <li>Multiple equal-cost paths</li>
+                    </ul>
+                </div>
+
+                <div class="phase-box">
+                    <h4>Terminology</h4>
+                    <ul class="config-steps">
+                        <li>Router ID, Neighbor, Adjacency</li>
+                        <li>Hello Protocol, Link-State Advertisement (LSA)</li>
+                        <li>Topology Database, OSPF Areas, Link Cost</li>
+                    </ul>
+                </div>
+
+                <h4>OSPF Configuration Example</h4>
+                
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><code class="language-bash">router ospf 1
+network 10.0.0.0 0.255.255.255 area 0</code></pre>
+                </div>
+
+                <div class="code-explanation">
+                    <b>Explanation:</b><br>
+                    • <code>1</code> → OSPF process ID<br>
+                    • <code>network 10.0.0.0 0.255.255.255</code> → All interfaces matching 10.x.x.x will participate in OSPF<br>
+                    • <code>area 0</code> → Backbone area<br><br>
+                    <strong>Wildcard Mask:</strong><br>
+                    Wildcard = inverse of subnet mask<br>
+                    Example: Subnet mask /28 → 255.255.255.240 → Wildcard 0.0.0.15
+                </div>
+
+                <h3>8. Dynamic Routing: BGP</h3>
+                
+                <div class="phase-box">
+                    <h4>Overview</h4>
+                    <p>BGP is a path-vector protocol used between autonomous systems (AS).</p>
+                    <p><strong>Makes routing decisions based on:</strong></p>
+                    <ul class="config-steps">
+                        <li>AS path</li>
+                        <li>Next-hop</li>
+                        <li>Local preference</li>
+                        <li>Policies</li>
+                    </ul>
+                    <p>BGP ensures stable, scalable inter-domain routing.</p>
+                </div>
+
+                <h4>BGP Configuration Examples</h4>
+
+                <div class="phase-box">
+                    <h4>Router R0 (AS 1)</h4>
+                    
+                    <div class="code-block">
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        <pre><code class="language-bash">router bgp 1
+neighbor 172.16.0.2 remote-as 71
+network 10.0.0.0 mask 255.0.0.0</code></pre>
+                    </div>
+
+                    <div class="code-explanation">
+                        <b>Explanation:</b><br>
+                        • Router R0 is in AS 1<br>
+                        • Connects to neighbor in AS 71<br>
+                        • Advertises 10.0.0.0/8 network
+                    </div>
+                </div>
+
+                <div class="phase-box">
+                    <h4>Router R1 (AS 71)</h4>
+                    
+                    <div class="code-block">
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        <pre><code class="language-bash">router bgp 71
+neighbor 172.16.0.1 remote-as 1
+neighbor 172.14.0.2 remote-as 79
+network 40.0.0.0 mask 255.0.0.0</code></pre>
+                    </div>
+
+                    <div class="code-explanation">
+                        <b>Explanation:</b><br>
+                        • Router R1 is in AS 71<br>
+                        • Connects to AS 1 and AS 79<br>
+                        • Advertises 40.0.0.0/8 network
+                    </div>
+                </div>
+
+                <div class="phase-box">
+                    <h4>Router R3 (AS 79)</h4>
+                    
+                    <div class="code-block">
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        <pre><code class="language-bash">router bgp 79
+neighbor 172.14.0.1 remote-as 71
+network 40.0.0.0 mask 255.0.0.0</code></pre>
+                    </div>
+
+                    <div class="code-explanation">
+                        <b>Explanation:</b><br>
+                        • Router R3 is in AS 79<br>
+                        • Connects to AS 71<br>
+                        • Advertises 40.0.0.0/8
+                    </div>
+                </div>
+
+                <h3>9. BGP Testing & Verification</h3>
+                
+                <div class="routing-commands">
+                    <h4>Essential BGP Verification Commands</h4>
+                    
+                    <div class="command-item">
+                        <div class="command-badge">ping</div>
+                        <div class="command-desc">Ping from PC to another PC → Check connectivity</div>
+                    </div>
+                    
+                    <div class="command-item">
+                        <div class="command-badge">show ip bgp</div>
+                        <div class="command-desc">Check BGP routes and routing table</div>
+                    </div>
+                    
+                    <div class="command-item">
+                        <div class="command-badge">show ip bgp summary</div>
+                        <div class="command-desc">Check BGP neighbor status and summary information</div>
+                    </div>
+                    
+                    <div class="command-item">
+                        <div class="command-badge">show ip bgp neighbors</div>
+                        <div class="command-desc">Detailed information about BGP neighbors</div>
+                    </div>
+                    
+                    <div class="command-item">
+                        <div class="command-badge">show running-config | section bgp</div>
+                        <div class="command-desc">Check running configuration for BGP settings</div>
+                    </div>
+                </div>
+
+                <div class="code-explanation">
+                    <b>Purpose:</b><br>
+                    • Confirm neighbors are up<br>
+                    • Confirm networks are advertised<br>
+                    • Confirm proper routing paths<br>
+                    • Verify BGP session status and statistics
+                </div>
+
+                <h4>BGP Summary Output Example</h4>
+                
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><code class="language-bash">Router# show ip bgp summary
+BGP router identifier 192.168.1.1, local AS number 1
+BGP table version is 5, main routing table version 5
+4 network entries using 576 bytes of memory
+4 path entries using 208 bytes of memory
+3/2 BGP path/bestpath attribute entries using 408 bytes of memory
+1 BGP AS-PATH entries using 24 bytes of memory
+0 BGP route-map cache entries using 0 bytes of memory
+0 BGP filter-list cache entries using 0 bytes of memory
+BGP using 1216 total bytes of memory
+BGP activity 10/6 prefixes, 10/6 paths, scan interval 60 secs
+
+Neighbor        V    AS MsgRcvd MsgSent   TblVer  InQ OutQ Up/Down  State/PfxRcd
+172.16.0.2      4    71     125     120        5    0    0 01:45:30        2
+172.14.0.2      4    79      98      95        5    0    0 01:30:15        1</code></pre>
+                </div>
+
+                <div class="code-explanation">
+                    <b>Key Fields Explanation:</b><br>
+                    • <strong>Neighbor</strong> → BGP peer IP address<br>
+                    • <strong>AS</strong> → Autonomous System number of the neighbor<br>
+                    • <strong>MsgRcvd/MsgSent</strong> → BGP messages exchanged<br>
+                    • <strong>Up/Down</strong> → Session duration<br>
+                    • <strong>State/PfxRcd</strong> → Session state and prefixes received<br>
+                    • <strong>TblVer</strong> → BGP table version
+                </div>
+
+                <h3>Lab Resources</h3>
+                <div class="pdf-container">
+                    <h4>Lab 10 Task</h4>
+                    <!-- Desktop PDF embed -->
+                    <div id="pdf-viewer-1" class="desktop-pdf"></div>
+                    <!-- Mobile PDF iframe -->
+                    <iframe 
+                        class="mobile-pdf" 
+                        src="pdfs/k230842 Kinza Afzal - Lab 10 Task.pdf" 
+                        frameborder="0">
+                    </iframe>
+                    <a href="pdfs/k230842 Kinza Afzal - Lab 10 Task.pdf" class="btn" target="_blank">Download PDF</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PDF Embed -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfobject/2.2.8/pdfobject.min.js"></script>
+    <script>
+        function isMobile() {
+            return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        }
+
+        if (!isMobile()) {
+            PDFObject.embed("pdfs/k230842 Kinza Afzal - Lab 10 Task.pdf#zoom=page-width", "#pdf-viewer-1");
+        } else {
+            document.querySelectorAll('.desktop-pdf').forEach(el => el.style.display = 'none');
+            document.querySelectorAll('.mobile-pdf').forEach(el => el.style.display = 'block');
+        }
+
+        function copyCode(button) {
+            try {
+                const codeBlock = button.nextElementSibling.querySelector('code');
+                const text = codeBlock.innerText || codeBlock.textContent || '';
+                navigator.clipboard.writeText(text).then(() => {
+                    const original = button.innerText;
+                    button.innerText = 'Copied!';
+                    setTimeout(() => {
+                        button.innerText = original;
+                    }, 1400);
+                }).catch((err) => {
+                    console.error('Copy failed', err);
+                    alert('Copy failed — please select and copy manually.');
+                });
+            } catch (e) {
+                console.error(e);
+                alert('Unable to copy code block.');
+            }
+        }
+    </script>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>About CN Lab Helper</h3>
+                    <p>An interactive platform to help students visualize and understand Computer Networks laboratory experiments through detailed explanations, screenshots, and animations.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <p><a href="index.html">Home</a></p>
+                    <p><a href="Netplay.html">NetPlay</a></p>
+                    <p><a href="about.html">About</a></p>
+                </div>
+                <div class="footer-section">
+                    <h3>Connect With Us</h3>
+                    <div class="social-links">
+                        <a href="https://linkedin.com/in/kinza-afzal7-" target="_blank"><i class="fab fa-linkedin"></i></a>
+                        <a href="https://github.com/kinza7124" target="_blank"><i class="fab fa-github"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 CN Lab Helper created by Kinza. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
