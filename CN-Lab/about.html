@@ -39,13 +39,13 @@ header {
     box-shadow:0 4px 12px rgba(0,0,0,0.1);
     position:sticky;
     top:0;
-    z-index:100;
+    z-index:1000;
 }
 .header-content {
     display:flex;
     justify-content:space-between;
     align-items:center;
-    flex-wrap: wrap;
+    position:relative;
 }
 .logo {
     display:flex;
@@ -53,43 +53,58 @@ header {
     gap:10px;
 }
 .logo img {
-    height:70px;
+    height:50px;
     width:auto;
+    transition:transform 0.3s;
+}
+.logo img:hover {
+    transform:scale(1.1);
 }
 .logo h1 {
-    font-size:1.6rem;
+    font-size:1.8rem;
     font-weight:700;
+    color:white;
+    margin:0;
 }
 
 /* Desktop Nav */
-nav {
+.navbar {
     display:flex;
+    align-items:center;
 }
-nav ul {
+.nav-links {
     display:flex;
     list-style:none;
     gap:2rem;
+    margin:0;
+    padding:0;
 }
-nav a {
+.nav-links li {
+    margin:0;
+}
+.nav-links a {
     color:white;
     text-decoration:none;
     font-weight:500;
     padding:0.5rem 1rem;
     border-radius:4px;
     transition:all 0.3s ease;
+    font-size:1.1rem;
 }
-nav a:hover,nav a.active {
+.nav-links a:hover,.nav-links a.active {
     background-color:rgba(255,255,255,0.2);
 }
 
 /* Mobile Toggle Button */
-.menu-toggle {
+.hamburger {
     display:none;
+    cursor:pointer;
+    font-size:1.8rem;
+    color:white;
     background:none;
     border:none;
-    color:white;
-    font-size:1.8rem;
-    cursor:pointer;
+    padding:5px;
+    z-index:1001;
 }
 
 /* ABOUT SECTION */
@@ -240,34 +255,59 @@ footer {
 
 /* MEDIA QUERIES */
 @media (max-width: 768px) {
-    .menu-toggle {
+    .hamburger {
         display:block;
+        z-index:1001;
     }
-    nav {
-        display:none;
-        width:100%;
-        background:linear-gradient(135deg,var(--primary),var(--secondary));
-        margin-top:1rem;
-        border-radius:8px;
+    .navbar {
+        position:static;
     }
-    nav.active {
-        display:block;
-    }
-    nav ul {
+    .nav-links {
+        position:fixed;
+        top:0;
+        right:-100%;
+        width:280px;
+        height:100vh;
+        background:var(--dark);
         flex-direction:column;
-        gap:0.5rem;
-        padding:1rem 0;
+        padding:80px 30px 30px;
+        transition:right 0.3s ease-in-out;
+        box-shadow:-5px 0 15px rgba(0,0,0,0.1);
+        z-index:999;
     }
-    nav li {
-        text-align:center;
+    .nav-links.active {
+        right:0;
+    }
+    .nav-links li {
+        margin-bottom:20px;
+        text-align:left;
+    }
+    .nav-links li:last-child {
+        margin-bottom:0;
+    }
+    .nav-links a {
+        color:white;
+        display:block;
+        padding:12px 15px;
+        border-radius:6px;
+        font-size:1.1rem;
+        text-align:left;
+        border:none;
+    }
+    .nav-links a:hover,.nav-links a.active {
+        background-color:var(--secondary);
+        color:white;
     }
     .header-content {
-        flex-direction:column;
-        align-items:flex-start;
-    }
-    .logo {
+        flex-direction:row;
+        align-items:center;
         justify-content:space-between;
-        width:100%;
+    }
+    .logo img {
+        height:40px;
+    }
+    .logo h1 {
+        font-size:1.4rem;
     }
     .about-section {
         padding:1.5rem;
@@ -280,7 +320,6 @@ footer {
         left: 0;
         transform: none;
     }
-
 }
 
 @media (max-width: 480px) {
@@ -306,10 +345,12 @@ footer {
             <div class="logo">
                 <img src="images/logo2.png" alt="CN Lab Helper Logo">
                 <h1>NetLabPro</h1>
-                <button class="menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></button>
             </div>
-            <nav id="mainNav">
-                <ul>
+            <nav class="navbar">
+                <button class="hamburger" id="hamburger" onclick="toggleMobileNav()">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <ul class="nav-links" id="navLinks">
                     <li><a href="index.html">Home</a></li>
                     <li><a href="Netplay.html">NetPlay</a></li>
                     <li><a href="about.html" class="active">About</a></li>
@@ -399,7 +440,7 @@ footer {
             <div class="footer-section">
                 <h3>Quick Links</h3>
                 <p><a href="index.html">Home</a></p>
-                <p><a href="netplay.html">NetPlay</a></p>
+                <p><a href="Netplay.html">NetPlay</a></p>
                 <p><a href="about.html">About</a></p>
             </div>
             <div class="footer-section">
@@ -417,17 +458,36 @@ footer {
 </footer>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    const menuToggle = document.getElementById('menuToggle');
-    const mainNav = document.getElementById('mainNav');
-    menuToggle.addEventListener('click', function() {
-        mainNav.classList.toggle('active');
-        const icon = menuToggle.querySelector('i');
-        icon.classList.toggle('fa-bars');
-        icon.classList.toggle('fa-times');
+    // Mobile Navigation Toggle
+    function toggleMobileNav() {
+        const navLinks = document.getElementById('navLinks');
+        const hamburger = document.getElementById('hamburger');
+        navLinks.classList.toggle('active');
+        const icon = hamburger.querySelector('i');
+        if (navLinks.classList.contains('active')) {
+            icon.classList.remove('fa-bars');
+            icon.classList.add('fa-times');
+        } else {
+            icon.classList.remove('fa-times');
+            icon.classList.add('fa-bars');
+        }
+    }
+
+    // Close mobile nav when clicking outside
+    document.addEventListener('click', (e) => {
+        const navLinks = document.getElementById('navLinks');
+        const hamburger = document.getElementById('hamburger');
+        if (navLinks && !navLinks.contains(e.target) && hamburger && !hamburger.contains(e.target)) {
+            navLinks.classList.remove('active');
+            if (hamburger) {
+                const icon = hamburger.querySelector('i');
+                if (icon) {
+                    icon.classList.remove('fa-times');
+                    icon.classList.add('fa-bars');
+                }
+            }
+        }
     });
-});
 </script>
 </body>
 </html>
-
