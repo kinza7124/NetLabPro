@@ -573,8 +573,11 @@
                 <img src="images/logo2.png" alt="CN Lab Helper Logo" style="height:70px; width:auto;">
                     <h1>NetLabPro</h1>
                 </div>
-                <nav>
-                    <ul>
+                <nav class="navbar">
+                    <button class="hamburger" id="hamburger" onclick="toggleMobileNav()">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <ul class="nav-links" id="navLinks">
                         <li><a href="index.html">Home</a></li>
                         <li><a href="Netplay.html">NetPlay</a></li>
                         <li><a href="about.html">About</a></li>
@@ -1092,8 +1095,39 @@
             </div>
         </div>
     </footer>
+
+    <script>
+        // Mobile Navigation Toggle
+        function toggleMobileNav() {
+            const navLinks = document.getElementById('navLinks');
+            const hamburger = document.getElementById('hamburger');
+            navLinks.classList.toggle('active');
+            const icon = hamburger.querySelector('i');
+            if (navLinks.classList.contains('active')) {
+                icon.classList.remove('fa-bars');
+                icon.classList.add('fa-times');
+            } else {
+                icon.classList.remove('fa-times');
+                icon.classList.add('fa-bars');
+            }
+        }
+
+        // Close mobile nav when clicking outside
+        document.addEventListener('click', (e) => {
+            const navLinks = document.getElementById('navLinks');
+            const hamburger = document.getElementById('hamburger');
+            if (navLinks && !navLinks.contains(e.target) && hamburger && !hamburger.contains(e.target)) {
+                navLinks.classList.remove('active');
+                if (hamburger) {
+                    const icon = hamburger.querySelector('i');
+                    if (icon) {
+                        icon.classList.remove('fa-times');
+                        icon.classList.add('fa-bars');
+                    }
+                }
+            }
+        });
+    </script>
 </body>
-
 </html>
-
 
