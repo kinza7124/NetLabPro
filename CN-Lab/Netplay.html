@@ -148,6 +148,8 @@ header {
     padding:1.5rem; 
     text-align:center; 
     border-radius:8px 8px 0 0; 
+    position: relative;
+    min-height: 60px;
 }
 .game-card-body, .lab-content { 
     padding:1.5rem; 
@@ -600,11 +602,11 @@ header {
 </div>
 
 <div id="gameArea" class="game-card" style="display: none;">
-    <div class="game-card-header" style="position: relative;">
-        <button onclick="backToModes()" style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.2); border: none; color: white; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; font-weight: 600; transition: all 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+    <div class="game-card-header" style="position: relative; padding-left: 4rem;">
+        <button onclick="backToModes()" style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.2); border: none; color: white; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; font-weight: 600; transition: all 0.3s; z-index: 10;" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
             <i class="fas fa-arrow-left"></i> Back
         </button>
-        <h3 id="gameTitle" style="margin: 0;">Welcome Hero!</h3>
+        <h3 id="gameTitle" style="margin: 0; text-align: center;">Welcome Hero!</h3>
     </div>
     <div class="game-card-body">
         <p id="gameDescription">You are the network administrator. Solve network issues before time runs out!</p>
@@ -639,6 +641,10 @@ header {
 let currentGameMode = 'troubleshooting';
 
 function selectGameMode(mode) {
+    // Clear any existing intervals first
+    clearInterval(timerInterval);
+    timerInterval = null;
+    
     currentGameMode = mode;
     
     // Reset all game states when switching modes
@@ -646,7 +652,7 @@ function selectGameMode(mode) {
     current = 0;
     correctStreak = 0;
     gameQuestions = [];
-    clearInterval(timerInterval);
+    timeLeft = 20;
     
     // Reset escape game state if switching away from it
     if (mode !== 'escape') {
@@ -665,11 +671,17 @@ function selectGameMode(mode) {
         card.style.border = '2px solid transparent';
         card.style.transform = 'scale(1)';
     });
-    event.currentTarget.style.border = '2px solid var(--secondary)';
-    event.currentTarget.style.transform = 'scale(1.05)';
+    if (event && event.currentTarget) {
+        event.currentTarget.style.border = '2px solid var(--secondary)';
+        event.currentTarget.style.transform = 'scale(1.05)';
+    }
     
     document.getElementById('gameArea').style.display = 'block';
     document.getElementById('gameModeSelection').style.display = 'none';
+    document.getElementById('finalMessage').innerHTML = '';
+    document.getElementById('progressBarContainer').style.display = 'none';
+    document.getElementById('timer').innerText = '';
+    document.getElementById("scorePanel").style.display = "none";
     
     const titles = {
         'troubleshooting': 'Network Troubleshooting Hero',
@@ -687,22 +699,15 @@ function selectGameMode(mode) {
         'escape': 'You\'re lost in a network forest! Answer questions correctly to find your way out!'
     };
     
-    document.getElementById('gameTitle').textContent = titles[mode];
-    document.getElementById('gameDescription').textContent = descriptions[mode];
-    document.getElementById('startBtn').textContent = mode === 'escape' ? '🌲 Enter the Forest' : 'Start Game';
-    document.getElementById('finalMessage').innerHTML = '';
-    document.getElementById('progressBarContainer').style.display = 'none';
-    document.getElementById('timer').innerText = '';
-    
     // Special start screen for escape game
     if (mode === 'escape') {
         const area = document.getElementById("gameArea");
-    area.innerHTML = `
-        <div class="game-card-header" style="background: linear-gradient(135deg, #2d5016 0%, #4a7c2a 100%); position: relative;">
+        area.innerHTML = `
+        <div class="game-card-header" style="background: linear-gradient(135deg, #2d5016 0%, #4a7c2a 100%); position: relative; padding-left: 4rem;">
             <button onclick="backToModes()" style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.2); border: none; color: white; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; font-weight: 600; transition: all 0.3s; z-index: 10;" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
                 <i class="fas fa-arrow-left"></i> Back
             </button>
-            <h3 style="margin: 0;">🌲 Escape the Network Forest</h3>
+            <h3 style="margin: 0; text-align: center;">🌲 Escape the Network Forest</h3>
         </div>
             <div class="game-card-body" style="text-align: center;">
                 <div style="font-size: 5rem; margin-bottom: 1.5rem;">🌲🌳🌲</div>
@@ -727,6 +732,21 @@ function selectGameMode(mode) {
                     🌲 Begin Your Journey
                 </button>
             </div>
+        `;
+    } else {
+        // Regular game modes - show start screen
+        const area = document.getElementById('gameArea');
+        area.innerHTML = `
+        <div class="game-card-header" style="position: relative; padding-left: 4rem;">
+            <button onclick="backToModes()" style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.2); border: none; color: white; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; font-weight: 600; transition: all 0.3s; z-index: 10;" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                <i class="fas fa-arrow-left"></i> Back
+            </button>
+            <h3 id="gameTitle" style="margin: 0; text-align: center;">${titles[mode]}</h3>
+        </div>
+        <div class="game-card-body">
+            <p id="gameDescription">${descriptions[mode]}</p>
+            <button class="btn" onclick="startGame()" id="startBtn">Start Game</button>
+        </div>
         `;
     }
 }
@@ -790,10 +810,20 @@ function startGame(){
         return;
     }
     
-    score=0; current=0; correctStreak=0;
-    document.getElementById("score").innerText=score;
-    document.getElementById("finalMessage").innerHTML="";
-    document.getElementById("progressBarContainer").style.display="block";
+    // Clear any existing intervals
+    clearInterval(timerInterval);
+    timerInterval = null;
+    
+    // Reset game state
+    score = 0; 
+    current = 0; 
+    correctStreak = 0;
+    timeLeft = currentGameMode === 'subnetting' ? 30 : 20;
+    
+    document.getElementById("score").innerText = score;
+    document.getElementById("finalMessage").innerHTML = "";
+    document.getElementById("progressBarContainer").style.display = "block";
+    document.getElementById("timer").innerText = "";
     
     // Show score panel
     document.getElementById("scorePanel").style.display = "block";
@@ -804,14 +834,21 @@ function startGame(){
     
     // Load questions based on game mode
     if (currentGameMode === 'troubleshooting') {
-        gameQuestions = scenarios;
+        gameQuestions = [...scenarios];
     } else if (currentGameMode === 'subnetting') {
-        gameQuestions = subnettingQuestions;
+        gameQuestions = [...subnettingQuestions];
     } else if (currentGameMode === 'commands') {
         setupCommandGame();
         return;
     } else if (currentGameMode === 'protocols') {
-        gameQuestions = protocolQuestions;
+        gameQuestions = [...protocolQuestions];
+    }
+    
+    // Ensure we have questions
+    if (!gameQuestions || gameQuestions.length === 0) {
+        alert('Error loading questions. Please try selecting the game mode again.');
+        backToModes();
+        return;
     }
     
     loadQuestion(current);
@@ -859,11 +896,11 @@ function loadQuestion(n){
     const hint = q.hint || q.explanation || '';
     
     area.innerHTML=`
-        <div class="game-card-header" style="position: relative;">
+        <div class="game-card-header" style="position: relative; padding-left: 4rem;">
             <button onclick="backToModes()" style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.2); border: none; color: white; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; font-weight: 600; transition: all 0.3s; z-index: 10;" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
                 <i class="fas fa-arrow-left"></i> Back
             </button>
-            <h3 style="margin: 0;">${title}</h3>
+            <h3 style="margin: 0; text-align: center;">${title}</h3>
         </div>
         <div class="game-card-body">
             <p>${description}</p>
@@ -892,11 +929,11 @@ function setupCommandGame() {
     
     const area = document.getElementById("gameArea");
     area.innerHTML = `
-        <div class="game-card-header" style="position: relative;">
+        <div class="game-card-header" style="position: relative; padding-left: 4rem;">
             <button onclick="backToModes()" style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.2); border: none; color: white; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; font-weight: 600; transition: all 0.3s; z-index: 10;" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
                 <i class="fas fa-arrow-left"></i> Back
             </button>
-            <h3 style="margin: 0;">Command Master</h3>
+            <h3 style="margin: 0; text-align: center;">Command Master</h3>
         </div>
         <div class="game-card-body">
             <p>Match each command with its description. Drag commands to descriptions or click to match!</p>
@@ -1154,6 +1191,7 @@ function showFinal(){
 function backToModes() {
     // Clear any intervals
     clearInterval(timerInterval);
+    timerInterval = null;
     
     // Hide game area and show mode selection
     document.getElementById('gameArea').style.display = 'none';
@@ -1170,6 +1208,7 @@ function backToModes() {
     current = 0;
     correctStreak = 0;
     gameQuestions = [];
+    timeLeft = 20;
     document.getElementById("score").innerText = score;
     
     // Reset escape game state
@@ -1183,11 +1222,29 @@ function backToModes() {
         stageQuestionsAnswered: 0
     };
     
+    // Reset current game mode
+    currentGameMode = null;
+    
     // Reset mode card selections
     document.querySelectorAll('.mode-card').forEach(card => {
         card.style.border = '2px solid transparent';
         card.style.transform = 'scale(1)';
     });
+    
+    // Reset game area to initial state
+    const area = document.getElementById('gameArea');
+    area.innerHTML = `
+        <div class="game-card-header" style="position: relative; padding-left: 4rem;">
+            <button onclick="backToModes()" style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.2); border: none; color: white; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; font-weight: 600; transition: all 0.3s; z-index: 10;" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                <i class="fas fa-arrow-left"></i> Back
+            </button>
+            <h3 id="gameTitle" style="margin: 0; text-align: center;">Welcome Hero!</h3>
+        </div>
+        <div class="game-card-body">
+            <p id="gameDescription">You are the network administrator. Solve network issues before time runs out!</p>
+            <button class="btn" onclick="startGame()" id="startBtn">Start Mission</button>
+        </div>
+    `;
 }
 
 function updateProgress(){
@@ -1273,11 +1330,11 @@ function startEscapeGame() {
     const progressPercent = Math.round((questionsDone / totalQuestions) * 100);
     
     area.innerHTML = `
-        <div class="game-card-header" style="background: linear-gradient(135deg, ${currentStage.color} 0%, ${currentStage.color}dd 100%); position: relative;">
+        <div class="game-card-header" style="background: linear-gradient(135deg, ${currentStage.color} 0%, ${currentStage.color}dd 100%); position: relative; padding-left: 4rem;">
             <button onclick="backToModes()" style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.2); border: none; color: white; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; font-weight: 600; transition: all 0.3s; z-index: 10;" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
                 <i class="fas fa-arrow-left"></i> Back
             </button>
-            <h3 style="margin: 0;">${currentStage.icon} ${currentStage.name}</h3>
+            <h3 style="margin: 0; text-align: center;">${currentStage.icon} ${currentStage.name}</h3>
         </div>
         <div class="game-card-body">
             <!-- Story Box -->
@@ -1506,11 +1563,11 @@ function completeEscapeStage() {
     const currentStage = escapeStages[escapeGameState.stage - 1];
     
     area.innerHTML = `
-        <div class="game-card-header" style="background: linear-gradient(135deg, ${completedStage.color} 0%, ${completedStage.color}dd 100%); position: relative;">
+        <div class="game-card-header" style="background: linear-gradient(135deg, ${completedStage.color} 0%, ${completedStage.color}dd 100%); position: relative; padding-left: 4rem;">
             <button onclick="backToModes()" style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.2); border: none; color: white; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; font-weight: 600; transition: all 0.3s; z-index: 10;" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
                 <i class="fas fa-arrow-left"></i> Back
             </button>
-            <h3 style="margin: 0;">🎉 Stage Complete!</h3>
+            <h3 style="margin: 0; text-align: center;">🎉 Stage Complete!</h3>
         </div>
         <div class="game-card-body" style="text-align: center;">
             <div style="font-size: 5rem; margin-bottom: 1rem; animation: bounce 1s ease-in-out infinite;">✨</div>
@@ -1571,11 +1628,11 @@ function winEscapeGame() {
     }
     
     area.innerHTML = `
-        <div class="game-card-header" style="background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%); position: relative;">
+        <div class="game-card-header" style="background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%); position: relative; padding-left: 4rem;">
             <button onclick="backToModes()" style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.2); border: none; color: white; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; font-weight: 600; transition: all 0.3s; z-index: 10;" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
                 <i class="fas fa-arrow-left"></i> Back
             </button>
-            <h3 style="margin: 0;">🏆 VICTORY!</h3>
+            <h3 style="margin: 0; text-align: center;">🏆 VICTORY!</h3>
         </div>
         <div class="game-card-body" style="text-align: center;">
             <div style="font-size: 6rem; margin-bottom: 1rem; animation: bounce 1s ease-in-out infinite;">🎉</div>
@@ -1644,11 +1701,11 @@ function gameOverEscape() {
     }
     
     area.innerHTML = `
-        <div class="game-card-header" style="background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%); position: relative;">
+        <div class="game-card-header" style="background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%); position: relative; padding-left: 4rem;">
             <button onclick="backToModes()" style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.2); border: none; color: white; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; font-weight: 600; transition: all 0.3s; z-index: 10;" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
                 <i class="fas fa-arrow-left"></i> Back
             </button>
-            <h3 style="margin: 0;">💀 Game Over</h3>
+            <h3 style="margin: 0; text-align: center;">💀 Game Over</h3>
         </div>
         <div class="game-card-body" style="text-align: center;">
             <div style="font-size: 5rem; margin-bottom: 1rem;">😢</div>
@@ -1759,4 +1816,8 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 </body>
 </html>
+
+
+
+
 
