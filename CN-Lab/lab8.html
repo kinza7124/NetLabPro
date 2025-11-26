@@ -73,28 +73,30 @@
         }
 
         .pdf-container {
-            margin: 1rem 0;
+            margin: 1.5rem 0;
             border: 1px solid #e0e0e0;
-            border-radius: 6px;
-            padding: 0.8rem;
+            border-radius: 8px;
+            padding: 1rem;
             background: #f9f9f9;
         }
 
         .pdf-container h4 {
-            margin-bottom: 1rem;
+            margin-bottom: 0.8rem;
             color: var(--primary);
+            font-size: 1.1rem;
         }
 
         .pdf-placeholder {
             width: 100%;
-            height: 500px;
+            height: 400px;
             background-color: #e9ecef;
             border-radius: 4px;
             display: flex;
             justify-content: center;
             align-items: center;
             color: #6c757d;
-            margin-bottom: 1rem;
+            margin-bottom: 0.8rem;
+            font-size: 0.9rem;
         }
 
         .code-block {
@@ -285,6 +287,14 @@
             border-radius: 4px;
         }
 
+        .mobile-pdf {
+            width: 100%;
+            height: 500px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            display: none;
+        }
+
         /* MOBILE RESPONSIVENESS - Same as Lab 1 */
         @media (max-width: 768px) {
             /* Lab header adjustment */
@@ -351,6 +361,24 @@
                 margin: 1rem 0;
             }
 
+            /* PDF viewers */
+            #pdf-viewer-1 {
+                height: 400px;
+            }
+
+            .mobile-pdf {
+                height: 400px;
+            }
+
+            .pdf-container {
+                padding: 0.8rem;
+                margin: 1rem 0;
+            }
+
+            .pdf-placeholder {
+                height: 300px;
+            }
+
             /* Footer social links */
             .footer-content {
                 display: block;
@@ -360,8 +388,21 @@
             .footer-section {
                 margin-bottom: 1rem;
             }
-            
-     }
+        }
+
+        @media (max-width: 480px) {
+            #pdf-viewer-1 {
+                height: 350px;
+            }
+
+            .mobile-pdf {
+                height: 350px;
+            }
+
+            .pdf-placeholder {
+                height: 250px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -373,8 +414,11 @@
                 <img src="images/logo2.png" alt="CN Lab Helper Logo" style="height:90px; width:auto;">
                     <h1>NetLabPro</h1>
                 </div>
-                <nav>
-                    <ul>
+                <nav class="navbar">
+                    <button class="hamburger" id="hamburger" onclick="toggleMobileNav()">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <ul class="nav-links" id="navLinks">
                         <li><a href="index.html">Home</a></li>
                         <li><a href="Netplay.html">NetPlay</a></li>
                         <li><a href="about.html">About</a></li>
@@ -720,7 +764,7 @@ interface s0/0/0
 
         if (!isMobile()) {
             // Desktop: embed PDFs
-            PDFObject.embed("pdfs/k230842 Kinza Afzal - Lab 8 Task.pdf#zoom=page-fit", "#pdf-viewer-1");
+            PDFObject.embed("pdfs/k230842 Kinza Afzal - Lab 8 Task.pdf#zoom=page-width", "#pdf-viewer-1");
         } else {
             // Mobile: show iframe
             document.querySelectorAll('.desktop-pdf').forEach(el => el.style.display = 'none');
@@ -775,6 +819,41 @@ interface s0/0/0
             </div>
         </div>
     </footer>
-</body>
 
+    <script>
+        // Mobile Navigation Toggle
+        function toggleMobileNav() {
+            const navLinks = document.getElementById('navLinks');
+            const hamburger = document.getElementById('hamburger');
+            navLinks.classList.toggle('active');
+            const icon = hamburger.querySelector('i');
+            if (navLinks.classList.contains('active')) {
+                icon.classList.remove('fa-bars');
+                icon.classList.add('fa-times');
+            } else {
+                icon.classList.remove('fa-times');
+                icon.classList.add('fa-bars');
+            }
+        }
+
+        // Close mobile nav when clicking outside
+        document.addEventListener('click', (e) => {
+            const navLinks = document.getElementById('navLinks');
+            const hamburger = document.getElementById('hamburger');
+            if (navLinks && !navLinks.contains(e.target) && hamburger && !hamburger.contains(e.target)) {
+                navLinks.classList.remove('active');
+                if (hamburger) {
+                    const icon = hamburger.querySelector('i');
+                    if (icon) {
+                        icon.classList.remove('fa-times');
+                        icon.classList.add('fa-bars');
+                    }
+                }
+            }
+        });
+    </script>
+</body>
 </html>
+
+
+
