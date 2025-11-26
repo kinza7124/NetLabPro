@@ -43,13 +43,13 @@ header {
     box-shadow:0 4px 12px rgba(0,0,0,0.1);
     position:sticky;
     top:0;
-    z-index:100;
+    z-index:1000;
 }
 .header-content {
     display:flex;
     justify-content:space-between;
     align-items:center;
-    flex-wrap: wrap;
+    position:relative;
 }
 .logo {
     display:flex;
@@ -57,43 +57,58 @@ header {
     gap:10px;
 }
 .logo img {
-    height:70px;
+    height:50px;
     width:auto;
+    transition:transform 0.3s;
+}
+.logo img:hover {
+    transform:scale(1.1);
 }
 .logo h1 {
-    font-size:1.6rem;
+    font-size:1.8rem;
     font-weight:700;
+    color:white;
+    margin:0;
 }
 
 /* Desktop Nav */
-nav {
+.navbar {
     display:flex;
+    align-items:center;
 }
-nav ul {
+.nav-links {
     display:flex;
     list-style:none;
     gap:2rem;
+    margin:0;
+    padding:0;
 }
-nav a {
+.nav-links li {
+    margin:0;
+}
+.nav-links a {
     color:white;
     text-decoration:none;
     font-weight:500;
     padding:0.5rem 1rem;
     border-radius:4px;
     transition:all 0.3s ease;
+    font-size:1.1rem;
 }
-nav a:hover,nav a.active {
+.nav-links a:hover,.nav-links a.active {
     background-color:rgba(255,255,255,0.2);
 }
 
 /* Mobile Toggle Button */
-.menu-toggle {
+.hamburger {
     display:none;
+    cursor:pointer;
+    font-size:1.8rem;
+    color:white;
     background:none;
     border:none;
-    color:white;
-    font-size:1.8rem;
-    cursor:pointer;
+    padding:5px;
+    z-index:1001;
 }
 
 .section-title { 
@@ -153,6 +168,7 @@ nav a:hover,nav a.active {
 .opt-btn:hover { 
     background: var(--secondary); 
     color:white; 
+    transform: translateX(5px);
 }
 .opt-correct { 
     background: var(--success); 
@@ -166,15 +182,19 @@ nav a:hover,nav a.active {
 }
 
 #scorePanel { 
-position: absolute; 
-top:140px;
-right:20px; 
-background:var(--light); 
-padding:12px; 
-border-radius:8px; 
-box-shadow:0 4px 12px rgba(0,0,0,0.1);
-font-weight:700;
-z-index:1000; 
+    position: fixed; 
+    top: 100px;
+    right: 20px; 
+    background: rgba(44, 62, 80, 0.95);
+    backdrop-filter: blur(10px);
+    color: white;
+    padding: 15px; 
+    border-radius: 12px; 
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    font-weight: 700;
+    z-index: 1000;
+    min-width: 180px;
+    display: none; /* Hidden by default, shown when game starts */
 }
 
 #finalMessage { 
@@ -311,36 +331,153 @@ z-index:1000;
 
 /* MEDIA QUERIES */
 @media (max-width: 768px) {
-    .menu-toggle {
+    .hamburger {
         display:block;
+        z-index:1001;
     }
-    nav {
-        display:none;
-        width:100%;
-        background:linear-gradient(135deg,var(--primary),var(--secondary));
-        margin-top:1rem;
-        border-radius:8px;
+    .navbar {
+        position:static;
     }
-    nav.active {
-        display:block;
-    }
-    nav ul {
+    .nav-links {
+        position:fixed;
+        top:0;
+        right:-100%;
+        width:280px;
+        height:100vh;
+        background:var(--dark);
         flex-direction:column;
-        gap:0.5rem;
-        padding:1rem 0;
+        padding:80px 30px 30px;
+        transition:right 0.3s ease-in-out;
+        box-shadow:-5px 0 15px rgba(0,0,0,0.1);
+        z-index:999;
     }
-    nav li {
-        text-align:center;
+    .nav-links.active {
+        right:0;
+    }
+    .nav-links li {
+        margin-bottom:20px;
+        text-align:left;
+    }
+    .nav-links li:last-child {
+        margin-bottom:0;
+    }
+    .nav-links a {
+        color:white;
+        display:block;
+        padding:12px 15px;
+        border-radius:6px;
+        font-size:1.1rem;
+        text-align:left;
+        border:none;
+    }
+    .nav-links a:hover,.nav-links a.active {
+        background-color:var(--secondary);
+        color:white;
+    }
+    .logo img {
+        height:40px;
+    }
+    .logo h1 {
+        font-size:1.4rem;
+    }
+    nav a {
+        display: block;
+        padding: 15px 20px;
+        border-radius: 8px;
+        width: 100%;
+        transition: all 0.3s ease;
+    }
+    nav a:hover, nav a.active {
+        background-color: var(--secondary);
+        transform: translateX(5px);
     }
     .header-content {
-        flex-direction:column;
-        align-items:flex-start;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
     }
     .logo {
-        justify-content:space-between;
-        width:100%;
+        justify-content: space-between;
+        width: 100%;
     }
 }
+.mode-card {
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.mode-card:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: var(--shadow-md);
+    border-color: var(--secondary) !important;
+}
+
+#scorePanel {
+    background: rgba(44, 62, 80, 0.95);
+    backdrop-filter: blur(10px);
+    color: white;
+    border-radius: 12px;
+    padding: 15px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    min-width: 180px;
+}
+
+#scorePanel div {
+    font-size: 0.9rem;
+}
+
+#xpBar {
+    background: linear-gradient(90deg, var(--success) 0%, #27ae60 100%);
+    box-shadow: 0 0 10px rgba(46, 204, 113, 0.5);
+}
+
+.mode-card:active {
+    transform: translateY(-4px) scale(1.01);
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(400px);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes floatUp {
+    from {
+        transform: translateY(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateY(-30px);
+        opacity: 0;
+    }
+}
+
+@keyframes fadeInOut {
+    0%, 100% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+    50% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+}
+
+@keyframes popInOut {
+    0% { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
+    20% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); }
+    40% { transform: translate(-50%, -50%) scale(1); }
+    80% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+    100% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+}
+
+@keyframes fadeOut {
+    to { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+}
+
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
 @media(max-width: 768px) {
     /* Game cards and lab details full width */
 
@@ -367,11 +504,18 @@ z-index:1000;
     /* Score panel fixed at bottom */
     #scorePanel {
         position: fixed;
-        bottom: 20px;
-        right: 20px;
-        top: auto;
+        top: 100px;
+        right: 10px;
+        font-size: 0.8rem;
+        padding: 10px 12px;
+        max-width: 140px;
+    }
+    
+    #achievementToast {
+        right: 10px;
+        top: 10px;
+        padding: 0.8rem 1rem;
         font-size: 0.9rem;
-        padding: 8px 12px;
     }
 
     /* Timer and progress bar adjustments */
@@ -409,10 +553,12 @@ z-index:1000;
       <div class="logo">
           <img src="images/logo2.png" alt="CN Lab Helper Logo">
           <h1>NetLabPro</h1>
-          <button class="menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></button>
+          <button class="hamburger" id="hamburger" onclick="toggleMobileNav()">
+              <i class="fas fa-bars"></i>
+          </button>
       </div>
-      <nav id="mainNav">
-          <ul>
+      <nav class="navbar">
+          <ul class="nav-links" id="navLinks">
               <li><a href="index.html">Home</a></li>
               <li><a href="Netplay.html" class="active">NetPlay</a></li>
               <li><a href="about.html">About</a></li>
@@ -422,25 +568,169 @@ z-index:1000;
   </div>
 </header>
 <section class="container">
-<h2 class="section-title">Network Hero RPG</h2>
-<div id="gameArea" class="game-card">
-    <div class="game-card-header"><h3>Welcome Hero!</h3></div>
+<h2 class="section-title"><i class="fas fa-gamepad"></i> NetPlay - Learning Games</h2>
+
+<!-- Game Mode Selection -->
+<div id="gameModeSelection" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
+    <div class="mode-card" onclick="selectGameMode('troubleshooting')" style="background: white; padding: 2rem; border-radius: 16px; text-align: center; cursor: pointer; box-shadow: var(--shadow-sm); transition: all 0.3s; border: 2px solid transparent;">
+        <div style="font-size: 3rem; margin-bottom: 1rem; color: var(--accent);"><i class="fas fa-tools"></i></div>
+        <h3 style="color: var(--primary); margin-bottom: 0.5rem;">Troubleshooting Hero</h3>
+        <p style="color: #666;">Solve network problems under time pressure</p>
+    </div>
+    <div class="mode-card" onclick="selectGameMode('subnetting')" style="background: white; padding: 2rem; border-radius: 16px; text-align: center; cursor: pointer; box-shadow: var(--shadow-sm); transition: all 0.3s; border: 2px solid transparent;">
+        <div style="font-size: 3rem; margin-bottom: 1rem; color: var(--secondary);"><i class="fas fa-calculator"></i></div>
+        <h3 style="color: var(--primary); margin-bottom: 0.5rem;">Subnetting Challenge</h3>
+        <p style="color: #666;">Master subnetting calculations</p>
+    </div>
+    <div class="mode-card" onclick="selectGameMode('commands')" style="background: white; padding: 2rem; border-radius: 16px; text-align: center; cursor: pointer; box-shadow: var(--shadow-sm); transition: all 0.3s; border: 2px solid transparent;">
+        <div style="font-size: 3rem; margin-bottom: 1rem; color: var(--success);"><i class="fas fa-terminal"></i></div>
+        <h3 style="color: var(--primary); margin-bottom: 0.5rem;">Command Master</h3>
+        <p style="color: #666;">Match commands with their functions</p>
+    </div>
+    <div class="mode-card" onclick="selectGameMode('protocols')" style="background: white; padding: 2rem; border-radius: 16px; text-align: center; cursor: pointer; box-shadow: var(--shadow-sm); transition: all 0.3s; border: 2px solid transparent;">
+        <div style="font-size: 3rem; margin-bottom: 1rem; color: var(--warning);"><i class="fas fa-network-wired"></i></div>
+        <h3 style="color: var(--primary); margin-bottom: 0.5rem;">Protocol Quiz</h3>
+        <p style="color: #666;">Test your protocol knowledge</p>
+    </div>
+    <div class="mode-card" onclick="selectGameMode('escape')" style="background: linear-gradient(135deg, #2d5016 0%, #4a7c2a 100%); color: white; padding: 2rem; border-radius: 16px; text-align: center; cursor: pointer; box-shadow: var(--shadow-sm); transition: all 0.3s; border: 2px solid transparent;">
+        <div style="font-size: 3rem; margin-bottom: 1rem;"><i class="fas fa-tree"></i></div>
+        <h3 style="margin-bottom: 0.5rem;">🌲 Escape the Network Forest</h3>
+        <p style="opacity: 0.9;">Solve networking puzzles to escape!</p>
+    </div>
+</div>
+
+<div id="gameArea" class="game-card" style="display: none;">
+    <div class="game-card-header" style="position: relative;">
+        <button onclick="backToModes()" style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.2); border: none; color: white; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; font-weight: 600; transition: all 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+            <i class="fas fa-arrow-left"></i> Back
+        </button>
+        <h3 id="gameTitle" style="margin: 0;">Welcome Hero!</h3>
+    </div>
     <div class="game-card-body">
-        <p>You are the network administrator. Solve network issues before time runs out!</p>
-        <button class="btn" onclick="startGame()">Start Mission</button>
+        <p id="gameDescription">You are the network administrator. Solve network issues before time runs out!</p>
+        <button class="btn" onclick="startGame()" id="startBtn">Start Mission</button>
     </div>
 </div>
 
 <div id="finalMessage"></div>
 <div id="timer"></div>
-<div id="progressBarContainer">
+<div id="progressBarContainer" style="display: none;">
     <div id="progressBar"></div>
 </div>
 </section>
 
-<div id="scorePanel">Score: <span id="score">0</span></div>
+<div id="scorePanel">
+    <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+        <div><strong>Score:</strong> <span id="score">0</span></div>
+        <div><strong>Level:</strong> <span id="level">1</span></div>
+        <div><strong>XP:</strong> <span id="xp">0</span>/<span id="xpNeeded">100</span></div>
+        <div style="width: 100px; height: 8px; background: rgba(255,255,255,0.3); border-radius: 4px; overflow: hidden; margin-top: 0.3rem;">
+            <div id="xpBar" style="height: 100%; background: var(--success); width: 0%; transition: width 0.3s;"></div>
+        </div>
+    </div>
+</div>
+
+<div id="achievementToast" style="display: none; position: fixed; top: 20px; right: 20px; background: var(--gradient-1); color: white; padding: 1rem 1.5rem; border-radius: 12px; box-shadow: var(--shadow-lg); z-index: 10000; animation: slideIn 0.5s ease-out;">
+    <div style="font-size: 2rem; margin-bottom: 0.5rem;">🏆</div>
+    <div style="font-weight: 600;" id="achievementText">Achievement Unlocked!</div>
+</div>
 
 <script>
+let currentGameMode = 'troubleshooting';
+
+function selectGameMode(mode) {
+    currentGameMode = mode;
+    
+    // Reset all game states when switching modes
+    score = 0;
+    current = 0;
+    correctStreak = 0;
+    gameQuestions = [];
+    clearInterval(timerInterval);
+    
+    // Reset escape game state if switching away from it
+    if (mode !== 'escape') {
+        escapeGameState = {
+            stage: 1,
+            health: 100,
+            distance: 0,
+            questionsAnswered: 0,
+            correctAnswers: 0,
+            items: [],
+            stageQuestionsAnswered: 0
+        };
+    }
+    
+    document.querySelectorAll('.mode-card').forEach(card => {
+        card.style.border = '2px solid transparent';
+        card.style.transform = 'scale(1)';
+    });
+    event.currentTarget.style.border = '2px solid var(--secondary)';
+    event.currentTarget.style.transform = 'scale(1.05)';
+    
+    document.getElementById('gameArea').style.display = 'block';
+    document.getElementById('gameModeSelection').style.display = 'none';
+    
+    const titles = {
+        'troubleshooting': 'Network Troubleshooting Hero',
+        'subnetting': 'Subnetting Challenge',
+        'commands': 'Command Master',
+        'protocols': 'Protocol Quiz',
+        'escape': '🌲 Escape the Network Forest'
+    };
+    
+    const descriptions = {
+        'troubleshooting': 'Solve network problems under time pressure!',
+        'subnetting': 'Calculate subnets quickly and accurately!',
+        'commands': 'Match network commands with their functions!',
+        'protocols': 'Test your knowledge of network protocols!',
+        'escape': 'You\'re lost in a network forest! Answer questions correctly to find your way out!'
+    };
+    
+    document.getElementById('gameTitle').textContent = titles[mode];
+    document.getElementById('gameDescription').textContent = descriptions[mode];
+    document.getElementById('startBtn').textContent = mode === 'escape' ? '🌲 Enter the Forest' : 'Start Game';
+    document.getElementById('finalMessage').innerHTML = '';
+    document.getElementById('progressBarContainer').style.display = 'none';
+    document.getElementById('timer').innerText = '';
+    
+    // Special start screen for escape game
+    if (mode === 'escape') {
+        const area = document.getElementById("gameArea");
+    area.innerHTML = `
+        <div class="game-card-header" style="background: linear-gradient(135deg, #2d5016 0%, #4a7c2a 100%); position: relative;">
+            <button onclick="backToModes()" style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.2); border: none; color: white; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; font-weight: 600; transition: all 0.3s; z-index: 10;" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                <i class="fas fa-arrow-left"></i> Back
+            </button>
+            <h3 style="margin: 0;">🌲 Escape the Network Forest</h3>
+        </div>
+            <div class="game-card-body" style="text-align: center;">
+                <div style="font-size: 5rem; margin-bottom: 1.5rem;">🌲🌳🌲</div>
+                <h3 style="color: var(--primary); margin-bottom: 1rem;">Welcome, Brave Explorer!</h3>
+                <p style="margin-bottom: 1.5rem; color: #666; line-height: 1.8; font-size: 1.05rem;">
+                    You find yourself lost in a mysterious Network Forest. The only way to escape is by proving your networking knowledge!<br><br>
+                    Answer questions correctly to move forward, but be careful - wrong answers will cost you health!<br><br>
+                    <strong>Can you make it through all ${escapeStages.length} stages and escape?</strong>
+                </p>
+                
+                <div style="background: #e8f5e9; padding: 1.5rem; border-radius: 12px; margin-bottom: 1.5rem; border-left: 5px solid #4a7c2a;">
+                    <h4 style="color: #2d5016; margin-bottom: 1rem;">📋 Game Rules:</h4>
+                    <div style="text-align: left; display: inline-block;">
+                        <p style="margin: 0.5rem 0;">✅ Correct answers: Move forward + Gain XP</p>
+                        <p style="margin: 0.5rem 0;">❌ Wrong answers: Lose health</p>
+                        <p style="margin: 0.5rem 0;">❤️ Health reaches 0: Game Over</p>
+                        <p style="margin: 0.5rem 0;">🏆 Complete all stages: Victory!</p>
+                    </div>
+                </div>
+                
+                <button class="btn" onclick="resetEscapeGame(); startEscapeGame();" style="background: linear-gradient(135deg, #4a7c2a 0%, #2d5016 100%); font-size: 1.2rem; padding: 1.2rem 2.5rem; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
+                    🌲 Begin Your Journey
+                </button>
+            </div>
+        `;
+    }
+}
+
 const scenarios = [
     { title:"DHCP Issue", description:"Users cannot get IP addresses (169.254.x.x). What is the first action?", options:["Restart PC","Check DHCP server","Change DNS","Check router"], answer:1, hint:"DHCP assigns IPs dynamically." },
     { title:"DNS Failure", description:"A user cannot access www.example.com but can ping 8.8.8.8. First step?", options:["Flush DNS cache","Check DNS server","Restart router","Change wallpaper"], answer:1, hint:"DNS resolves domain names to IPs." },
@@ -454,27 +744,131 @@ const scenarios = [
     { title:"Final Challenge", description:"Packets dropping intermittently, multiple services fail. First action?", options:["Check logs & interface","Restart PC","Ping localhost","Change DNS server"], answer:0, hint:"Logs and interface counters give system state." }
 ];
 
-let score=0, current=0, timerInterval=null, timeLeft=20;
+// Subnetting Questions
+const subnettingQuestions = [
+    { question: "Network 192.168.1.0/24 needs 30 hosts per subnet. What is the subnet mask?", options: ["/27", "/26", "/28", "/25"], answer: 0, explanation: "/27 gives 30 usable hosts (32-2=30)" },
+    { question: "How many subnets can you create from 192.168.1.0/24 by borrowing 3 bits?", options: ["6", "8", "4", "16"], answer: 1, explanation: "2³ = 8 subnets" },
+    { question: "What is the broadcast address for 192.168.1.32/27?", options: ["192.168.1.63", "192.168.1.64", "192.168.1.31", "192.168.1.95"], answer: 0, explanation: "Network: .32, Range: .33-.62, Broadcast: .63" },
+    { question: "Network 10.0.0.0/8 needs 120 hosts per subnet. What CIDR notation?", options: ["/25", "/24", "/26", "/23"], answer: 0, explanation: "/25 gives 126 usable hosts (128-2=126)" },
+    { question: "What is the increment for subnet 255.255.255.224?", options: ["32", "64", "16", "8"], answer: 0, explanation: "256 - 224 = 32" }
+];
+
+// Command Matching
+const commandPairs = [
+    { command: "ip route", description: "Configure static route" },
+    { command: "show ip interface brief", description: "Display interface status" },
+    { command: "vlan 10", description: "Create VLAN 10" },
+    { command: "ip nat inside source", description: "Configure NAT translation" },
+    { command: "access-list 1 permit", description: "Create ACL rule" },
+    { command: "switchport mode trunk", description: "Configure trunk port" },
+    { command: "encapsulation dot1q", description: "Configure VLAN encapsulation" },
+    { command: "show ip nat translations", description: "View NAT table" }
+];
+
+// Protocol Questions
+const protocolQuestions = [
+    { question: "Which protocol is used for email transmission?", options: ["SMTP", "FTP", "HTTP", "DHCP"], answer: 0, hint: "Simple Mail Transfer Protocol" },
+    { question: "What port does HTTPS use?", options: ["80", "443", "21", "25"], answer: 1, hint: "Secure HTTP uses port 443" },
+    { question: "Which protocol provides reliable, connection-oriented communication?", options: ["UDP", "TCP", "ICMP", "ARP"], answer: 1, hint: "Transmission Control Protocol" },
+    { question: "What does DNS stand for?", options: ["Domain Name System", "Dynamic Network Service", "Data Network System", "Domain Network Service"], answer: 0, hint: "Resolves domain names to IPs" },
+    { question: "Which routing protocol uses link-state algorithm?", options: ["RIP", "OSPF", "BGP", "EIGRP"], answer: 1, hint: "Open Shortest Path First" }
+];
+
+let score=0, current=0, timerInterval=null, timeLeft=20, gameQuestions=[];
+let xp=0, level=1, xpNeeded=100, streak=0, correctStreak=0;
+let achievements = {
+    firstWin: false,
+    perfectGame: false,
+    speedDemon: false,
+    streakMaster: false,
+    subnetExpert: false
+};
 
 function startGame(){
-    score=0; current=0;
+    // If escape game, don't use this function
+    if (currentGameMode === 'escape') {
+        return;
+    }
+    
+    score=0; current=0; correctStreak=0;
     document.getElementById("score").innerText=score;
     document.getElementById("finalMessage").innerHTML="";
-    loadScenario(current);
+    document.getElementById("progressBarContainer").style.display="block";
+    
+    // Show score panel
+    document.getElementById("scorePanel").style.display = "block";
+    
+    // Load saved progress
+    loadGameProgress();
+    updateLevelDisplay();
+    
+    // Load questions based on game mode
+    if (currentGameMode === 'troubleshooting') {
+        gameQuestions = scenarios;
+    } else if (currentGameMode === 'subnetting') {
+        gameQuestions = subnettingQuestions;
+    } else if (currentGameMode === 'commands') {
+        setupCommandGame();
+        return;
+    } else if (currentGameMode === 'protocols') {
+        gameQuestions = protocolQuestions;
+    }
+    
+    loadQuestion(current);
     updateProgress();
 }
 
-function loadScenario(n){
+function loadGameProgress() {
+    const saved = localStorage.getItem('netlabpro_gameProgress');
+    if (saved) {
+        const progress = JSON.parse(saved);
+        xp = progress.xp || 0;
+        level = progress.level || 1;
+        xpNeeded = progress.xpNeeded || 100;
+        streak = progress.streak || 0;
+    }
+}
+
+function saveGameProgress() {
+    localStorage.setItem('netlabpro_gameProgress', JSON.stringify({
+        xp, level, xpNeeded, streak
+    }));
+}
+
+function updateLevelDisplay() {
+    document.getElementById("level").innerText = level;
+    document.getElementById("xp").innerText = xp;
+    document.getElementById("xpNeeded").innerText = xpNeeded;
+    const xpPercent = (xp / xpNeeded) * 100;
+    document.getElementById("xpBar").style.width = xpPercent + '%';
+}
+
+function loadQuestion(n){
+    // Don't load question if escape game is active
+    if (currentGameMode === 'escape') {
+        return;
+    }
+    
     clearInterval(timerInterval);
-    timeLeft=20;
-    const sc=scenarios[n];
+    timeLeft=currentGameMode === 'subnetting' ? 30 : 20;
+    const q=gameQuestions[n];
     const area=document.getElementById("gameArea");
+    
+    const title = q.title || q.question || 'Question';
+    const description = q.description || q.question || '';
+    const hint = q.hint || q.explanation || '';
+    
     area.innerHTML=`
-        <div class="game-card-header"><h3>${sc.title}</h3></div>
+        <div class="game-card-header" style="position: relative;">
+            <button onclick="backToModes()" style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.2); border: none; color: white; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; font-weight: 600; transition: all 0.3s; z-index: 10;" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                <i class="fas fa-arrow-left"></i> Back
+            </button>
+            <h3 style="margin: 0;">${title}</h3>
+        </div>
         <div class="game-card-body">
-            <p>${sc.description}</p>
-            <span class="hint" onclick="alert('${sc.hint}')">💡 Show Hint</span>
-            ${sc.options.map((opt,i)=>`<button class="opt-btn" onclick="selectOption(${i})">${opt}</button>`).join('')}
+            <p>${description}</p>
+            ${hint ? `<span class="hint" onclick="alert('${hint}')">💡 Show Hint</span>` : ''}
+            ${q.options.map((opt,i)=>`<button class="opt-btn" onclick="selectOption(${i})">${opt}</button>`).join('')}
         </div>
     `;
     document.getElementById("timer").innerText=`Time Left: ${timeLeft}s`;
@@ -488,50 +882,881 @@ function loadScenario(n){
     },1000);
 }
 
+function setupCommandGame() {
+    // Show score panel
+    document.getElementById("scorePanel").style.display = "block";
+    
+    // Shuffle commands
+    const shuffled = [...commandPairs].sort(() => Math.random() - 0.5);
+    const selected = shuffled.slice(0, 5);
+    
+    const area = document.getElementById("gameArea");
+    area.innerHTML = `
+        <div class="game-card-header" style="position: relative;">
+            <button onclick="backToModes()" style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.2); border: none; color: white; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; font-weight: 600; transition: all 0.3s; z-index: 10;" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                <i class="fas fa-arrow-left"></i> Back
+            </button>
+            <h3 style="margin: 0;">Command Master</h3>
+        </div>
+        <div class="game-card-body">
+            <p>Match each command with its description. Drag commands to descriptions or click to match!</p>
+            <div id="commandGameArea" style="margin-top: 1.5rem;"></div>
+        </div>
+    `;
+    
+    let html = '<div style="display: grid; gap: 1rem;">';
+    selected.forEach((pair, idx) => {
+        html += `
+            <div style="display: flex; gap: 1rem; align-items: center; padding: 1rem; background: #f8f9fa; border-radius: 8px;">
+                <div style="flex: 1; padding: 0.8rem; background: white; border-radius: 8px; border: 2px solid var(--secondary);">
+                    <code style="font-size: 1.1rem; color: var(--primary);">${pair.command}</code>
+                </div>
+                <div style="font-size: 1.5rem; color: var(--secondary);">→</div>
+                <div style="flex: 1; padding: 0.8rem; background: white; border-radius: 8px; border: 2px dashed #ddd;" id="desc-${idx}" onclick="matchCommand(${idx}, '${pair.description}')">
+                    <span id="desc-text-${idx}" style="color: #999;">Click to match</span>
+                </div>
+            </div>
+        `;
+    });
+    html += '</div>';
+    
+    document.getElementById("commandGameArea").innerHTML = html;
+    
+    // Shuffle descriptions
+    const descriptions = selected.map(p => p.description).sort(() => Math.random() - 0.5);
+    const descContainer = document.createElement('div');
+    descContainer.style.cssText = 'margin-top: 1.5rem; display: flex; flex-wrap: wrap; gap: 0.5rem;';
+    descriptions.forEach(desc => {
+        const btn = document.createElement('button');
+        btn.className = 'opt-btn';
+        btn.textContent = desc;
+        btn.onclick = () => selectDescription(desc);
+        descContainer.appendChild(btn);
+    });
+    document.getElementById("commandGameArea").appendChild(descContainer);
+    
+    window.currentCommandPairs = selected;
+    window.commandMatches = {};
+}
+
+function selectDescription(desc) {
+    // Find which command this matches
+    const pairs = window.currentCommandPairs;
+    const matchIdx = pairs.findIndex(p => p.description === desc);
+    
+    if (matchIdx >= 0 && !window.commandMatches[matchIdx]) {
+        window.commandMatches[matchIdx] = desc;
+        document.getElementById(`desc-${matchIdx}`).style.border = '2px solid var(--success)';
+        document.getElementById(`desc-text-${matchIdx}`).textContent = desc;
+        document.getElementById(`desc-text-${matchIdx}`).style.color = 'var(--success)';
+        
+        // Check if all matched
+        if (Object.keys(window.commandMatches).length === pairs.length) {
+            score += 50;
+            document.getElementById("score").innerText = score;
+            setTimeout(() => {
+                showFinal();
+            }, 1000);
+        }
+    }
+}
+
+function matchCommand(idx, correctDesc) {
+    // This is a simplified version - in a full implementation, you'd have drag-and-drop
+    if (!window.commandMatches[idx]) {
+        window.commandMatches[idx] = correctDesc;
+        document.getElementById(`desc-${idx}`).style.border = '2px solid var(--success)';
+        document.getElementById(`desc-text-${idx}`).textContent = correctDesc;
+        document.getElementById(`desc-text-${idx}`).style.color = 'var(--success)';
+    }
+}
+
 function selectOption(i){
+    // Don't process if escape game is active
+    if (currentGameMode === 'escape') {
+        return;
+    }
+    
     clearInterval(timerInterval);
-    const sc=scenarios[current];
+    const q=gameQuestions[current];
     const buttons=document.querySelectorAll(".opt-btn");
-    if(i===sc.answer){ score+=10; document.getElementById("score").innerText=score; if(i>=0) buttons[i].classList.add('opt-correct'); }
-    else if(i>=0){ buttons[i].classList.add('opt-wrong'); buttons[sc.answer].classList.add('opt-correct'); }
+    
+    let points = 10;
+    let timeBonus = 0;
+    let streakBonus = 0;
+    
+    // Time bonus
+    if (timeLeft > 15) {
+        points = 15;
+        timeBonus = 5;
+    } else if (timeLeft > 10) {
+        points = 12;
+        timeBonus = 2;
+    }
+    
+    // Streak bonus
+    if (correctStreak >= 3) {
+        streakBonus = Math.floor(correctStreak / 3) * 2;
+        points += streakBonus;
+    }
+    
+    if(i===q.answer){ 
+        correctStreak++;
+        score+=points; 
+        xp += points;
+        
+        // Check for level up
+        while (xp >= xpNeeded) {
+            xp -= xpNeeded;
+            level++;
+            xpNeeded = Math.floor(xpNeeded * 1.5);
+            showAchievement(`Level Up! You reached Level ${level}! 🎉`);
+        }
+        
+        document.getElementById("score").innerText=score; 
+        updateLevelDisplay();
+        
+        if(i>=0) {
+            buttons[i].classList.add('opt-correct');
+            // Visual feedback
+            showPointsFeedback(points, buttons[i]);
+            
+            // Check achievements
+            checkAchievements(true, timeLeft);
+            
+            // Save progress
+            const savedScore = parseInt(localStorage.getItem('netlabpro_score') || 0);
+            localStorage.setItem('netlabpro_score', savedScore + points);
+            saveGameProgress();
+        }
+    }
+    else if(i>=0){ 
+        correctStreak = 0; // Reset streak
+        buttons[i].classList.add('opt-wrong'); 
+        buttons[q.answer].classList.add('opt-correct');
+        checkAchievements(false, 0);
+    }
 
     setTimeout(()=>{
         current++;
         updateProgress();
-        if(current<scenarios.length) loadScenario(current);
+        if(current<gameQuestions.length) loadQuestion(current);
         else showFinal();
-    },1000);
+    },1500);
+}
+
+function showPointsFeedback(points, element) {
+    const feedback = document.createElement('div');
+    feedback.textContent = `+${points} XP`;
+    feedback.style.cssText = 'position: absolute; color: var(--success); font-weight: 700; font-size: 1.2rem; pointer-events: none; animation: floatUp 1s ease-out;';
+    element.style.position = 'relative';
+    element.appendChild(feedback);
+    setTimeout(() => feedback.remove(), 1000);
+}
+
+function checkAchievements(correct, timeLeft) {
+    // First Win
+    if (!achievements.firstWin && score > 0) {
+        achievements.firstWin = true;
+        showAchievement('First Victory! 🎯');
+    }
+    
+    // Speed Demon (answer in < 5 seconds)
+    if (correct && timeLeft > 15 && !achievements.speedDemon) {
+        achievements.speedDemon = true;
+        showAchievement('Speed Demon! ⚡');
+    }
+    
+    // Streak Master
+    if (correctStreak >= 5 && !achievements.streakMaster) {
+        achievements.streakMaster = true;
+        showAchievement('Streak Master! 🔥');
+    }
+}
+
+function showAchievement(text) {
+    const toast = document.getElementById('achievementToast');
+    document.getElementById('achievementText').textContent = text;
+    toast.style.display = 'block';
+    setTimeout(() => {
+        toast.style.display = 'none';
+    }, 3000);
 }
 
 function showFinal(){
+    // Don't show final for escape game - it has its own win/lose functions
+    if (currentGameMode === 'escape') {
+        return;
+    }
+    
     const area=document.getElementById("gameArea");
     area.innerHTML="";
     document.getElementById("timer").innerText="";
+    const maxScore = gameQuestions.length * 15;
+    const percentage = Math.round((score / maxScore) * 100);
+    
+    // Update streak
+    if (percentage >= 80) {
+        streak++;
+        saveGameProgress();
+    } else {
+        streak = 0;
+    }
+    
+    // Perfect game achievement
+    if (percentage === 100 && !achievements.perfectGame) {
+        achievements.perfectGame = true;
+        showAchievement('Perfect Game! 🏆');
+    }
+    
+    let message = '';
+    let emoji = '🏆';
+    let rank = 'Beginner';
+    if (percentage === 100) {
+        message = '🎉 Perfect Score! You are a Network Master!';
+        emoji = '👑';
+        rank = 'Network Master';
+    } else if (percentage >= 90) {
+        message = '🌟 Outstanding! You are a Network Expert!';
+        emoji = '⭐';
+        rank = 'Expert';
+    } else if (percentage >= 80) {
+        message = '🌟 Excellent Work! You know your networks!';
+        emoji = '⭐';
+        rank = 'Advanced';
+    } else if (percentage >= 60) {
+        message = '👍 Good Job! Keep practicing!';
+        rank = 'Intermediate';
+    } else {
+        message = '💪 Keep Learning! Practice makes perfect!';
+        rank = 'Beginner';
+    }
+    
     document.getElementById("finalMessage").innerHTML=`
-        <h3>${score===100?'🎉 Perfect! Network Hero!':'🏆 Mission Complete!'}</h3>
-        <p>Your final score is ${score}/${scenarios.length*10}</p>
-        <button class="btn" onclick="startGame()">Retry Mission</button>
+        <div style="text-align: center; padding: 2rem; background: white; border-radius: 16px; box-shadow: var(--shadow-md);">
+            <div style="font-size: 4rem; margin-bottom: 1rem;">${emoji}</div>
+            <h3 style="color: var(--primary); margin-bottom: 1rem;">${message}</h3>
+            <div style="background: var(--gradient-1); color: white; padding: 1rem; border-radius: 8px; margin: 1rem 0;">
+                <div style="font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem;">Rank: ${rank}</div>
+            </div>
+            <p style="font-size: 1.2rem; margin-bottom: 0.5rem;">Your final score: <strong>${score}/${maxScore}</strong></p>
+            <p style="color: #666; margin-bottom: 0.5rem;">Accuracy: <strong>${percentage}%</strong></p>
+            <p style="color: #666; margin-bottom: 0.5rem;">Level: <strong>${level}</strong> | XP: <strong>${xp}/${xpNeeded}</strong></p>
+            ${streak > 0 ? `<p style="color: var(--warning); font-weight: 600; margin-bottom: 1rem;">🔥 Streak: ${streak} days!</p>` : ''}
+            <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                <button class="btn" onclick="startGame()">Play Again</button>
+                <button class="btn" onclick="backToModes()" style="background: var(--primary);">Choose Another Game</button>
+            </div>
+        </div>
     `;
 }
 
+function backToModes() {
+    // Clear any intervals
+    clearInterval(timerInterval);
+    
+    // Hide game area and show mode selection
+    document.getElementById('gameArea').style.display = 'none';
+    document.getElementById('gameModeSelection').style.display = 'grid';
+    document.getElementById('finalMessage').innerHTML = '';
+    document.getElementById('progressBarContainer').style.display = 'none';
+    document.getElementById('timer').innerText = '';
+    
+    // Hide score panel
+    document.getElementById("scorePanel").style.display = "none";
+    
+    // Reset game states
+    score = 0;
+    current = 0;
+    correctStreak = 0;
+    gameQuestions = [];
+    document.getElementById("score").innerText = score;
+    
+    // Reset escape game state
+    escapeGameState = {
+        stage: 1,
+        health: 100,
+        distance: 0,
+        questionsAnswered: 0,
+        correctAnswers: 0,
+        items: [],
+        stageQuestionsAnswered: 0
+    };
+    
+    // Reset mode card selections
+    document.querySelectorAll('.mode-card').forEach(card => {
+        card.style.border = '2px solid transparent';
+        card.style.transform = 'scale(1)';
+    });
+}
+
 function updateProgress(){
-    const percent = (current/scenarios.length)*100;
+    const percent = (current/gameQuestions.length)*100;
     document.getElementById("progressBar").style.width=`${percent}%`;
 }
     
-document.addEventListener('DOMContentLoaded', function() {
-    const menuToggle = document.getElementById('menuToggle');
-    const mainNav = document.getElementById('mainNav');
+// ========== ESCAPE THE NETWORK FOREST GAME ==========
+let escapeGameState = {
+    stage: 1,
+    health: 100,
+    distance: 0,
+    questionsAnswered: 0,
+    correctAnswers: 0,
+    currentObstacle: null
+};
 
-    menuToggle.addEventListener('click', function() {
-        mainNav.classList.toggle('active');
-        menuToggle.querySelector('i').classList.toggle('fa-bars');
-        menuToggle.querySelector('i').classList.toggle('fa-times');
+const escapeStages = [
+    { name: "🌲 Deep Forest", questions: 4, story: "You're lost deep in the network forest! The trees are dense and the path is unclear. Use your networking knowledge to navigate through!", icon: "🌲", color: "#2d5016" },
+    { name: "🌳 Dense Thicket", questions: 4, story: "The forest gets thicker! Vines block your way. Answer correctly to cut through the obstacles!", icon: "🌳", color: "#1e3a0f" },
+    { name: "🦌 River Crossing", questions: 3, story: "A wide river blocks your path! Build a bridge of knowledge by solving networking puzzles!", icon: "🦌", color: "#1e88e5" },
+    { name: "🏔️ Mountain Pass", questions: 3, story: "You've reached the mountains! The climb is steep. Your networking expertise will help you reach the summit!", icon: "🏔️", color: "#5d4037" },
+    { name: "🌉 Bridge of Knowledge", questions: 2, story: "A mystical bridge appears! Answer these final questions to cross safely!", icon: "🌉", color: "#6a1b9a" },
+    { name: "🏠 Safe Exit", questions: 2, story: "You can see the exit! One last challenge stands between you and freedom!", icon: "🏠", color: "#f57c00" }
+];
+
+const escapeQuestions = [
+    // Stage 1 - Deep Forest (4 questions)
+    { question: "What does DHCP stand for?", options: ["Dynamic Host Configuration Protocol", "Data Host Control Protocol", "Domain Host Configuration Protocol", "Dynamic Host Control Process"], answer: 0, hint: "It automatically assigns IP addresses" },
+    { question: "Which port does HTTP use?", options: ["80", "443", "21", "25"], answer: 0, hint: "Standard web browsing port" },
+    { question: "What is the default subnet mask for Class C?", options: ["255.255.255.0", "255.255.0.0", "255.0.0.0", "192.168.1.0"], answer: 0, hint: "Class C uses 24 network bits" },
+    { question: "What layer of OSI model does IP operate at?", options: ["Layer 2", "Layer 3", "Layer 4", "Layer 5"], answer: 1, hint: "Network layer" },
+    
+    // Stage 2 - Dense Thicket (4 questions)
+    { question: "What does NAT do?", options: ["Translates private IPs to public", "Assigns IPs automatically", "Routes packets", "Encrypts data"], answer: 0, hint: "Network Address Translation" },
+    { question: "Which protocol is connection-oriented?", options: ["UDP", "TCP", "ICMP", "ARP"], answer: 1, hint: "Reliable transmission protocol" },
+    { question: "What is a VLAN?", options: ["Virtual Local Area Network", "Very Large Area Network", "Variable Local Area Network", "Virtual Link Area Network"], answer: 0, hint: "Logical grouping of devices" },
+    { question: "What does MAC address stand for?", options: ["Media Access Control", "Multiple Access Control", "Main Access Control", "Media Access Code"], answer: 0, hint: "Physical address of network interface" },
+    
+    // Stage 3 - River Crossing (3 questions)
+    { question: "What port does HTTPS use?", options: ["80", "443", "8080", "21"], answer: 1, hint: "Secure HTTP port" },
+    { question: "What does DNS resolve?", options: ["Domain names to IPs", "IPs to MACs", "Ports to services", "Protocols to ports"], answer: 0, hint: "Domain Name System" },
+    { question: "What is the purpose of ARP?", options: ["Resolve IP to MAC address", "Resolve domain to IP", "Route packets", "Encrypt data"], answer: 0, hint: "Address Resolution Protocol" },
+    
+    // Stage 4 - Mountain Pass (3 questions)
+    { question: "What is OSPF?", options: ["Open Shortest Path First", "Optimal Shortest Path First", "Open Secure Path First", "Optimal Secure Path First"], answer: 0, hint: "Link-state routing protocol" },
+    { question: "What does /24 mean in CIDR?", options: ["24 network bits", "24 host bits", "24 subnets", "24 routers"], answer: 0, hint: "CIDR notation for subnet mask" },
+    { question: "What is the default administrative distance of OSPF?", options: ["90", "110", "120", "100"], answer: 1, hint: "OSPF has higher priority than RIP" },
+    
+    // Stage 5 - Bridge of Knowledge (2 questions)
+    { question: "What is BGP used for?", options: ["Inter-AS routing", "Intra-AS routing", "Local routing", "Static routing"], answer: 0, hint: "Border Gateway Protocol for internet routing" },
+    { question: "What is the maximum hop count for RIP?", options: ["15", "16", "255", "128"], answer: 0, hint: "Distance-vector routing protocol limit" },
+    
+    // Stage 6 - Safe Exit (2 questions)
+    { question: "What does SSH stand for?", options: ["Secure Shell", "Secure Socket Host", "System Secure Host", "Socket Secure Host"], answer: 0, hint: "Secure remote access protocol" },
+    { question: "What port does SMTP use?", options: ["25", "80", "443", "21"], answer: 0, hint: "Email sending protocol" }
+];
+
+function startEscapeGame() {
+    // Show score panel
+    document.getElementById("scorePanel").style.display = "block";
+    
+    // Initialize game state if starting fresh
+    if (escapeGameState.stage === 0 || escapeGameState.questionsAnswered === 0) {
+        escapeGameState = {
+            stage: 1,
+            health: 100,
+            distance: 0,
+            questionsAnswered: 0,
+            correctAnswers: 0,
+            items: [],
+            stageQuestionsAnswered: 0
+        };
+    }
+    
+    const area = document.getElementById("gameArea");
+    const currentStage = escapeStages[escapeGameState.stage - 1];
+    const questionIndex = getQuestionIndexForStage();
+    
+    // Calculate progress percentage
+    const totalQuestions = escapeStages.reduce((sum, stage) => sum + stage.questions, 0);
+    const questionsDone = escapeGameState.correctAnswers + (escapeGameState.questionsAnswered - escapeGameState.correctAnswers);
+    const progressPercent = Math.round((questionsDone / totalQuestions) * 100);
+    
+    area.innerHTML = `
+        <div class="game-card-header" style="background: linear-gradient(135deg, ${currentStage.color} 0%, ${currentStage.color}dd 100%); position: relative;">
+            <button onclick="backToModes()" style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.2); border: none; color: white; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; font-weight: 600; transition: all 0.3s; z-index: 10;" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                <i class="fas fa-arrow-left"></i> Back
+            </button>
+            <h3 style="margin: 0;">${currentStage.icon} ${currentStage.name}</h3>
+        </div>
+        <div class="game-card-body">
+            <!-- Story Box -->
+            <div style="background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%); padding: 1.2rem; border-radius: 12px; margin-bottom: 1.5rem; border-left: 5px solid ${currentStage.color}; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                <p style="margin: 0; font-weight: 600; color: ${currentStage.color}; font-size: 1.05rem; line-height: 1.6;">${currentStage.story}</p>
+            </div>
+            
+            <!-- Visual Progress Map -->
+            <div style="background: #f5f5f5; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                    <span style="font-weight: 600; color: var(--primary);">🗺️ Journey Progress</span>
+                    <span style="font-weight: 600; color: ${currentStage.color};">${progressPercent}%</span>
+                </div>
+                <div style="display: flex; gap: 0.3rem; align-items: center; margin-bottom: 0.8rem;">
+                    ${escapeStages.map((stage, idx) => `
+                        <div style="flex: 1; text-align: center; position: relative;">
+                            <div style="font-size: 1.5rem; margin-bottom: 0.3rem;">${idx < escapeGameState.stage - 1 ? '✅' : idx === escapeGameState.stage - 1 ? '📍' : '⭕'}</div>
+                            <div style="font-size: 0.7rem; color: ${idx < escapeGameState.stage - 1 ? '#4caf50' : idx === escapeGameState.stage - 1 ? currentStage.color : '#999'}; font-weight: ${idx === escapeGameState.stage - 1 ? '600' : '400'};">
+                                ${stage.icon}
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+                <div style="width: 100%; height: 8px; background: #ddd; border-radius: 10px; overflow: hidden;">
+                    <div style="height: 100%; background: linear-gradient(90deg, #4caf50 0%, ${currentStage.color} 100%); width: ${progressPercent}%; transition: width 0.5s; border-radius: 10px;"></div>
+                </div>
+            </div>
+            
+            <!-- Stats Row -->
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.8rem; margin-bottom: 1.5rem;">
+                <!-- Health -->
+                <div style="background: #fff3e0; padding: 0.8rem; border-radius: 8px; text-align: center; border: 2px solid #ff9800;">
+                    <div style="font-size: 1.8rem; margin-bottom: 0.3rem;">❤️</div>
+                    <div style="font-weight: 700; color: #e65100; font-size: 1.2rem;" id="healthText">${escapeGameState.health}</div>
+                    <div style="font-size: 0.75rem; color: #666; margin-top: 0.2rem;">Health</div>
+                    <div style="width: 100%; height: 6px; background: #ffe0b2; border-radius: 3px; overflow: hidden; margin-top: 0.5rem;">
+                        <div id="healthBar" style="height: 100%; background: linear-gradient(90deg, #ff6f00 0%, #e65100 100%); width: ${escapeGameState.health}%; transition: width 0.5s; border-radius: 3px;"></div>
+                    </div>
+                </div>
+                
+                <!-- Correct Answers -->
+                <div style="background: #e8f5e9; padding: 0.8rem; border-radius: 8px; text-align: center; border: 2px solid #4caf50;">
+                    <div style="font-size: 1.8rem; margin-bottom: 0.3rem;">✅</div>
+                    <div style="font-weight: 700; color: #2e7d32; font-size: 1.2rem;">${escapeGameState.correctAnswers}</div>
+                    <div style="font-size: 0.75rem; color: #666; margin-top: 0.2rem;">Correct</div>
+                </div>
+                
+                <!-- Distance -->
+                <div style="background: #e3f2fd; padding: 0.8rem; border-radius: 8px; text-align: center; border: 2px solid #2196f3;">
+                    <div style="font-size: 1.8rem; margin-bottom: 0.3rem;">📊</div>
+                    <div style="font-weight: 700; color: #1565c0; font-size: 1.2rem;">${escapeGameState.distance}m</div>
+                    <div style="font-size: 0.75rem; color: #666; margin-top: 0.2rem;">Distance</div>
+                </div>
+            </div>
+            
+            <!-- Stage Progress -->
+            <div style="background: #f3e5f5; padding: 0.8rem; border-radius: 8px; margin-bottom: 1.5rem; text-align: center; border: 2px solid #9c27b0;">
+                <div style="font-weight: 600; color: #7b1fa2; margin-bottom: 0.3rem;">
+                    📍 Stage ${escapeGameState.stage}/${escapeStages.length} - Question ${escapeGameState.stageQuestionsAnswered + 1}/${currentStage.questions}
+                </div>
+                <div style="width: 100%; height: 10px; background: #e1bee7; border-radius: 5px; overflow: hidden;">
+                    <div style="height: 100%; background: linear-gradient(90deg, #ba68c8 0%, #9c27b0 100%); width: ${((escapeGameState.stageQuestionsAnswered) / currentStage.questions) * 100}%; transition: width 0.5s; border-radius: 5px;"></div>
+                </div>
+            </div>
+            
+            <!-- Question Card -->
+            <div style="background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%); padding: 1.8rem; border-radius: 12px; margin-bottom: 1rem; box-shadow: 0 4px 12px rgba(0,0,0,0.1); border: 2px solid ${currentStage.color}40;">
+                <div style="display: flex; align-items: center; margin-bottom: 1rem;">
+                    <div style="font-size: 2rem; margin-right: 0.8rem;">❓</div>
+                    <h4 style="color: var(--primary); margin: 0; font-size: 1.2rem; line-height: 1.4;">${escapeQuestions[questionIndex].question}</h4>
+                </div>
+                ${escapeQuestions[questionIndex].hint ? `
+                    <div style="margin-bottom: 1rem;">
+                        <span class="hint" onclick="showEscapeHint('${escapeQuestions[questionIndex].hint}')" style="cursor: pointer; background: ${currentStage.color}; color: white; padding: 0.5rem 1rem; border-radius: 6px; display: inline-block; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">💡 Need a hint?</span>
+                    </div>
+                ` : ''}
+                <div style="display: grid; gap: 0.8rem;">
+                    ${escapeQuestions[questionIndex].options.map((opt, i) => 
+                        `<button class="opt-btn" onclick="answerEscapeQuestion(${i}, ${questionIndex})" style="margin: 0; padding: 1rem; text-align: left; font-size: 1rem; border: 2px solid ${currentStage.color}40; transition: all 0.3s;" onmouseover="this.style.borderColor='${currentStage.color}'; this.style.transform='translateX(5px)'" onmouseout="this.style.borderColor='${currentStage.color}40'; this.style.transform='translateX(0)'">${opt}</button>`
+                    ).join('')}
+                </div>
+            </div>
+        </div>
+    `;
+    
+    document.getElementById("progressBarContainer").style.display = "none";
+    document.getElementById("timer").innerText = "";
+}
+
+function showEscapeHint(hint) {
+    const hintBox = document.createElement('div');
+    hintBox.innerHTML = `
+        <div style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 2rem; border-radius: 16px; box-shadow: 0 8px 32px rgba(0,0,0,0.3); z-index: 10002; max-width: 400px; text-align: center;">
+            <div style="font-size: 3rem; margin-bottom: 1rem;">💡</div>
+            <h3 style="color: var(--primary); margin-bottom: 1rem;">Hint</h3>
+            <p style="color: #666; margin-bottom: 1.5rem; line-height: 1.6;">${hint}</p>
+            <button onclick="this.parentElement.remove()" class="btn" style="background: var(--secondary);">Got it!</button>
+        </div>
+    `;
+    document.body.appendChild(hintBox);
+}
+
+function getQuestionIndexForStage() {
+    let index = 0;
+    for (let i = 0; i < escapeGameState.stage - 1; i++) {
+        index += escapeStages[i].questions;
+    }
+    return index + escapeGameState.stageQuestionsAnswered;
+}
+
+function answerEscapeQuestion(selectedIndex, questionIndex) {
+    const question = escapeQuestions[questionIndex];
+    const buttons = document.querySelectorAll(".opt-btn");
+    const isCorrect = selectedIndex === question.answer;
+    
+    // Disable all buttons
+    buttons.forEach(btn => {
+        btn.disabled = true;
+        btn.style.pointerEvents = 'none';
     });
+    
+    if (isCorrect) {
+        // Correct answer - Success!
+        buttons[selectedIndex].classList.add('opt-correct');
+        escapeGameState.correctAnswers++;
+        escapeGameState.distance += Math.floor(50 + (escapeGameState.stage * 10));
+        escapeGameState.questionsAnswered++;
+        escapeGameState.stageQuestionsAnswered++;
+        
+        // Bonus health for perfect answers
+        if (escapeGameState.health < 100) {
+            escapeGameState.health = Math.min(100, escapeGameState.health + 5);
+        }
+        
+        // Add XP (more for later stages)
+        const xpGain = 20 + (escapeGameState.stage * 5);
+        xp += xpGain;
+        score += xpGain;
+        updateLevelDisplay();
+        document.getElementById("score").innerText = score;
+        
+        // Show success animation
+        showEscapeFeedback(`✅ Correct! +${xpGain} XP | +${Math.floor(50 + (escapeGameState.stage * 10))}m`, "success");
+        
+        // Check if stage complete
+        const currentStage = escapeStages[escapeGameState.stage - 1];
+        if (escapeGameState.stageQuestionsAnswered >= currentStage.questions) {
+            // Stage complete
+            setTimeout(() => {
+                completeEscapeStage();
+            }, 2000);
+        } else {
+            // Next question in same stage
+            setTimeout(() => {
+                startEscapeGame();
+            }, 2000);
+        }
+    } else {
+        // Wrong answer - Take damage
+        buttons[selectedIndex].classList.add('opt-wrong');
+        buttons[question.answer].classList.add('opt-correct');
+        
+        const damage = 15 + (escapeGameState.stage * 2); // More damage in later stages
+        escapeGameState.health = Math.max(0, escapeGameState.health - damage);
+        escapeGameState.questionsAnswered++;
+        escapeGameState.stageQuestionsAnswered++;
+        
+        // Update health bar with animation
+        setTimeout(() => {
+            const healthBar = document.getElementById("healthBar");
+            const healthText = document.getElementById("healthText");
+            if (healthBar && healthText) {
+                healthBar.style.width = escapeGameState.health + '%';
+                healthText.textContent = escapeGameState.health;
+                
+                // Change color based on health
+                if (escapeGameState.health < 30) {
+                    healthBar.style.background = 'linear-gradient(90deg, #e74c3c 0%, #c0392b 100%)';
+                } else if (escapeGameState.health < 60) {
+                    healthBar.style.background = 'linear-gradient(90deg, #f39c12 0%, #e67e22 100%)';
+                }
+            }
+        }, 100);
+        
+        if (escapeGameState.health <= 0) {
+            // Game over
+            setTimeout(() => {
+                gameOverEscape();
+            }, 2000);
+        } else {
+            showEscapeFeedback(`❌ Wrong! -${damage} Health!`, "error");
+            
+            const currentStage = escapeStages[escapeGameState.stage - 1];
+            if (escapeGameState.stageQuestionsAnswered >= currentStage.questions) {
+                setTimeout(() => {
+                    completeEscapeStage();
+                }, 2000);
+            } else {
+                setTimeout(() => {
+                    startEscapeGame();
+                }, 2000);
+            }
+        }
+    }
+}
+
+function completeEscapeStage() {
+    if (escapeGameState.stage >= escapeStages.length) {
+        // Escaped!
+        winEscapeGame();
+        return;
+    }
+    
+    const completedStage = escapeStages[escapeGameState.stage - 1];
+    escapeGameState.stage++;
+    escapeGameState.stageQuestionsAnswered = 0;
+    
+    // Stage completion bonus
+    const stageBonus = escapeGameState.stage * 30;
+    xp += stageBonus;
+    score += stageBonus;
+    updateLevelDisplay();
+    document.getElementById("score").innerText = score;
+    
+    const area = document.getElementById("gameArea");
+    const currentStage = escapeStages[escapeGameState.stage - 1];
+    
+    area.innerHTML = `
+        <div class="game-card-header" style="background: linear-gradient(135deg, ${completedStage.color} 0%, ${completedStage.color}dd 100%); position: relative;">
+            <button onclick="backToModes()" style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.2); border: none; color: white; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; font-weight: 600; transition: all 0.3s; z-index: 10;" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                <i class="fas fa-arrow-left"></i> Back
+            </button>
+            <h3 style="margin: 0;">🎉 Stage Complete!</h3>
+        </div>
+        <div class="game-card-body" style="text-align: center;">
+            <div style="font-size: 5rem; margin-bottom: 1rem; animation: bounce 1s ease-in-out infinite;">✨</div>
+            <h2 style="color: var(--primary); margin-bottom: 0.5rem;">${completedStage.icon} ${completedStage.name} Conquered!</h2>
+            <p style="margin-bottom: 1.5rem; color: #666; font-size: 1.1rem;">You've successfully navigated through ${completedStage.name}!</p>
+            
+            <div style="background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%); padding: 1.5rem; border-radius: 12px; margin-bottom: 1.5rem; border: 3px solid ${completedStage.color}; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                <h4 style="color: ${completedStage.color}; margin-bottom: 1rem; font-size: 1.2rem;">🏆 Stage Rewards</h4>
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; text-align: left;">
+                    <div>
+                        <p style="margin: 0.5rem 0;"><strong>⭐ XP Bonus:</strong> +${stageBonus}</p>
+                        <p style="margin: 0.5rem 0;"><strong>❤️ Health:</strong> ${escapeGameState.health}%</p>
+                    </div>
+                    <div>
+                        <p style="margin: 0.5rem 0;"><strong>📊 Distance:</strong> ${escapeGameState.distance}m</p>
+                        <p style="margin: 0.5rem 0;"><strong>✅ Correct:</strong> ${escapeGameState.correctAnswers}</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="background: #fff3e0; padding: 1.5rem; border-radius: 12px; margin-bottom: 1.5rem; border-left: 5px solid ${currentStage.color};">
+                <h4 style="color: var(--primary); margin-bottom: 0.8rem;">📍 Next: ${currentStage.icon} ${currentStage.name}</h4>
+                <p style="margin: 0; color: #666; line-height: 1.6;">${currentStage.story}</p>
+            </div>
+            
+            <button class="btn" onclick="startEscapeGame()" style="background: ${currentStage.color}; font-size: 1.1rem; padding: 1rem 2rem;">Continue Journey →</button>
+        </div>
+    `;
+}
+
+function winEscapeGame() {
+    const area = document.getElementById("gameArea");
+    const finalXP = escapeGameState.correctAnswers * 50 + (escapeStages.length * 100);
+    xp += finalXP;
+    score += finalXP;
+    updateLevelDisplay();
+    
+    // Calculate accuracy
+    const accuracy = Math.round((escapeGameState.correctAnswers / escapeGameState.questionsAnswered) * 100);
+    
+    // Save progress
+    saveGameProgress();
+    const savedScore = parseInt(localStorage.getItem('netlabpro_score') || 0);
+    localStorage.setItem('netlabpro_score', savedScore + finalXP);
+    
+    // Determine rank based on performance
+    let rank = "Beginner";
+    let rankEmoji = "🌱";
+    if (accuracy >= 95 && escapeGameState.health >= 80) {
+        rank = "Network Master";
+        rankEmoji = "👑";
+    } else if (accuracy >= 85) {
+        rank = "Network Expert";
+        rankEmoji = "⭐";
+    } else if (accuracy >= 70) {
+        rank = "Network Explorer";
+        rankEmoji = "🌟";
+    }
+    
+    area.innerHTML = `
+        <div class="game-card-header" style="background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%); position: relative;">
+            <button onclick="backToModes()" style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.2); border: none; color: white; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; font-weight: 600; transition: all 0.3s; z-index: 10;" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                <i class="fas fa-arrow-left"></i> Back
+            </button>
+            <h3 style="margin: 0;">🏆 VICTORY!</h3>
+        </div>
+        <div class="game-card-body" style="text-align: center;">
+            <div style="font-size: 6rem; margin-bottom: 1rem; animation: bounce 1s ease-in-out infinite;">🎉</div>
+            <h2 style="color: var(--primary); margin-bottom: 0.5rem; font-size: 2rem;">Congratulations, Network Explorer!</h2>
+            <p style="margin-bottom: 1rem; color: #666; font-size: 1.2rem;">You successfully escaped the Network Forest!</p>
+            
+            <div style="background: linear-gradient(135deg, #fff3cd 0%, #ffe082 100%); padding: 1.5rem; border-radius: 12px; margin-bottom: 1.5rem; border: 3px solid #f39c12; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">${rankEmoji}</div>
+                <h3 style="color: #e65100; margin-bottom: 1rem; font-size: 1.5rem;">Rank: ${rank}</h3>
+            </div>
+            
+            <div style="background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%); padding: 2rem; border-radius: 12px; margin-bottom: 1.5rem; border: 3px solid #4caf50; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                <h4 style="color: var(--primary); margin-bottom: 1.5rem; font-size: 1.3rem;">📊 Your Journey Stats</h4>
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; text-align: left;">
+                    <div>
+                        <p style="margin: 0.8rem 0; font-size: 1.1rem;"><strong>✅ Correct Answers:</strong> <span style="color: #2e7d32; font-size: 1.2rem;">${escapeGameState.correctAnswers}</span></p>
+                        <p style="margin: 0.8rem 0; font-size: 1.1rem;"><strong>📊 Distance Traveled:</strong> <span style="color: #1565c0; font-size: 1.2rem;">${escapeGameState.distance}m</span></p>
+                    </div>
+                    <div>
+                        <p style="margin: 0.8rem 0; font-size: 1.1rem;"><strong>📍 Stages Completed:</strong> <span style="color: #7b1fa2; font-size: 1.2rem;">${escapeStages.length}</span></p>
+                        <p style="margin: 0.8rem 0; font-size: 1.1rem;"><strong>❤️ Final Health:</strong> <span style="color: #e65100; font-size: 1.2rem;">${escapeGameState.health}%</span></p>
+                    </div>
+                </div>
+                <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 2px solid #4caf50;">
+                    <p style="margin: 0.5rem 0; font-size: 1.1rem;"><strong>🎯 Accuracy:</strong> <span style="color: #2e7d32; font-size: 1.3rem; font-weight: 700;">${accuracy}%</span></p>
+                    <p style="margin: 0.5rem 0; font-size: 1.1rem;"><strong>⭐ Total XP Earned:</strong> <span style="color: #f39c12; font-size: 1.3rem; font-weight: 700;">+${finalXP}</span></p>
+                </div>
+            </div>
+            
+            <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                <button class="btn" onclick="resetEscapeGame(); startEscapeGame();" style="background: var(--success); font-size: 1.1rem; padding: 1rem 2rem;">🔄 Play Again</button>
+                <button class="btn" onclick="backToModes()" style="background: var(--primary); font-size: 1.1rem; padding: 1rem 2rem;">🏠 Choose Another Game</button>
+            </div>
+        </div>
+    `;
+    
+    document.getElementById("score").innerText = score;
+    showAchievement(`Forest Master! 🌲 You escaped with ${accuracy}% accuracy!`);
+}
+
+function resetEscapeGame() {
+    escapeGameState = {
+        stage: 1,
+        health: 100,
+        distance: 0,
+        questionsAnswered: 0,
+        correctAnswers: 0,
+        items: [],
+        stageQuestionsAnswered: 0
+    };
+}
+
+function gameOverEscape() {
+    const area = document.getElementById("gameArea");
+    const accuracy = escapeGameState.questionsAnswered > 0 ? Math.round((escapeGameState.correctAnswers / escapeGameState.questionsAnswered) * 100) : 0;
+    const xpEarned = escapeGameState.correctAnswers * 20;
+    
+    // Save partial progress
+    if (xpEarned > 0) {
+        xp += xpEarned;
+        score += xpEarned;
+        updateLevelDisplay();
+        saveGameProgress();
+        const savedScore = parseInt(localStorage.getItem('netlabpro_score') || 0);
+        localStorage.setItem('netlabpro_score', savedScore + xpEarned);
+    }
+    
+    area.innerHTML = `
+        <div class="game-card-header" style="background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%); position: relative;">
+            <button onclick="backToModes()" style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.2); border: none; color: white; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; font-weight: 600; transition: all 0.3s; z-index: 10;" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                <i class="fas fa-arrow-left"></i> Back
+            </button>
+            <h3 style="margin: 0;">💀 Game Over</h3>
+        </div>
+        <div class="game-card-body" style="text-align: center;">
+            <div style="font-size: 5rem; margin-bottom: 1rem;">😢</div>
+            <h2 style="color: var(--primary); margin-bottom: 0.5rem; font-size: 1.8rem;">You ran out of health!</h2>
+            <p style="margin-bottom: 1.5rem; color: #666; font-size: 1.1rem;">The forest was too challenging this time. Don't give up! Review your networking concepts and try again.</p>
+            
+            <div style="background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%); padding: 2rem; border-radius: 12px; margin-bottom: 1.5rem; border: 3px solid #e74c3c; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                <h4 style="color: var(--primary); margin-bottom: 1.5rem; font-size: 1.3rem;">📊 Your Progress</h4>
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; text-align: left;">
+                    <div>
+                        <p style="margin: 0.8rem 0; font-size: 1.1rem;"><strong>📍 Stages Reached:</strong> <span style="color: #7b1fa2; font-size: 1.2rem;">${escapeGameState.stage - 1}/${escapeStages.length}</span></p>
+                        <p style="margin: 0.8rem 0; font-size: 1.1rem;"><strong>✅ Correct Answers:</strong> <span style="color: #2e7d32; font-size: 1.2rem;">${escapeGameState.correctAnswers}</span></p>
+                    </div>
+                    <div>
+                        <p style="margin: 0.8rem 0; font-size: 1.1rem;"><strong>📊 Distance:</strong> <span style="color: #1565c0; font-size: 1.2rem;">${escapeGameState.distance}m</span></p>
+                        <p style="margin: 0.8rem 0; font-size: 1.1rem;"><strong>🎯 Accuracy:</strong> <span style="color: #e65100; font-size: 1.2rem;">${accuracy}%</span></p>
+                    </div>
+                </div>
+                ${xpEarned > 0 ? `<div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 2px solid #e74c3c;">
+                    <p style="margin: 0; font-size: 1.1rem;"><strong>⭐ XP Earned:</strong> <span style="color: #f39c12; font-size: 1.3rem; font-weight: 700;">+${xpEarned}</span></p>
+                </div>` : ''}
+            </div>
+            
+            <div style="background: #fff3e0; padding: 1.5rem; border-radius: 12px; margin-bottom: 1.5rem; border-left: 5px solid #f39c12;">
+                <h4 style="color: var(--primary); margin-bottom: 0.8rem;">💡 Tips for Next Time:</h4>
+                <div style="text-align: left; display: inline-block;">
+                    <p style="margin: 0.5rem 0;">📚 Review the lab materials before playing</p>
+                    <p style="margin: 0.5rem 0;">💡 Use hints when you're unsure</p>
+                    <p style="margin: 0.5rem 0;">🎯 Focus on accuracy over speed</p>
+                    <p style="margin: 0.5rem 0;">🔄 Practice with flashcards first</p>
+                </div>
+            </div>
+            
+            <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                <button class="btn" onclick="resetEscapeGame(); startEscapeGame();" style="background: var(--accent); font-size: 1.1rem; padding: 1rem 2rem;">🔄 Try Again</button>
+                <button class="btn" onclick="backToModes()" style="background: var(--primary); font-size: 1.1rem; padding: 1rem 2rem;">🏠 Choose Another Game</button>
+            </div>
+        </div>
+    `;
+    
+    document.getElementById("score").innerText = score;
+}
+
+function showEscapeFeedback(message, type) {
+    const feedback = document.createElement('div');
+    feedback.innerHTML = `<div style="font-size: 2rem; margin-bottom: 0.5rem;">${type === 'success' ? '✅' : '❌'}</div><div>${message}</div>`;
+    feedback.style.cssText = `
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: ${type === 'success' ? 'linear-gradient(135deg, #4caf50 0%, #2e7d32 100%)' : 'linear-gradient(135deg, #e74c3c 0%, #c0392b 100%)'};
+        color: white;
+        padding: 1.5rem 2.5rem;
+        border-radius: 16px;
+        font-weight: 600;
+        font-size: 1.2rem;
+        z-index: 10001;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+        animation: popInOut 2s ease-out;
+        text-align: center;
+        min-width: 250px;
+    `;
+    document.body.appendChild(feedback);
+    setTimeout(() => {
+        feedback.style.animation = 'fadeOut 0.5s ease-out';
+        setTimeout(() => feedback.remove(), 500);
+    }, 1500);
+}
+    
+// Mobile Navigation Toggle
+function toggleMobileNav() {
+    const navLinks = document.getElementById('navLinks');
+    const hamburger = document.getElementById('hamburger');
+    navLinks.classList.toggle('active');
+    const icon = hamburger.querySelector('i');
+    if (navLinks.classList.contains('active')) {
+        icon.classList.remove('fa-bars');
+        icon.classList.add('fa-times');
+    } else {
+        icon.classList.remove('fa-times');
+        icon.classList.add('fa-bars');
+    }
+}
+
+// Close mobile nav when clicking outside
+document.addEventListener('click', (e) => {
+    const navLinks = document.getElementById('navLinks');
+    const hamburger = document.getElementById('hamburger');
+    if (navLinks && !navLinks.contains(e.target) && hamburger && !hamburger.contains(e.target)) {
+        navLinks.classList.remove('active');
+        if (hamburger) {
+            const icon = hamburger.querySelector('i');
+            if (icon) {
+                icon.classList.remove('fa-times');
+                icon.classList.add('fa-bars');
+            }
+        }
+    }
+});
+
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', function() {
+    loadGameProgress();
+    updateLevelDisplay();
 });
 
 </script>
 </body>
 </html>
-
 
