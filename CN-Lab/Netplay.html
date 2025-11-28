@@ -656,6 +656,9 @@ function selectGameMode(mode) {
     
     // Reset escape game state if switching away from it
     if (mode !== 'escape') {
+        if (escapeGameState.timerInterval) {
+            clearInterval(escapeGameState.timerInterval);
+        }
         escapeGameState = {
             stage: 1,
             health: 100,
@@ -663,7 +666,9 @@ function selectGameMode(mode) {
             questionsAnswered: 0,
             correctAnswers: 0,
             items: [],
-            stageQuestionsAnswered: 0
+            stageQuestionsAnswered: 0,
+            currentTimeLeft: 0,
+            timerInterval: null
         };
     }
     
@@ -773,16 +778,32 @@ const subnettingQuestions = [
     { question: "What is the increment for subnet 255.255.255.224?", options: ["32", "64", "16", "8"], answer: 0, explanation: "256 - 224 = 32" }
 ];
 
-// Command Matching
+// Command Matching - Enhanced with more commands
 const commandPairs = [
-    { command: "ip route", description: "Configure static route" },
-    { command: "show ip interface brief", description: "Display interface status" },
-    { command: "vlan 10", description: "Create VLAN 10" },
-    { command: "ip nat inside source", description: "Configure NAT translation" },
-    { command: "access-list 1 permit", description: "Create ACL rule" },
-    { command: "switchport mode trunk", description: "Configure trunk port" },
-    { command: "encapsulation dot1q", description: "Configure VLAN encapsulation" },
-    { command: "show ip nat translations", description: "View NAT table" }
+    { command: "ip route", description: "Configure static route", difficulty: "Easy" },
+    { command: "show ip interface brief", description: "Display interface status", difficulty: "Easy" },
+    { command: "vlan 10", description: "Create VLAN 10", difficulty: "Easy" },
+    { command: "ip nat inside source", description: "Configure NAT translation", difficulty: "Medium" },
+    { command: "access-list 1 permit", description: "Create ACL rule", difficulty: "Medium" },
+    { command: "switchport mode trunk", description: "Configure trunk port", difficulty: "Medium" },
+    { command: "encapsulation dot1q", description: "Configure VLAN encapsulation", difficulty: "Medium" },
+    { command: "show ip nat translations", description: "View NAT table", difficulty: "Easy" },
+    { command: "ip ospf cost", description: "Set OSPF interface cost", difficulty: "Hard" },
+    { command: "router ospf 1", description: "Enter OSPF configuration mode", difficulty: "Hard" },
+    { command: "network 192.168.1.0 0.0.0.255 area 0", description: "Advertise network in OSPF area 0", difficulty: "Hard" },
+    { command: "ip address dhcp", description: "Obtain IP address via DHCP", difficulty: "Easy" },
+    { command: "no shutdown", description: "Enable interface", difficulty: "Easy" },
+    { command: "ip helper-address", description: "Forward DHCP requests", difficulty: "Hard" },
+    { command: "spanning-tree portfast", description: "Enable PortFast on interface", difficulty: "Hard" },
+    { command: "show ip route", description: "Display routing table", difficulty: "Easy" },
+    { command: "show vlan brief", description: "Display VLAN information", difficulty: "Easy" },
+    { command: "ip default-gateway", description: "Set default gateway for switch", difficulty: "Medium" },
+    { command: "switchport access vlan", description: "Assign access port to VLAN", difficulty: "Medium" },
+    { command: "ip access-group", description: "Apply ACL to interface", difficulty: "Hard" },
+    { command: "show ip access-lists", description: "Display configured ACLs", difficulty: "Medium" },
+    { command: "copy running-config startup-config", description: "Save configuration", difficulty: "Easy" },
+    { command: "show cdp neighbors", description: "Display CDP neighbor information", difficulty: "Medium" },
+    { command: "ip route 0.0.0.0 0.0.0.0", description: "Configure default route", difficulty: "Hard" }
 ];
 
 // Protocol Questions
@@ -796,6 +817,18 @@ const protocolQuestions = [
 
 let score=0, current=0, timerInterval=null, timeLeft=20, gameQuestions=[];
 let xp=0, level=1, xpNeeded=100, streak=0, correctStreak=0;
+let commandGameState = {
+    round: 1,
+    totalRounds: 3,
+    currentMatches: {},
+    timeLeft: 60,
+    correctMatches: 0,
+    totalMatches: 0,
+    selectedPairs: [],
+    difficulty: "Easy",
+    totalScore: 0,
+    totalCorrect: 0
+};
 let achievements = {
     firstWin: false,
     perfectGame: false,
@@ -920,12 +953,48 @@ function loadQuestion(n){
 }
 
 function setupCommandGame() {
+    // Reset game state
+    commandGameState = {
+        round: 1,
+        totalRounds: 3,
+        currentMatches: {},
+        timeLeft: 60,
+        correctMatches: 0,
+        totalMatches: 0,
+        selectedPairs: [],
+        difficulty: "Easy",
+        totalScore: 0,
+        totalCorrect: 0
+    };
+    
     // Show score panel
     document.getElementById("scorePanel").style.display = "block";
+    document.getElementById("progressBarContainer").style.display = "block";
+    document.getElementById("timer").innerText = "";
     
-    // Shuffle commands
-    const shuffled = [...commandPairs].sort(() => Math.random() - 0.5);
-    const selected = shuffled.slice(0, 5);
+    startCommandRound();
+}
+
+function startCommandRound() {
+    // Determine difficulty based on round
+    const difficulties = ["Easy", "Medium", "Hard"];
+    commandGameState.difficulty = difficulties[Math.min(commandGameState.round - 1, 2)];
+    
+    // Select commands based on difficulty
+    let availableCommands = commandPairs.filter(c => {
+        if (commandGameState.round === 1) return c.difficulty === "Easy";
+        if (commandGameState.round === 2) return c.difficulty === "Easy" || c.difficulty === "Medium";
+        return true; // Round 3: all difficulties
+    });
+    
+    // Shuffle and select
+    const shuffled = [...availableCommands].sort(() => Math.random() - 0.5);
+    const numQuestions = commandGameState.round === 1 ? 5 : commandGameState.round === 2 ? 6 : 7;
+    const selected = shuffled.slice(0, numQuestions);
+    commandGameState.selectedPairs = selected;
+    commandGameState.currentMatches = {};
+    commandGameState.totalMatches = selected.length;
+    commandGameState.timeLeft = commandGameState.round === 1 ? 60 : commandGameState.round === 2 ? 50 : 40;
     
     const area = document.getElementById("gameArea");
     area.innerHTML = `
@@ -933,24 +1002,40 @@ function setupCommandGame() {
             <button onclick="backToModes()" style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.2); border: none; color: white; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; font-weight: 600; transition: all 0.3s; z-index: 10;" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
                 <i class="fas fa-arrow-left"></i> Back
             </button>
-            <h3 style="margin: 0; text-align: center;">Command Master</h3>
+            <h3 style="margin: 0; text-align: center;">Command Master - Round ${commandGameState.round}/${commandGameState.totalRounds}</h3>
         </div>
         <div class="game-card-body">
-            <p>Match each command with its description. Drag commands to descriptions or click to match!</p>
+            <div style="background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%); padding: 1rem; border-radius: 8px; margin-bottom: 1rem; border-left: 4px solid var(--secondary);">
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+                    <div>
+                        <strong>⏱️ Time:</strong> <span id="commandTimer" style="font-size: 1.2rem; font-weight: 700; color: var(--accent);">${commandGameState.timeLeft}s</span>
+                    </div>
+                    <div>
+                        <strong>📊 Progress:</strong> <span id="commandProgress" style="font-weight: 700; color: var(--success);">0/${commandGameState.totalMatches}</span>
+                    </div>
+                    <div>
+                        <strong>🎯 Difficulty:</strong> <span style="background: ${commandGameState.difficulty === 'Hard' ? '#e74c3c' : commandGameState.difficulty === 'Medium' ? '#f39c12' : '#2ecc71'}; color: white; padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.85rem;">${commandGameState.difficulty}</span>
+                    </div>
+                </div>
+            </div>
+            
+            <p style="margin-bottom: 1rem; font-weight: 600; color: var(--primary);">Match each command with its correct description. Click a description button to match it with a command!</p>
             <div id="commandGameArea" style="margin-top: 1.5rem;"></div>
         </div>
     `;
     
-    let html = '<div style="display: grid; gap: 1rem;">';
+    // Create command cards
+    let html = '<div style="display: grid; gap: 1rem; margin-bottom: 1.5rem;">';
     selected.forEach((pair, idx) => {
         html += `
-            <div style="display: flex; gap: 1rem; align-items: center; padding: 1rem; background: #f8f9fa; border-radius: 8px;">
-                <div style="flex: 1; padding: 0.8rem; background: white; border-radius: 8px; border: 2px solid var(--secondary);">
-                    <code style="font-size: 1.1rem; color: var(--primary);">${pair.command}</code>
+            <div style="display: flex; gap: 1rem; align-items: center; padding: 1rem; background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%); border-radius: 8px; border: 2px solid #dee2e6; transition: all 0.3s;" id="command-row-${idx}" onmouseover="this.style.borderColor='var(--secondary)'; this.style.transform='translateX(3px)'" onmouseout="this.style.borderColor='#dee2e6'; this.style.transform='translateX(0)'">
+                <div style="flex: 1; padding: 1rem; background: white; border-radius: 8px; border: 2px solid var(--secondary); box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                    <div style="font-size: 0.75rem; color: #666; margin-bottom: 0.3rem; font-weight: 600;">COMMAND</div>
+                    <code style="font-size: 1.1rem; color: var(--primary); font-weight: 600;">${pair.command}</code>
                 </div>
-                <div style="font-size: 1.5rem; color: var(--secondary);">→</div>
-                <div style="flex: 1; padding: 0.8rem; background: white; border-radius: 8px; border: 2px dashed #ddd;" id="desc-${idx}" onclick="matchCommand(${idx}, '${pair.description}')">
-                    <span id="desc-text-${idx}" style="color: #999;">Click to match</span>
+                <div style="font-size: 1.5rem; color: var(--secondary); font-weight: bold;">→</div>
+                <div style="flex: 1; padding: 1rem; background: white; border-radius: 8px; border: 2px dashed #ddd; min-height: 60px; display: flex; align-items: center;" id="desc-${idx}">
+                    <span id="desc-text-${idx}" style="color: #999; font-style: italic; width: 100%; text-align: center;">Click description below to match</span>
                 </div>
             </div>
         `;
@@ -959,53 +1044,267 @@ function setupCommandGame() {
     
     document.getElementById("commandGameArea").innerHTML = html;
     
-    // Shuffle descriptions
+    // Shuffle descriptions and create buttons
     const descriptions = selected.map(p => p.description).sort(() => Math.random() - 0.5);
     const descContainer = document.createElement('div');
-    descContainer.style.cssText = 'margin-top: 1.5rem; display: flex; flex-wrap: wrap; gap: 0.5rem;';
-    descriptions.forEach(desc => {
+    descContainer.style.cssText = 'margin-top: 1.5rem; display: flex; flex-wrap: wrap; gap: 0.8rem; justify-content: center;';
+    descContainer.innerHTML = '<div style="width: 100%; margin-bottom: 0.5rem; text-align: center; font-weight: 600; color: var(--primary);">📋 Available Descriptions (Click to Match):</div>';
+    
+    descriptions.forEach((desc, idx) => {
         const btn = document.createElement('button');
         btn.className = 'opt-btn';
         btn.textContent = desc;
-        btn.onclick = () => selectDescription(desc);
+        btn.style.cssText = 'margin: 0; padding: 0.8rem 1.2rem; font-size: 0.95rem; transition: all 0.3s;';
+        btn.onclick = () => selectCommandDescription(desc);
+        btn.onmouseover = function() { this.style.transform = 'scale(1.05)'; };
+        btn.onmouseout = function() { this.style.transform = 'scale(1)'; };
         descContainer.appendChild(btn);
     });
     document.getElementById("commandGameArea").appendChild(descContainer);
     
-    window.currentCommandPairs = selected;
-    window.commandMatches = {};
+    // Start timer
+    clearInterval(timerInterval);
+    timerInterval = setInterval(() => {
+        commandGameState.timeLeft--;
+        const timerEl = document.getElementById("commandTimer");
+        if (timerEl) {
+            timerEl.textContent = commandGameState.timeLeft + "s";
+            if (commandGameState.timeLeft <= 10) {
+                timerEl.style.color = "#e74c3c";
+                timerEl.style.animation = "pulse 0.5s infinite";
+            }
+        }
+        if (commandGameState.timeLeft <= 0) {
+            clearInterval(timerInterval);
+            finishCommandRound();
+        }
+    }, 1000);
+    
+    updateCommandProgress();
 }
 
-function selectDescription(desc) {
+function selectCommandDescription(desc) {
     // Find which command this matches
-    const pairs = window.currentCommandPairs;
+    const pairs = commandGameState.selectedPairs;
     const matchIdx = pairs.findIndex(p => p.description === desc);
     
-    if (matchIdx >= 0 && !window.commandMatches[matchIdx]) {
-        window.commandMatches[matchIdx] = desc;
-        document.getElementById(`desc-${matchIdx}`).style.border = '2px solid var(--success)';
-        document.getElementById(`desc-text-${matchIdx}`).textContent = desc;
-        document.getElementById(`desc-text-${matchIdx}`).style.color = 'var(--success)';
+    if (matchIdx >= 0 && !commandGameState.currentMatches[matchIdx]) {
+        const pair = pairs[matchIdx];
+        const isCorrect = pair.description === desc;
+        
+        commandGameState.currentMatches[matchIdx] = desc;
+        
+        // Update UI
+        const descEl = document.getElementById(`desc-${matchIdx}`);
+        const descTextEl = document.getElementById(`desc-text-${matchIdx}`);
+        const rowEl = document.getElementById(`command-row-${matchIdx}`);
+        
+        if (isCorrect) {
+            descEl.style.border = '2px solid var(--success)';
+            descEl.style.background = 'linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%)';
+            descTextEl.textContent = desc;
+            descTextEl.style.color = 'var(--success)';
+            descTextEl.style.fontStyle = 'normal';
+            descTextEl.style.fontWeight = '600';
+            rowEl.style.borderColor = 'var(--success)';
+            commandGameState.correctMatches++;
+            
+            // Visual feedback
+            showCommandFeedback("✅ Correct!", "success");
+            
+            // Remove the description button
+            const buttons = document.querySelectorAll('.opt-btn');
+            buttons.forEach(btn => {
+                if (btn.textContent === desc) {
+                    btn.style.background = 'var(--success)';
+                    btn.style.color = 'white';
+                    btn.style.pointerEvents = 'none';
+                    btn.style.opacity = '0.6';
+                }
+            });
+        } else {
+            descEl.style.border = '2px solid var(--accent)';
+            descEl.style.background = 'linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%)';
+            descTextEl.textContent = desc + " ❌";
+            descTextEl.style.color = 'var(--accent)';
+            descTextEl.style.fontStyle = 'normal';
+            rowEl.style.borderColor = 'var(--accent)';
+            
+            showCommandFeedback("❌ Wrong match! Try again.", "error");
+            
+            // Show correct answer after a delay
+            setTimeout(() => {
+                descEl.style.border = '2px solid var(--success)';
+                descEl.style.background = 'linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%)';
+                descTextEl.textContent = pair.description;
+                descTextEl.style.color = 'var(--success)';
+                rowEl.style.borderColor = 'var(--success)';
+            }, 1500);
+        }
+        
+        updateCommandProgress();
         
         // Check if all matched
-        if (Object.keys(window.commandMatches).length === pairs.length) {
-            score += 50;
-            document.getElementById("score").innerText = score;
+        if (Object.keys(commandGameState.currentMatches).length === pairs.length) {
+            clearInterval(timerInterval);
             setTimeout(() => {
-                showFinal();
-            }, 1000);
+                finishCommandRound();
+            }, 2000);
         }
     }
 }
 
-function matchCommand(idx, correctDesc) {
-    // This is a simplified version - in a full implementation, you'd have drag-and-drop
-    if (!window.commandMatches[idx]) {
-        window.commandMatches[idx] = correctDesc;
-        document.getElementById(`desc-${idx}`).style.border = '2px solid var(--success)';
-        document.getElementById(`desc-text-${idx}`).textContent = correctDesc;
-        document.getElementById(`desc-text-${idx}`).style.color = 'var(--success)';
+function updateCommandProgress() {
+    const progressEl = document.getElementById("commandProgress");
+    if (progressEl) {
+        const matched = Object.keys(commandGameState.currentMatches).length;
+        progressEl.textContent = `${matched}/${commandGameState.totalMatches}`;
+        progressEl.style.color = matched === commandGameState.totalMatches ? 'var(--success)' : 'var(--primary)';
     }
+    
+    // Update progress bar
+    const percent = (Object.keys(commandGameState.currentMatches).length / commandGameState.totalMatches) * 100;
+    document.getElementById("progressBar").style.width = percent + '%';
+}
+
+function finishCommandRound() {
+    clearInterval(timerInterval);
+    
+    const pairs = commandGameState.selectedPairs;
+    const totalCorrect = commandGameState.correctMatches;
+    const accuracy = Math.round((totalCorrect / pairs.length) * 100);
+    
+    // Calculate score
+    const baseScore = totalCorrect * 20;
+    const timeBonus = Math.floor(commandGameState.timeLeft * 2);
+    const roundBonus = commandGameState.round * 15;
+    const roundScore = baseScore + timeBonus + roundBonus;
+    
+    commandGameState.totalScore += roundScore;
+    commandGameState.totalCorrect += totalCorrect;
+    score += roundScore;
+    xp += roundScore;
+    updateLevelDisplay();
+    document.getElementById("score").innerText = score;
+    
+    // Check for level up
+    while (xp >= xpNeeded) {
+        xp -= xpNeeded;
+        level++;
+        xpNeeded = Math.floor(xpNeeded * 1.5);
+        showAchievement(`Level Up! You reached Level ${level}! 🎉`);
+    }
+    
+    if (commandGameState.round >= commandGameState.totalRounds) {
+        // Game complete
+        showCommandFinal();
+    } else {
+        // Next round
+        commandGameState.round++;
+        const area = document.getElementById("gameArea");
+        area.innerHTML = `
+            <div class="game-card-header" style="position: relative; padding-left: 4rem;">
+                <button onclick="backToModes()" style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.2); border: none; color: white; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; font-weight: 600; transition: all 0.3s; z-index: 10;" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                    <i class="fas fa-arrow-left"></i> Back
+                </button>
+                <h3 style="margin: 0; text-align: center;">🎉 Round ${commandGameState.round - 1} Complete!</h3>
+            </div>
+            <div class="game-card-body" style="text-align: center;">
+                <div style="font-size: 4rem; margin-bottom: 1rem;">✨</div>
+                <h3 style="color: var(--primary); margin-bottom: 1rem;">Round ${commandGameState.round - 1} Results</h3>
+                <div style="background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%); padding: 1.5rem; border-radius: 12px; margin-bottom: 1.5rem; border: 3px solid var(--success);">
+                    <p style="margin: 0.5rem 0;"><strong>✅ Correct:</strong> ${totalCorrect}/${pairs.length}</p>
+                    <p style="margin: 0.5rem 0;"><strong>🎯 Accuracy:</strong> ${accuracy}%</p>
+                    <p style="margin: 0.5rem 0;"><strong>⏱️ Time Remaining:</strong> ${commandGameState.timeLeft}s</p>
+                    <p style="margin: 0.5rem 0;"><strong>⭐ Score:</strong> +${roundScore} (Base: ${baseScore} + Time: ${timeBonus} + Round: ${roundBonus})</p>
+                </div>
+                <button class="btn" onclick="startCommandRound()" style="background: var(--secondary); font-size: 1.1rem; padding: 1rem 2rem;">Continue to Round ${commandGameState.round} →</button>
+            </div>
+        `;
+    }
+}
+
+function showCommandFinal() {
+    const totalAccuracy = Math.round((commandGameState.totalCorrect / (commandGameState.totalRounds * 5)) * 100);
+    const totalScore = commandGameState.totalScore;
+    const area = document.getElementById("gameArea");
+    let rank = "Beginner";
+    let emoji = "🌱";
+    if (totalAccuracy >= 95) {
+        rank = "Command Master";
+        emoji = "👑";
+    } else if (totalAccuracy >= 85) {
+        rank = "Command Expert";
+        emoji = "⭐";
+    } else if (totalAccuracy >= 70) {
+        rank = "Command Pro";
+        emoji = "🌟";
+    }
+    
+    area.innerHTML = `
+        <div class="game-card-header" style="position: relative; padding-left: 4rem;">
+            <button onclick="backToModes()" style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.2); border: none; color: white; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; font-weight: 600; transition: all 0.3s; z-index: 10;" onmouseover="this.style.background='rgba(255,255,255,0.3)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'">
+                <i class="fas fa-arrow-left"></i> Back
+            </button>
+            <h3 style="margin: 0; text-align: center;">🏆 Game Complete!</h3>
+        </div>
+        <div class="game-card-body" style="text-align: center;">
+            <div style="font-size: 5rem; margin-bottom: 1rem;">${emoji}</div>
+            <h2 style="color: var(--primary); margin-bottom: 0.5rem;">Congratulations!</h2>
+            <p style="margin-bottom: 1.5rem; color: #666;">You've completed all ${commandGameState.totalRounds} rounds!</p>
+            
+            <div style="background: linear-gradient(135deg, #fff3cd 0%, #ffe082 100%); padding: 1.5rem; border-radius: 12px; margin-bottom: 1.5rem; border: 3px solid #f39c12;">
+                <div style="font-size: 2rem; margin-bottom: 0.5rem;">${emoji}</div>
+                <h3 style="color: #e65100; margin-bottom: 1rem;">Rank: ${rank}</h3>
+            </div>
+            
+            <div style="background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%); padding: 2rem; border-radius: 12px; margin-bottom: 1.5rem; border: 3px solid var(--success);">
+                <h4 style="color: var(--primary); margin-bottom: 1.5rem;">📊 Final Stats</h4>
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; text-align: left;">
+                    <div>
+                        <p style="margin: 0.8rem 0;"><strong>🎯 Overall Accuracy:</strong> <span style="color: #2e7d32; font-size: 1.2rem;">${totalAccuracy}%</span></p>
+                        <p style="margin: 0.8rem 0;"><strong>⭐ Total Score:</strong> <span style="color: #f39c12; font-size: 1.2rem;">+${totalScore}</span></p>
+                    </div>
+                    <div>
+                        <p style="margin: 0.8rem 0;"><strong>📍 Rounds Completed:</strong> <span style="color: #1565c0; font-size: 1.2rem;">${commandGameState.totalRounds}</span></p>
+                        <p style="margin: 0.8rem 0;"><strong>✅ Total Correct:</strong> <span style="color: #2e7d32; font-size: 1.2rem;">${commandGameState.totalCorrect}</span></p>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                <button class="btn" onclick="setupCommandGame()" style="background: var(--success); font-size: 1.1rem; padding: 1rem 2rem;">🔄 Play Again</button>
+                <button class="btn" onclick="backToModes()" style="background: var(--primary); font-size: 1.1rem; padding: 1rem 2rem;">🏠 Choose Another Game</button>
+            </div>
+        </div>
+    `;
+    
+    document.getElementById("progressBarContainer").style.display = "none";
+    document.getElementById("timer").innerText = "";
+    saveGameProgress();
+    showAchievement(`Command Master! 🎯 You achieved ${totalAccuracy}% accuracy!`);
+}
+
+function showCommandFeedback(message, type) {
+    const feedback = document.createElement('div');
+    feedback.textContent = message;
+    feedback.style.cssText = `
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: ${type === 'success' ? 'var(--success)' : 'var(--accent)'};
+        color: white;
+        padding: 1rem 2rem;
+        border-radius: 12px;
+        font-weight: 600;
+        font-size: 1.1rem;
+        z-index: 10001;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        animation: popInOut 1.5s ease-out;
+    `;
+    document.body.appendChild(feedback);
+    setTimeout(() => feedback.remove(), 1500);
 }
 
 function selectOption(i){
@@ -1212,6 +1511,9 @@ function backToModes() {
     document.getElementById("score").innerText = score;
     
     // Reset escape game state
+    if (escapeGameState.timerInterval) {
+        clearInterval(escapeGameState.timerInterval);
+    }
     escapeGameState = {
         stage: 1,
         health: 100,
@@ -1219,7 +1521,23 @@ function backToModes() {
         questionsAnswered: 0,
         correctAnswers: 0,
         items: [],
-        stageQuestionsAnswered: 0
+        stageQuestionsAnswered: 0,
+        currentTimeLeft: 0,
+        timerInterval: null
+    };
+    
+    // Reset command game state
+    commandGameState = {
+        round: 1,
+        totalRounds: 3,
+        currentMatches: {},
+        timeLeft: 60,
+        correctMatches: 0,
+        totalMatches: 0,
+        selectedPairs: [],
+        difficulty: "Easy",
+        totalScore: 0,
+        totalCorrect: 0
     };
     
     // Reset current game mode
@@ -1259,16 +1577,18 @@ let escapeGameState = {
     distance: 0,
     questionsAnswered: 0,
     correctAnswers: 0,
-    currentObstacle: null
+    currentObstacle: null,
+    currentTimeLeft: 0,
+    timerInterval: null
 };
 
 const escapeStages = [
-    { name: "🌲 Deep Forest", questions: 4, story: "You're lost deep in the network forest! The trees are dense and the path is unclear. Use your networking knowledge to navigate through!", icon: "🌲", color: "#2d5016" },
-    { name: "🌳 Dense Thicket", questions: 4, story: "The forest gets thicker! Vines block your way. Answer correctly to cut through the obstacles!", icon: "🌳", color: "#1e3a0f" },
-    { name: "🦌 River Crossing", questions: 3, story: "A wide river blocks your path! Build a bridge of knowledge by solving networking puzzles!", icon: "🦌", color: "#1e88e5" },
-    { name: "🏔️ Mountain Pass", questions: 3, story: "You've reached the mountains! The climb is steep. Your networking expertise will help you reach the summit!", icon: "🏔️", color: "#5d4037" },
-    { name: "🌉 Bridge of Knowledge", questions: 2, story: "A mystical bridge appears! Answer these final questions to cross safely!", icon: "🌉", color: "#6a1b9a" },
-    { name: "🏠 Safe Exit", questions: 2, story: "You can see the exit! One last challenge stands between you and freedom!", icon: "🏠", color: "#f57c00" }
+    { name: "🌲 Deep Forest", questions: 4, story: "You're lost deep in the network forest! The trees are dense and the path is unclear. Use your networking knowledge to navigate through!", icon: "🌲", color: "#2d5016", timeLimit: 0, difficulty: "Easy" },
+    { name: "🌳 Dense Thicket", questions: 4, story: "The forest gets thicker! Vines block your way. Answer correctly to cut through the obstacles!", icon: "🌳", color: "#1e3a0f", timeLimit: 0, difficulty: "Easy" },
+    { name: "🦌 River Crossing", questions: 3, story: "A wide river blocks your path! Build a bridge of knowledge by solving networking puzzles!", icon: "🦌", color: "#1e88e5", timeLimit: 0, difficulty: "Medium" },
+    { name: "🏔️ Mountain Pass", questions: 3, story: "You've reached the mountains! The climb is steep. Your networking expertise will help you reach the summit!", icon: "🏔️", color: "#5d4037", timeLimit: 25, difficulty: "Hard" },
+    { name: "🌉 Bridge of Knowledge", questions: 2, story: "A mystical bridge appears! Answer these final questions to cross safely! ⚡ TIME PRESSURE ACTIVATED!", icon: "🌉", color: "#6a1b9a", timeLimit: 20, difficulty: "Very Hard" },
+    { name: "🏠 Safe Exit", questions: 2, story: "You can see the exit! One last challenge stands between you and freedom! ⚡⚡ ULTIMATE CHALLENGE - EXTREME TIME PRESSURE!", icon: "🏠", color: "#f57c00", timeLimit: 15, difficulty: "Extreme" }
 ];
 
 const escapeQuestions = [
@@ -1289,18 +1609,18 @@ const escapeQuestions = [
     { question: "What does DNS resolve?", options: ["Domain names to IPs", "IPs to MACs", "Ports to services", "Protocols to ports"], answer: 0, hint: "Domain Name System" },
     { question: "What is the purpose of ARP?", options: ["Resolve IP to MAC address", "Resolve domain to IP", "Route packets", "Encrypt data"], answer: 0, hint: "Address Resolution Protocol" },
     
-    // Stage 4 - Mountain Pass (3 questions)
-    { question: "What is OSPF?", options: ["Open Shortest Path First", "Optimal Shortest Path First", "Open Secure Path First", "Optimal Secure Path First"], answer: 0, hint: "Link-state routing protocol" },
-    { question: "What does /24 mean in CIDR?", options: ["24 network bits", "24 host bits", "24 subnets", "24 routers"], answer: 0, hint: "CIDR notation for subnet mask" },
-    { question: "What is the default administrative distance of OSPF?", options: ["90", "110", "120", "100"], answer: 1, hint: "OSPF has higher priority than RIP" },
+    // Stage 4 - Mountain Pass (3 questions) - HARD
+    { question: "In OSPF, what is the purpose of the DR (Designated Router)?", options: ["Reduce routing table size", "Reduce LSA flooding in multi-access networks", "Increase network speed", "Encrypt routing updates"], answer: 1, hint: "DR reduces OSPF traffic overhead" },
+    { question: "What is the subnet mask for 192.168.1.0/26?", options: ["255.255.255.192", "255.255.255.128", "255.255.255.224", "255.255.255.0"], answer: 0, hint: "/26 = 26 network bits = 255.255.255.192" },
+    { question: "Which routing protocol uses AS-path as a loop prevention mechanism?", options: ["OSPF", "RIP", "BGP", "EIGRP"], answer: 2, hint: "BGP uses AS-path attribute" },
     
-    // Stage 5 - Bridge of Knowledge (2 questions)
-    { question: "What is BGP used for?", options: ["Inter-AS routing", "Intra-AS routing", "Local routing", "Static routing"], answer: 0, hint: "Border Gateway Protocol for internet routing" },
-    { question: "What is the maximum hop count for RIP?", options: ["15", "16", "255", "128"], answer: 0, hint: "Distance-vector routing protocol limit" },
+    // Stage 5 - Bridge of Knowledge (2 questions) - VERY HARD with time pressure
+    { question: "A network 172.16.0.0/16 needs 8 subnets with at least 2000 hosts each. What subnet mask should be used?", options: ["255.255.248.0 (/21)", "255.255.240.0 (/20)", "255.255.224.0 (/19)", "255.255.192.0 (/18)"], answer: 1, hint: "Need 2000+ hosts: /20 gives 4094 hosts per subnet" },
+    { question: "In TCP congestion control, what happens when 3 duplicate ACKs are received?", options: ["Slow start begins", "Fast retransmit triggers", "Connection closes", "Window size doubles"], answer: 1, hint: "Fast retransmit on 3 duplicate ACKs" },
     
-    // Stage 6 - Safe Exit (2 questions)
-    { question: "What does SSH stand for?", options: ["Secure Shell", "Secure Socket Host", "System Secure Host", "Socket Secure Host"], answer: 0, hint: "Secure remote access protocol" },
-    { question: "What port does SMTP use?", options: ["25", "80", "443", "21"], answer: 0, hint: "Email sending protocol" }
+    // Stage 6 - Safe Exit (2 questions) - EXTREME difficulty
+    { question: "What is the maximum number of usable IPs in a /22 network?", options: ["1022", "1024", "2046", "2048"], answer: 0, hint: "/22 = 10 host bits, 2^10 - 2 = 1022 usable" },
+    { question: "In BGP, what is the purpose of the LOCAL_PREF attribute?", options: ["Prevent routing loops", "Prefer exit points within AS", "Set route origin", "Determine path length"], answer: 1, hint: "LOCAL_PREF influences outbound traffic path selection" }
 ];
 
 function startEscapeGame() {
@@ -1309,6 +1629,9 @@ function startEscapeGame() {
     
     // Initialize game state if starting fresh
     if (escapeGameState.stage === 0 || escapeGameState.questionsAnswered === 0) {
+        if (escapeGameState.timerInterval) {
+            clearInterval(escapeGameState.timerInterval);
+        }
         escapeGameState = {
             stage: 1,
             health: 100,
@@ -1316,7 +1639,9 @@ function startEscapeGame() {
             questionsAnswered: 0,
             correctAnswers: 0,
             items: [],
-            stageQuestionsAnswered: 0
+            stageQuestionsAnswered: 0,
+            currentTimeLeft: 0,
+            timerInterval: null
         };
     }
     
@@ -1394,11 +1719,21 @@ function startEscapeGame() {
             <div style="background: #f3e5f5; padding: 0.8rem; border-radius: 8px; margin-bottom: 1.5rem; text-align: center; border: 2px solid #9c27b0;">
                 <div style="font-weight: 600; color: #7b1fa2; margin-bottom: 0.3rem;">
                     📍 Stage ${escapeGameState.stage}/${escapeStages.length} - Question ${escapeGameState.stageQuestionsAnswered + 1}/${currentStage.questions}
+                    ${currentStage.difficulty ? `<span style="background: ${currentStage.color}; color: white; padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.75rem; margin-left: 0.5rem;">${currentStage.difficulty}</span>` : ''}
                 </div>
                 <div style="width: 100%; height: 10px; background: #e1bee7; border-radius: 5px; overflow: hidden;">
                     <div style="height: 100%; background: linear-gradient(90deg, #ba68c8 0%, #9c27b0 100%); width: ${((escapeGameState.stageQuestionsAnswered) / currentStage.questions) * 100}%; transition: width 0.5s; border-radius: 5px;"></div>
                 </div>
             </div>
+            
+            ${currentStage.timeLimit > 0 ? `
+            <!-- Time Pressure Warning -->
+            <div id="escapeTimerContainer" style="background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%); padding: 1rem; border-radius: 12px; margin-bottom: 1.5rem; text-align: center; border: 3px solid #c92a2a; box-shadow: 0 4px 15px rgba(255,107,107,0.4); animation: pulse 2s infinite;">
+                <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">⚡ TIME PRESSURE ACTIVATED ⚡</div>
+                <div style="font-size: 2rem; font-weight: 700; color: white;" id="escapeTimer">${currentStage.timeLimit}s</div>
+                <div style="font-size: 0.9rem; margin-top: 0.3rem; opacity: 0.9;">Answer quickly or lose extra health!</div>
+            </div>
+            ` : ''}
             
             <!-- Question Card -->
             <div style="background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%); padding: 1.8rem; border-radius: 12px; margin-bottom: 1rem; box-shadow: 0 4px 12px rgba(0,0,0,0.1); border: 2px solid ${currentStage.color}40;">
@@ -1422,6 +1757,35 @@ function startEscapeGame() {
     
     document.getElementById("progressBarContainer").style.display = "none";
     document.getElementById("timer").innerText = "";
+    
+    // Start timer if stage has time limit
+    if (currentStage.timeLimit > 0) {
+        escapeGameState.currentTimeLeft = currentStage.timeLimit;
+        escapeGameState.timerInterval = setInterval(() => {
+            escapeGameState.currentTimeLeft--;
+            const timerEl = document.getElementById("escapeTimer");
+            if (timerEl) {
+                timerEl.textContent = escapeGameState.currentTimeLeft + "s";
+                if (escapeGameState.currentTimeLeft <= 5) {
+                    timerEl.parentElement.style.animation = "pulse 0.5s infinite";
+                    timerEl.style.color = "#ffeb3b";
+                }
+                if (escapeGameState.currentTimeLeft <= 0) {
+                    clearInterval(escapeGameState.timerInterval);
+                    // Time's up - auto wrong answer
+                    const buttons = document.querySelectorAll(".opt-btn");
+                    if (buttons.length > 0) {
+                        // Find wrong answer (not the correct one)
+                        const question = escapeQuestions[questionIndex];
+                        const wrongIndex = question.options.findIndex((opt, i) => i !== question.answer);
+                        if (wrongIndex >= 0) {
+                            answerEscapeQuestion(wrongIndex, questionIndex);
+                        }
+                    }
+                }
+            }
+        }, 1000);
+    }
 }
 
 function showEscapeHint(hint) {
@@ -1446,9 +1810,16 @@ function getQuestionIndexForStage() {
 }
 
 function answerEscapeQuestion(selectedIndex, questionIndex) {
+    // Clear timer if exists
+    if (escapeGameState.timerInterval) {
+        clearInterval(escapeGameState.timerInterval);
+        escapeGameState.timerInterval = null;
+    }
+    
     const question = escapeQuestions[questionIndex];
     const buttons = document.querySelectorAll(".opt-btn");
     const isCorrect = selectedIndex === question.answer;
+    const currentStage = escapeStages[escapeGameState.stage - 1];
     
     // Disable all buttons
     buttons.forEach(btn => {
@@ -1497,7 +1868,11 @@ function answerEscapeQuestion(selectedIndex, questionIndex) {
         buttons[selectedIndex].classList.add('opt-wrong');
         buttons[question.answer].classList.add('opt-correct');
         
-        const damage = 15 + (escapeGameState.stage * 2); // More damage in later stages
+        // Extra damage if time ran out
+        let damage = 15 + (escapeGameState.stage * 2); // More damage in later stages
+        if (currentStage.timeLimit > 0 && escapeGameState.currentTimeLeft <= 0) {
+            damage += 10; // Extra penalty for timeout
+        }
         escapeGameState.health = Math.max(0, escapeGameState.health - damage);
         escapeGameState.questionsAnswered++;
         escapeGameState.stageQuestionsAnswered++;
@@ -1552,8 +1927,11 @@ function completeEscapeStage() {
     escapeGameState.stage++;
     escapeGameState.stageQuestionsAnswered = 0;
     
-    // Stage completion bonus
-    const stageBonus = escapeGameState.stage * 30;
+    // Stage completion bonus (more for difficult stages)
+    const difficultyMultiplier = completedStage.difficulty === "Extreme" ? 2.5 : 
+                                  completedStage.difficulty === "Very Hard" ? 2.0 :
+                                  completedStage.difficulty === "Hard" ? 1.5 : 1.0;
+    const stageBonus = Math.floor(escapeGameState.stage * 30 * difficultyMultiplier);
     xp += stageBonus;
     score += stageBonus;
     updateLevelDisplay();
@@ -1561,6 +1939,26 @@ function completeEscapeStage() {
     
     const area = document.getElementById("gameArea");
     const currentStage = escapeStages[escapeGameState.stage - 1];
+    
+    // Calculate performance stats for completed stage
+    // Use overall accuracy as stage-specific tracking would require more state management
+    const overallAccuracy = escapeGameState.questionsAnswered > 0 ? 
+        Math.round((escapeGameState.correctAnswers / escapeGameState.questionsAnswered) * 100) : 100;
+    const stageAccuracy = overallAccuracy; // Show overall accuracy for now
+    
+    // Speed bonus (if timer was active and time remained)
+    let speedBonus = 0;
+    if (completedStage.timeLimit > 0 && escapeGameState.currentTimeLeft > 0) {
+        speedBonus = Math.floor(escapeGameState.currentTimeLeft * 2);
+        xp += speedBonus;
+        score += speedBonus;
+        updateLevelDisplay();
+    }
+    
+    // Special effects for difficult stages
+    const isDifficult = currentStage.difficulty === "Hard" || 
+                       currentStage.difficulty === "Very Hard" || 
+                       currentStage.difficulty === "Extreme";
     
     area.innerHTML = `
         <div class="game-card-header" style="background: linear-gradient(135deg, ${completedStage.color} 0%, ${completedStage.color}dd 100%); position: relative; padding-left: 4rem;">
@@ -1570,30 +1968,55 @@ function completeEscapeStage() {
             <h3 style="margin: 0; text-align: center;">🎉 Stage Complete!</h3>
         </div>
         <div class="game-card-body" style="text-align: center;">
-            <div style="font-size: 5rem; margin-bottom: 1rem; animation: bounce 1s ease-in-out infinite;">✨</div>
-            <h2 style="color: var(--primary); margin-bottom: 0.5rem;">${completedStage.icon} ${completedStage.name} Conquered!</h2>
+            <div style="font-size: 6rem; margin-bottom: 1rem; animation: bounce 1s ease-in-out infinite;">${completedStage.icon}</div>
+            <h2 style="color: var(--primary); margin-bottom: 0.5rem; font-size: 1.8rem;">${completedStage.icon} ${completedStage.name} Conquered!</h2>
             <p style="margin-bottom: 1.5rem; color: #666; font-size: 1.1rem;">You've successfully navigated through ${completedStage.name}!</p>
+            
+            ${stageAccuracy >= 100 ? `
+            <div style="background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%); padding: 1rem; border-radius: 12px; margin-bottom: 1.5rem; border: 3px solid #f39c12; box-shadow: 0 4px 15px rgba(255,215,0,0.4);">
+                <div style="font-size: 2rem; margin-bottom: 0.5rem;">🏆 PERFECT STAGE! 🏆</div>
+                <div style="font-weight: 700; color: #e67e22;">100% Accuracy Bonus!</div>
+            </div>
+            ` : ''}
             
             <div style="background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%); padding: 1.5rem; border-radius: 12px; margin-bottom: 1.5rem; border: 3px solid ${completedStage.color}; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
                 <h4 style="color: ${completedStage.color}; margin-bottom: 1rem; font-size: 1.2rem;">🏆 Stage Rewards</h4>
                 <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; text-align: left;">
                     <div>
-                        <p style="margin: 0.5rem 0;"><strong>⭐ XP Bonus:</strong> +${stageBonus}</p>
-                        <p style="margin: 0.5rem 0;"><strong>❤️ Health:</strong> ${escapeGameState.health}%</p>
+                        <p style="margin: 0.5rem 0;"><strong>⭐ XP Bonus:</strong> <span style="color: #f39c12; font-size: 1.1rem;">+${stageBonus}</span></p>
+                        <p style="margin: 0.5rem 0;"><strong>❤️ Health:</strong> <span style="color: #e65100;">${escapeGameState.health}%</span></p>
+                        ${speedBonus > 0 ? `<p style="margin: 0.5rem 0;"><strong>⚡ Speed Bonus:</strong> <span style="color: #27ae60;">+${speedBonus} XP</span></p>` : ''}
                     </div>
                     <div>
-                        <p style="margin: 0.5rem 0;"><strong>📊 Distance:</strong> ${escapeGameState.distance}m</p>
-                        <p style="margin: 0.5rem 0;"><strong>✅ Correct:</strong> ${escapeGameState.correctAnswers}</p>
+                        <p style="margin: 0.5rem 0;"><strong>📊 Distance:</strong> <span style="color: #1565c0;">${escapeGameState.distance}m</span></p>
+                        <p style="margin: 0.5rem 0;"><strong>✅ Correct:</strong> <span style="color: #2e7d32;">${escapeGameState.correctAnswers}</span></p>
+                        <p style="margin: 0.5rem 0;"><strong>🎯 Accuracy:</strong> <span style="color: #7b1fa2;">${stageAccuracy}%</span></p>
                     </div>
                 </div>
             </div>
             
+            ${isDifficult ? `
+            <div style="background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%); padding: 1.5rem; border-radius: 12px; margin-bottom: 1.5rem; border: 3px solid #c92a2a; box-shadow: 0 4px 15px rgba(255,107,107,0.4); animation: pulse 2s infinite;">
+                <div style="font-size: 2rem; margin-bottom: 0.5rem;">⚡⚡ WARNING ⚡⚡</div>
+                <h4 style="color: white; margin-bottom: 0.8rem; font-size: 1.3rem;">${currentStage.difficulty} CHALLENGE AHEAD!</h4>
+                <p style="margin: 0; color: white; line-height: 1.6; font-size: 1.05rem;">
+                    ${currentStage.story}<br><br>
+                    <strong>⚠️ Time Limit: ${currentStage.timeLimit} seconds per question!</strong><br>
+                    <strong>⚠️ Wrong answers deal ${15 + (escapeGameState.stage * 2) + 10} damage!</strong><br>
+                    <strong>⚠️ Timeouts cause extra damage!</strong>
+                </p>
+            </div>
+            ` : `
             <div style="background: #fff3e0; padding: 1.5rem; border-radius: 12px; margin-bottom: 1.5rem; border-left: 5px solid ${currentStage.color};">
                 <h4 style="color: var(--primary); margin-bottom: 0.8rem;">📍 Next: ${currentStage.icon} ${currentStage.name}</h4>
                 <p style="margin: 0; color: #666; line-height: 1.6;">${currentStage.story}</p>
+                ${currentStage.difficulty ? `<p style="margin-top: 0.5rem; color: ${currentStage.color}; font-weight: 600;">Difficulty: ${currentStage.difficulty}</p>` : ''}
             </div>
+            `}
             
-            <button class="btn" onclick="startEscapeGame()" style="background: ${currentStage.color}; font-size: 1.1rem; padding: 1rem 2rem;">Continue Journey →</button>
+            <button class="btn" onclick="startEscapeGame()" style="background: ${currentStage.color}; font-size: 1.1rem; padding: 1rem 2rem; box-shadow: 0 4px 15px rgba(0,0,0,0.2); ${isDifficult ? 'animation: pulse 2s infinite;' : ''}">
+                ${isDifficult ? '⚡ Accept Challenge →' : 'Continue Journey →'}
+            </button>
         </div>
     `;
 }
@@ -1674,6 +2097,11 @@ function winEscapeGame() {
 }
 
 function resetEscapeGame() {
+    // Clear any active timer
+    if (escapeGameState.timerInterval) {
+        clearInterval(escapeGameState.timerInterval);
+    }
+    
     escapeGameState = {
         stage: 1,
         health: 100,
@@ -1681,7 +2109,9 @@ function resetEscapeGame() {
         questionsAnswered: 0,
         correctAnswers: 0,
         items: [],
-        stageQuestionsAnswered: 0
+        stageQuestionsAnswered: 0,
+        currentTimeLeft: 0,
+        timerInterval: null
     };
 }
 
@@ -1816,8 +2246,6 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 </body>
 </html>
-
-
 
 
 
