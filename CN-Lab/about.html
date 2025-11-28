@@ -57,6 +57,7 @@ header {
     width:auto;
     transition:transform 0.3s;
     display:block;
+    flex-shrink:0;
 }
 .logo img:hover {
     transform:scale(1.1);
@@ -67,6 +68,7 @@ header {
     color:white;
     margin:0;
     line-height:1.2;
+    white-space:nowrap;
 }
 
 /* Desktop Nav */
@@ -308,10 +310,12 @@ footer {
     .logo img {
         height:40px;
         width:auto;
+        flex-shrink:0;
     }
     .logo h1 {
         font-size:1.4rem;
         line-height:1.2;
+        white-space:nowrap;
     }
     .about-section {
         padding:1.5rem;
