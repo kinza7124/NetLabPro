@@ -926,7 +926,14 @@
 
             // Show first 3 subnets
             subnetsHtml += '<table style="width: 100%; background: rgba(255,255,255,0.15); border-collapse: collapse; border-radius: 8px; overflow: hidden;">';
-            subnetsHtml += '<tr style="background: rgba(255,255,255,0.2);"><th style="padding: 0.8rem; text-align: left;">Subnet</th><th style="padding: 0.8rem; text-align: left;">Network</th><th style="padding: 0.8rem; text-align: left;">Range</th><th style="padding: 0.8rem; text-align: left;">Broadcast</th></tr>';
+            
+            // FIXED HEADER: Added background: transparent and color: white to <th> to override global styles
+            subnetsHtml += '<tr style="background: rgba(255,255,255,0.2);">';
+            subnetsHtml += '<th style="padding: 0.8rem; text-align: left; background: transparent; color: white; border: 1px solid rgba(255,255,255,0.2);">Subnet</th>';
+            subnetsHtml += '<th style="padding: 0.8rem; text-align: left; background: transparent; color: white; border: 1px solid rgba(255,255,255,0.2);">Network</th>';
+            subnetsHtml += '<th style="padding: 0.8rem; text-align: left; background: transparent; color: white; border: 1px solid rgba(255,255,255,0.2);">Range</th>';
+            subnetsHtml += '<th style="padding: 0.8rem; text-align: left; background: transparent; color: white; border: 1px solid rgba(255,255,255,0.2);">Broadcast</th>';
+            subnetsHtml += '</tr>';
             
             for (let i = 0; i < 3; i++) {
                 const subnetNum = networkNum + (i * increment);
@@ -934,15 +941,15 @@
                 const lastHost = subnetNum + increment - 2;
                 const broadcast = subnetNum + increment - 1;
                 
-                subnetsHtml += `<tr>`;
-                subnetsHtml += `<td style="padding: 0.8rem;">${i + 1}</td>`;
-                subnetsHtml += `<td style="padding: 0.8rem;"><code>${baseNetwork}.${subnetNum}</code></td>`;
-                subnetsHtml += `<td style="padding: 0.8rem;">${baseNetwork}.${firstHost} - ${baseNetwork}.${lastHost}</td>`;
-                subnetsHtml += `<td style="padding: 0.8rem;"><code>${baseNetwork}.${broadcast}</code></td>`;
+                // FIXED ROW: Added style="background: transparent" to prevent the gray background from global CSS
+                subnetsHtml += `<tr style="background: transparent; border-bottom: 1px solid rgba(255,255,255,0.1);">`;
+                subnetsHtml += `<td style="padding: 0.8rem; border: 1px solid rgba(255,255,255,0.2);">${i + 1}</td>`;
+                subnetsHtml += `<td style="padding: 0.8rem; border: 1px solid rgba(255,255,255,0.2);"><code>${baseNetwork}.${subnetNum}</code></td>`;
+                subnetsHtml += `<td style="padding: 0.8rem; border: 1px solid rgba(255,255,255,0.2);">${baseNetwork}.${firstHost} - ${baseNetwork}.${lastHost}</td>`;
+                subnetsHtml += `<td style="padding: 0.8rem; border: 1px solid rgba(255,255,255,0.2);"><code>${baseNetwork}.${broadcast}</code></td>`;
                 subnetsHtml += `</tr>`;
             }
             subnetsHtml += '</table>';
-
             resultDiv.innerHTML = subnetsHtml;
             resultDiv.style.display = 'block';
         }
@@ -1010,6 +1017,7 @@
     </script>
 </body>
 </html>
+
 
 
 
