@@ -781,7 +781,88 @@
                         <pre><code class="language-bash">ip route &lt;DESTINATION&gt; &lt;MASK&gt; &lt;NEXT-HOP&gt;</code></pre>
                     </div>
 
-                    <!-- Continue with the rest of your existing content -->
+                    <h3>6. Administrative Distances (AD)</h3>
+                    
+                    <p>AD rates the trustworthiness of routing information. An integer from 0 to 255 is assigned. <strong>Lower is better (more trusted).</strong></p>
+                    <p>If a router learns two paths to the same network via different protocols, it chooses the one with the lowest AD.</p>
+                    
+                    <table>
+                        <tr>
+                            <th>Route Source</th>
+                            <th>Default AD</th>
+                        </tr>
+                        <tr>
+                            <td>Connected Interface</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td>Static Route</td>
+                            <td>1</td>
+                        </tr>
+                        <tr>
+                            <td>EIGRP</td>
+                            <td>90</td>
+                        </tr>
+                        <tr>
+                            <td>OSPF</td>
+                            <td>110</td>
+                        </tr>
+                        <tr>
+                            <td>RIP</td>
+                            <td>120</td>
+                        </tr>
+                        <tr>
+                            <td>External EIGRP</td>
+                            <td>170</td>
+                        </tr>
+                        <tr>
+                            <td>Unknown</td>
+                            <td>255 (Unreachable)</td>
+                        </tr>
+                    </table>
+
+                    <h3>7. Classes of Routing Protocols</h3>
+                    
+                    <div class="step-box">
+                        <h4>Distance Vector</h4>
+                        <p>Works by counting "hops" (jumps) to the destination. Best route = fewest hops. Example: <strong>RIP, IGRP</strong>.</p>
+                    </div>
+                    
+                    <div class="step-box">
+                        <h4>Link State (Shortest Path First)</h4>
+                        <p>Routers know the entire network topology map. They share connectivity details, not just routing tables. Example: <strong>OSPF</strong>.</p>
+                    </div>
+
+                    <div class="step-box">
+                        <h4>Hybrid</h4>
+                        <p>Combines aspects of Distance Vector and Link State. Example: <strong>EIGRP</strong>.</p>
+                    </div>
+
+                    <div class="step-box">
+                        <h4>Path Vector</h4>
+                        <p>Used for routing between Autonomous Systems (AS) on the internet. It records the sequence of ASes a route passes through. Example: <strong>BGP</strong>.</p>
+                    </div>
+
+                    <h3>8. Introduction to Dynamic Routing (RIP)</h3>
+                    
+                    <p>Dynamic routing protocols automatically update routing tables. They save time but use more CPU and bandwidth.</p>
+                    
+                    <h4>Routing Information Protocol (RIP)</h4>
+                    <ul>
+                        <li><strong>Type:</strong> Distance-Vector protocol.</li>
+                        <li><strong>Updates:</strong> Sends the complete routing table every 30 seconds.</li>
+                        <li><strong>Metric:</strong> Uses Hop Count.</li>
+                        <li><strong>Limit:</strong> Max hop count is 15. A hop count of 16 is considered unreachable.</li>
+                        <li><strong>Usage:</strong> Good for small networks, but inefficient for large WANs.</li>
+                    </ul>
+                   <h4>RIP Configuration Commands</h4>
+                    <div class="code-block">
+                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        <pre><code class="language-bash">router rip
+ver 2
+network &lt;network_id&gt;    !-- for all the connected networks
+no auto-summary</code></pre>
+                    </div>
 
                     <h3>Lab Resources</h3>
                     <div class="pdf-container">
@@ -1017,6 +1098,7 @@
     </script>
 </body>
 </html>
+
 
 
 
