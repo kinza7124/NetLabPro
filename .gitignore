@@ -1,0 +1,53 @@
+# Operating System Files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+*~
+
+# Editor Files
+.vscode/
+.idea/
+*.swp
+*.swo
+*.swn
+*.bak
+*.tmp
+
+# Node modules (if using any build tools later)
+node_modules/
+npm-debug.log
+yarn-error.log
+package-lock.json
+
+# Environment & Config (do not commit)
+.env
+.env.local
+.env.*.local
+config.local.js
+
+# Build outputs
+dist/
+build/
+*.min.js
+*.min.css
+
+# Logs
+*.log
+logs/
+
+# Private/Sensitive Data
+ads.txt.backup
+*-private.*
+*.key
+*.pem
+
+# Testing
+coverage/
+.nyc_output/
+
+# Misc
+*.orig
