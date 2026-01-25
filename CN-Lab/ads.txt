@@ -2,4 +2,4 @@
 # Replace pub-0000000000000000 with your actual AdSense publisher ID
 # Format: google.com, pub-0000000000000000, DIRECT, f08c47fec0942fa0
 # Uncomment and update after AdSense approval:
-# google.com, pub-XXXXXXXXXXXXXXXX, DIRECT, f08c47fec0942fa0
+google.com, pub-6901749299222362, DIRECT, f08c47fec0942fa0
