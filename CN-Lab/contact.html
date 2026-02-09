@@ -203,26 +203,29 @@ footer {
     .hamburger {
         display:block;
     }
-    .nav-links {
+    .navbar .nav-links {
         position:absolute;
         top:100%;
         left:0;
         right:0;
+        width:100%;
+        height:auto;
         background:var(--primary);
         flex-direction:column;
-        padding:1rem;
+        padding:0.5rem 0;
         gap:0;
         display:none;
+        box-shadow:0 12px 24px rgba(0,0,0,0.18);
     }
-    .nav-links.active {
+    .navbar .nav-links.active {
         display:flex;
     }
-    .nav-links li {
+    .navbar .nav-links li {
         width:100%;
     }
-    .nav-links a {
+    .navbar .nav-links a {
         display:block;
-        padding:1rem;
+        padding:0.9rem 1.25rem;
     }
     .content-card {
         padding:1.5rem;
