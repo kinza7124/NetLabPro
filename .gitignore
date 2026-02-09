@@ -35,6 +35,9 @@ build/
 *.min.js
 *.min.css
 
+# Bubblewrap/TWA artifacts
+twa/
+
 # Logs
 *.log
 logs/
