@@ -7,7 +7,7 @@
 <meta name="description" content="Contact NetLabPro for questions, suggestions, or feedback about computer networks lab content. We welcome input to improve our educational platform.">
 <link rel="canonical" href="https://netlabpro.com/contact.html">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="style.css?v=1.3">
 
 <style>
 :root {
@@ -53,34 +53,72 @@ header {
 .logo {
     display:flex;
     align-items:center;
-    gap:1rem;
+    gap:10px;
+}
+.logo img {
+    height:50px;
+    width:auto;
+    transition:transform 0.3s;
+    display:block;
+    flex-shrink:0;
+}
+.logo img:hover {
+    transform:scale(1.1);
 }
 .logo h1 {
     font-size:1.8rem;
+    font-weight:700;
+    color:white;
+    margin:0;
+    line-height:1.2;
+    white-space:nowrap;
 }
-.navbar ul {
-    list-style:none;
+
+/* Desktop Nav */
+.navbar {
     display:flex;
-    gap:2rem;
+    align-items:center;
 }
-.navbar a {
+.nav-links {
+    display:flex;
+    list-style:none;
+    gap:2rem;
+    margin:0;
+    padding:0;
+}
+.nav-links li {
+    margin:0;
+}
+.nav-links a {
     color:white;
     text-decoration:none;
     font-weight:500;
-    transition:all 0.3s;
     padding:0.5rem 1rem;
-    border-radius:8px;
+    border-radius:999px;
+    transition:all 0.3s ease;
+    font-size:1.1rem;
+    background:rgba(255,255,255,0.12);
+    border:1px solid rgba(255,255,255,0.18);
+    box-shadow:inset 0 0 0 1px rgba(255,255,255,0.04);
+    backdrop-filter:blur(10px) saturate(140%);
+    -webkit-backdrop-filter:blur(10px) saturate(140%);
 }
-.navbar a:hover, .navbar a.active {
-    background:rgba(255,255,255,0.2);
+.nav-links a:hover,.nav-links a.active {
+    background-color:rgba(255,255,255,0.28);
+    border-color:rgba(255,255,255,0.35);
+    transform:translateY(-1px);
 }
+
+/* Mobile Toggle Button */
 .hamburger {
     display:none;
+    cursor:pointer;
+    font-size:1.8rem;
+    color:white;
     background:none;
     border:none;
-    color:white;
-    font-size:1.5rem;
-    cursor:pointer;
+    padding:5px;
+    z-index:1001;
 }
 
 /* CONTENT */
@@ -199,34 +237,67 @@ footer {
     color:#bbb;
 }
 
-@media(max-width:768px) {
+@media (max-width: 768px) {
     .hamburger {
         display:block;
+        z-index:1001;
     }
-    .navbar .nav-links {
-        position:absolute !important;
-        top:100% !important;
-        left:0 !important;
-        right:0 !important;
-        width:100% !important;
-        height:auto !important;
-        background:var(--primary) !important;
+    .navbar {
+        position:static;
+    }
+    .nav-links {
+        position:fixed;
+        top:0;
+        right:-100%;
+        width:280px;
+        height:100vh;
+        background:linear-gradient(160deg, rgba(26, 37, 47, 0.9), rgba(44, 62, 80, 0.9));
         flex-direction:column;
-        padding:0.5rem 0 !important;
-        gap:0;
-        display:none;
-        box-shadow:0 12px 24px rgba(0,0,0,0.18) !important;
-        z-index:1002;
+        padding:80px 30px 30px;
+        transition:right 0.3s ease-in-out;
+        box-shadow:-5px 0 15px rgba(0,0,0,0.1);
+        z-index:999;
+        backdrop-filter:blur(16px) saturate(140%);
+        -webkit-backdrop-filter:blur(16px) saturate(140%);
+        border-left:1px solid rgba(255,255,255,0.12);
     }
-    .navbar .nav-links.active {
-        display:flex !important;
+    .nav-links.active {
+        right:0;
     }
-    .navbar .nav-links li {
-        width:100%;
+    .nav-links li {
+        margin-bottom:20px;
+        text-align:left;
     }
-    .navbar .nav-links a {
+    .nav-links li:last-child {
+        margin-bottom:0;
+    }
+    .nav-links a {
+        color:white;
         display:block;
-        padding:0.9rem 1.25rem;
+        padding:12px 15px;
+        border-radius:6px;
+        font-size:1.1rem;
+        text-align:left;
+        border:none;
+    }
+    .nav-links a:hover,.nav-links a.active {
+        background-color:var(--secondary);
+        color:white;
+    }
+    .header-content {
+        flex-direction:row;
+        align-items:center;
+        justify-content:space-between;
+    }
+    .logo img {
+        height:40px;
+        width:auto;
+        flex-shrink:0;
+    }
+    .logo h1 {
+        font-size:1.4rem;
+        line-height:1.2;
+        white-space:nowrap;
     }
     .content-card {
         padding:1.5rem;
@@ -239,6 +310,12 @@ footer {
         margin:0.3rem 0.5rem;
     }
 }
+
+@media (max-width: 480px) {
+    .logo h1 {
+        font-size:1.3rem;
+    }
+}
 </style>
 </head>
 <body>
@@ -248,7 +325,7 @@ footer {
     <div class="container">
         <div class="header-content">
             <div class="logo">
-                <img src="images/logo2.png" alt="Net Lab Pro Logo" style="height: 70px; width:auto;">
+                <img src="images/logo2.png" alt="CN Lab Helper Logo">
                 <h1>NetLabPro</h1>
             </div>
             <nav class="navbar">
@@ -349,6 +426,42 @@ footer {
             }
         }
     });
+</script>
+
+<!-- Cookie Consent -->
+<div id="cookie-consent" class="cookie-consent" role="dialog" aria-live="polite" aria-label="Cookie consent">
+    <div class="cookie-consent__content">
+        <p>We use cookies to improve your experience and support ads. You can accept or decline. Read our <a href="privacy-policy.html" class="cookie-consent__link">Privacy Policy</a>.</p>
+        <div class="cookie-consent__actions">
+            <button type="button" class="cookie-btn secondary" data-consent="decline">Decline</button>
+            <button type="button" class="cookie-btn primary" data-consent="accept">Accept</button>
+        </div>
+    </div>
+</div>
+<script>
+(function () {
+    var banner = document.getElementById('cookie-consent');
+    if (!banner) {
+        return;
+    }
+    var consent = localStorage.getItem('nlp_cookie_consent');
+    if (!consent) {
+        banner.style.display = 'block';
+    }
+
+    banner.addEventListener('click', function (event) {
+        var target = event.target;
+        if (!(target instanceof HTMLElement)) {
+            return;
+        }
+        var choice = target.getAttribute('data-consent');
+        if (!choice) {
+            return;
+        }
+        localStorage.setItem('nlp_cookie_consent', choice);
+        banner.style.display = 'none';
+    });
+})();
 </script>
 </body>
 </html>

@@ -8,7 +8,7 @@
 <meta name="keywords" content="networking games, subnetting quiz, network troubleshooting game, Cisco commands practice, protocol learning games">
 <link rel="canonical" href="https://netlabpro.com/Netplay.html">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="style.css?v=1.3">
 <style>
 :root {
     --primary: #2c3e50;
@@ -99,12 +99,19 @@ header {
     text-decoration:none;
     font-weight:500;
     padding:0.5rem 1rem;
-    border-radius:4px;
+    border-radius:999px;
     transition:all 0.3s ease;
     font-size:1.1rem;
+    background:rgba(255,255,255,0.12);
+    border:1px solid rgba(255,255,255,0.18);
+    box-shadow:inset 0 0 0 1px rgba(255,255,255,0.04);
+    backdrop-filter:blur(10px) saturate(140%);
+    -webkit-backdrop-filter:blur(10px) saturate(140%);
 }
 .nav-links a:hover,.nav-links a.active {
-    background-color:rgba(255,255,255,0.2);
+    background-color:rgba(255,255,255,0.28);
+    border-color:rgba(255,255,255,0.35);
+    transform:translateY(-1px);
 }
 
 /* Mobile Toggle Button */
@@ -410,12 +417,15 @@ header {
         right:-100%;
         width:280px;
         height:100vh;
-        background:var(--dark);
+        background:linear-gradient(160deg, rgba(26, 37, 47, 0.9), rgba(44, 62, 80, 0.9));
         flex-direction:column;
         padding:80px 30px 30px;
         transition:right 0.3s ease-in-out;
         box-shadow:-5px 0 15px rgba(0,0,0,0.1);
         z-index:999;
+        backdrop-filter:blur(16px) saturate(140%);
+        -webkit-backdrop-filter:blur(16px) saturate(140%);
+        border-left:1px solid rgba(255,255,255,0.12);
     }
     .nav-links.active {
         right:0;
@@ -472,7 +482,25 @@ header {
     }
 }
 .mode-card {
+    padding: 2rem;
+    text-align: center;
+    cursor: pointer;
     transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.game-tab {
+    background: rgba(255, 255, 255, 0.92);
+    border: 1px solid rgba(52, 152, 219, 0.35);
+    border-radius: 24px;
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.35), var(--shadow-sm);
+    backdrop-filter: blur(10px) saturate(140%);
+    -webkit-backdrop-filter: blur(10px) saturate(140%);
+}
+
+.game-tab--escape {
+    background: linear-gradient(135deg, #2d5016 0%, #4a7c2a 100%);
+    color: white;
+    border-color: rgba(255, 255, 255, 0.2);
 }
 
 .mode-card:hover {
@@ -638,51 +666,51 @@ header {
 </head>
 <body>
 <header>
-  <div class="container header-content">
-
-      <div class="logo">
-          <img src="images/logo2.png" alt="CN Lab Helper Logo">
-          <h1>NetLabPro</h1>
-          <button class="hamburger" id="hamburger" onclick="toggleMobileNav()">
-              <i class="fas fa-bars"></i>
-          </button>
-      </div>
-      <nav class="navbar">
-          <ul class="nav-links" id="navLinks">
-              <li><a href="index.html">Home</a></li>
-              <li><a href="Netplay.html" class="active">NetPlay</a></li>
-              <li><a href="about.html">About</a></li>
-          </ul>
-      </nav>
-
-  </div>
+    <div class="container">
+        <div class="header-content">
+            <div class="logo">
+                <img src="images/logo2.png" alt="CN Lab Helper Logo">
+                <h1>NetLabPro</h1>
+            </div>
+            <nav class="navbar">
+                <button class="hamburger" id="hamburger" onclick="toggleMobileNav()">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <ul class="nav-links" id="navLinks">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="Netplay.html" class="active">NetPlay</a></li>
+                    <li><a href="about.html">About</a></li>
+                </ul>
+            </nav>
+        </div>
+    </div>
 </header>
 <section class="container">
 <h2 class="section-title"><i class="fas fa-gamepad"></i> NetPlay - Learning Games</h2>
 
 <!-- Game Mode Selection -->
 <div id="gameModeSelection" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
-    <div class="mode-card" onclick="selectGameMode('troubleshooting')" style="background: white; padding: 2rem; border-radius: 16px; text-align: center; cursor: pointer; box-shadow: var(--shadow-sm); transition: all 0.3s; border: 2px solid transparent;">
+    <div class="mode-card game-tab" onclick="selectGameMode('troubleshooting')" style="border: 2px solid transparent;">
         <div style="font-size: 3rem; margin-bottom: 1rem; color: var(--accent);"><i class="fas fa-tools"></i></div>
         <h3 style="color: var(--primary); margin-bottom: 0.5rem;">Troubleshooting Hero</h3>
         <p style="color: #666;">Solve network problems under time pressure</p>
     </div>
-    <div class="mode-card" onclick="selectGameMode('subnetting')" style="background: white; padding: 2rem; border-radius: 16px; text-align: center; cursor: pointer; box-shadow: var(--shadow-sm); transition: all 0.3s; border: 2px solid transparent;">
+    <div class="mode-card game-tab" onclick="selectGameMode('subnetting')" style="border: 2px solid transparent;">
         <div style="font-size: 3rem; margin-bottom: 1rem; color: var(--secondary);"><i class="fas fa-calculator"></i></div>
         <h3 style="color: var(--primary); margin-bottom: 0.5rem;">Subnetting Challenge</h3>
         <p style="color: #666;">Master subnetting calculations</p>
     </div>
-    <div class="mode-card" onclick="selectGameMode('commands')" style="background: white; padding: 2rem; border-radius: 16px; text-align: center; cursor: pointer; box-shadow: var(--shadow-sm); transition: all 0.3s; border: 2px solid transparent;">
+    <div class="mode-card game-tab" onclick="selectGameMode('commands')" style="border: 2px solid transparent;">
         <div style="font-size: 3rem; margin-bottom: 1rem; color: var(--success);"><i class="fas fa-terminal"></i></div>
         <h3 style="color: var(--primary); margin-bottom: 0.5rem;">Command Master</h3>
         <p style="color: #666;">Match commands with their functions</p>
     </div>
-    <div class="mode-card" onclick="selectGameMode('protocols')" style="background: white; padding: 2rem; border-radius: 16px; text-align: center; cursor: pointer; box-shadow: var(--shadow-sm); transition: all 0.3s; border: 2px solid transparent;">
+    <div class="mode-card game-tab" onclick="selectGameMode('protocols')" style="border: 2px solid transparent;">
         <div style="font-size: 3rem; margin-bottom: 1rem; color: var(--warning);"><i class="fas fa-network-wired"></i></div>
         <h3 style="color: var(--primary); margin-bottom: 0.5rem;">Protocol Quiz</h3>
         <p style="color: #666;">Test your protocol knowledge</p>
     </div>
-    <div class="mode-card" onclick="selectGameMode('escape')" style="background: linear-gradient(135deg, #2d5016 0%, #4a7c2a 100%); color: white; padding: 2rem; border-radius: 16px; text-align: center; cursor: pointer; box-shadow: var(--shadow-sm); transition: all 0.3s; border: 2px solid transparent;">
+    <div class="mode-card game-tab game-tab--escape" onclick="selectGameMode('escape')" style="border: 2px solid transparent;">
         <div style="font-size: 3rem; margin-bottom: 1rem;"><i class="fas fa-tree"></i></div>
         <h3 style="margin-bottom: 0.5rem;">🌲 Escape the Network Forest</h3>
         <p style="opacity: 0.9;">Solve networking puzzles to escape!</p>
@@ -2365,6 +2393,42 @@ document.addEventListener('DOMContentLoaded', function() {
     updateLevelDisplay();
 });
 
+</script>
+
+<!-- Cookie Consent -->
+<div id="cookie-consent" class="cookie-consent" role="dialog" aria-live="polite" aria-label="Cookie consent">
+    <div class="cookie-consent__content">
+        <p>We use cookies to improve your experience and support ads. You can accept or decline. Read our <a href="privacy-policy.html" class="cookie-consent__link">Privacy Policy</a>.</p>
+        <div class="cookie-consent__actions">
+            <button type="button" class="cookie-btn secondary" data-consent="decline">Decline</button>
+            <button type="button" class="cookie-btn primary" data-consent="accept">Accept</button>
+        </div>
+    </div>
+</div>
+<script>
+(function () {
+    var banner = document.getElementById('cookie-consent');
+    if (!banner) {
+        return;
+    }
+    var consent = localStorage.getItem('nlp_cookie_consent');
+    if (!consent) {
+        banner.style.display = 'block';
+    }
+
+    banner.addEventListener('click', function (event) {
+        var target = event.target;
+        if (!(target instanceof HTMLElement)) {
+            return;
+        }
+        var choice = target.getAttribute('data-consent');
+        if (!choice) {
+            return;
+        }
+        localStorage.setItem('nlp_cookie_consent', choice);
+        banner.style.display = 'none';
+    });
+})();
 </script>
 </body>
 </html>

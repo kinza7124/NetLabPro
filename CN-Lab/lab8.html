@@ -6,7 +6,7 @@
     <title>Lab 08 - Wireless Networks & NAT | CN Lab Helper</title>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="style.css?v=1.3" />
 
     <!-- Highlight.js Theme -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/atom-one-dark.min.css" />
@@ -411,7 +411,7 @@
         <div class="container">
             <div class="header-content">
                 <div class="logo">
-                <img src="images/logo2.png" alt="CN Lab Helper Logo" style="height:90px; width:auto;">
+                <img src="images/logo2.png" alt="CN Lab Helper Logo">
                     <h1>NetLabPro</h1>
                 </div>
                 <nav class="navbar">
@@ -858,6 +858,42 @@ interface s0/0/0
             }
         });
     </script>
+
+<!-- Cookie Consent -->
+<div id="cookie-consent" class="cookie-consent" role="dialog" aria-live="polite" aria-label="Cookie consent">
+    <div class="cookie-consent__content">
+        <p>We use cookies to improve your experience and support ads. You can accept or decline. Read our <a href="privacy-policy.html" class="cookie-consent__link">Privacy Policy</a>.</p>
+        <div class="cookie-consent__actions">
+            <button type="button" class="cookie-btn secondary" data-consent="decline">Decline</button>
+            <button type="button" class="cookie-btn primary" data-consent="accept">Accept</button>
+        </div>
+    </div>
+</div>
+<script>
+(function () {
+    var banner = document.getElementById('cookie-consent');
+    if (!banner) {
+        return;
+    }
+    var consent = localStorage.getItem('nlp_cookie_consent');
+    if (!consent) {
+        banner.style.display = 'block';
+    }
+
+    banner.addEventListener('click', function (event) {
+        var target = event.target;
+        if (!(target instanceof HTMLElement)) {
+            return;
+        }
+        var choice = target.getAttribute('data-consent');
+        if (!choice) {
+            return;
+        }
+        localStorage.setItem('nlp_cookie_consent', choice);
+        banner.style.display = 'none';
+    });
+})();
+</script>
 </body>
 </html>
 

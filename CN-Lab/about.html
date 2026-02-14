@@ -7,7 +7,7 @@
 <meta name="description" content="Learn about NetLabPro: an educational platform helping computer science students understand networking concepts through interactive labs, detailed explanations, and practical examples.">
 <link rel="canonical" href="https://netlabpro.com/about.html">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="style.css?v=1.3">
 
 <style>
 :root {
@@ -94,12 +94,19 @@ header {
     text-decoration:none;
     font-weight:500;
     padding:0.5rem 1rem;
-    border-radius:4px;
+    border-radius:999px;
     transition:all 0.3s ease;
     font-size:1.1rem;
+    background:rgba(255,255,255,0.12);
+    border:1px solid rgba(255,255,255,0.18);
+    box-shadow:inset 0 0 0 1px rgba(255,255,255,0.04);
+    backdrop-filter:blur(10px) saturate(140%);
+    -webkit-backdrop-filter:blur(10px) saturate(140%);
 }
 .nav-links a:hover,.nav-links a.active {
-    background-color:rgba(255,255,255,0.2);
+    background-color:rgba(255,255,255,0.28);
+    border-color:rgba(255,255,255,0.35);
+    transform:translateY(-1px);
 }
 
 /* Mobile Toggle Button */
@@ -275,12 +282,15 @@ footer {
         right:-100%;
         width:280px;
         height:100vh;
-        background:var(--dark);
+        background:linear-gradient(160deg, rgba(26, 37, 47, 0.9), rgba(44, 62, 80, 0.9));
         flex-direction:column;
         padding:80px 30px 30px;
         transition:right 0.3s ease-in-out;
         box-shadow:-5px 0 15px rgba(0,0,0,0.1);
         z-index:999;
+        backdrop-filter:blur(16px) saturate(140%);
+        -webkit-backdrop-filter:blur(16px) saturate(140%);
+        border-left:1px solid rgba(255,255,255,0.12);
     }
     .nav-links.active {
         right:0;
@@ -512,6 +522,42 @@ footer {
             }
         }
     });
+</script>
+
+<!-- Cookie Consent -->
+<div id="cookie-consent" class="cookie-consent" role="dialog" aria-live="polite" aria-label="Cookie consent">
+    <div class="cookie-consent__content">
+        <p>We use cookies to improve your experience and support ads. You can accept or decline. Read our <a href="privacy-policy.html" class="cookie-consent__link">Privacy Policy</a>.</p>
+        <div class="cookie-consent__actions">
+            <button type="button" class="cookie-btn secondary" data-consent="decline">Decline</button>
+            <button type="button" class="cookie-btn primary" data-consent="accept">Accept</button>
+        </div>
+    </div>
+</div>
+<script>
+(function () {
+    var banner = document.getElementById('cookie-consent');
+    if (!banner) {
+        return;
+    }
+    var consent = localStorage.getItem('nlp_cookie_consent');
+    if (!consent) {
+        banner.style.display = 'block';
+    }
+
+    banner.addEventListener('click', function (event) {
+        var target = event.target;
+        if (!(target instanceof HTMLElement)) {
+            return;
+        }
+        var choice = target.getAttribute('data-consent');
+        if (!choice) {
+            return;
+        }
+        localStorage.setItem('nlp_cookie_consent', choice);
+        banner.style.display = 'none';
+    });
+})();
 </script>
 </body>
 </html>
