@@ -814,13 +814,13 @@ interface s0/0/0
                     </div>
                 </div>
             </div>
-            <div class=\"footer-links\">
-                <a href=\"privacy-policy.html\">Privacy Policy</a> | 
-                <a href=\"about.html\">About</a> | 
-                <a href=\"contact.html\">Contact</a> | 
-                <a href=\"terms.html\">Terms & Conditions</a>
+            <div class="footer-links">
+                <a href="privacy-policy.html">Privacy Policy</a> | 
+                <a href="about.html">About</a> | 
+                <a href="contact.html">Contact</a> | 
+                <a href="terms.html">Terms & Conditions</a>
             </div>
-            <div class=\"footer-bottom\">
+            <div class="footer-bottom">
                 <p>&copy; 2025 NetLabPro created by Kinza. All rights reserved.</p>
             </div>
         </div>
@@ -893,6 +893,13 @@ interface s0/0/0
         banner.style.display = 'none';
     });
 })();
+</script>
+<script>
+    if ("serviceWorker" in navigator) {
+        window.addEventListener("load", () => {
+            navigator.serviceWorker.register("/service-worker.js").catch(() => {});
+        });
+    }
 </script>
 </body>
 </html>
