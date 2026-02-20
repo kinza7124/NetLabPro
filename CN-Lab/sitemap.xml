@@ -1,133 +1,114 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  
     <!-- Main Pages -->
-      <url>
-          <loc>https://techdecoded.tech/index.html</loc>
-              <lastmod>2026-01-24</lastmod>
-                  <changefreq>weekly</changefreq>
-                      <priority>1.0</priority>
-                        </url>
-                          
-                            <url>
-                                <loc>https://techdecoded.tech/Netplay.html</loc>
-                                    <lastmod>2026-01-24</lastmod>
-                                        <changefreq>weekly</changefreq>
-                                            <priority>0.9</priority>
-                                              </url>
-                                                
-                                                  <url>
-                                                      <loc>https://techdecoded.tech/about.html</loc>
-                                                          <lastmod>2026-01-24</lastmod>
-                                                              <changefreq>monthly</changefreq>
-                                                                  <priority>0.7</priority>
-                                                                    </url>
-                                                                      
-                                                                        <url>
-                                                                            <loc>https://techdecoded.tech/contact.html</loc>
-                                                                                <lastmod>2026-01-24</lastmod>
-                                                                                    <changefreq>monthly</changefreq>
-                                                                                        <priority>0.6</priority>
-                                                                                          </url>
-                                                                                            
-                                                                                              <url>
-                                                                                                  <loc>https://techdecoded.tech/privacy-policy.html</loc>
-                                                                                                      <lastmod>2026-01-24</lastmod>
-                                                                                                          <changefreq>yearly</changefreq>
-                                                                                                              <priority>0.4</priority>
-                                                                                                                </url>
-                                                                                                                  
-                                                                                                                    <url>
-                                                                                                                        <loc>https://techdecoded.tech/terms.html</loc>
-                                                                                                                            <lastmod>2026-01-24</lastmod>
-                                                                                                                                <changefreq>yearly</changefreq>
-                                                                                                                                    <priority>0.4</priority>
-                                                                                                                                      </url>
-                                                                                                                                        
-                                                                                                                                          <!-- Lab Pages -->
-                                                                                                                                            <url>
-                                                                                                                                                <loc>https://techdecoded.tech/lab1.html</loc>
-                                                                                                                                                    <lastmod>2026-01-24</lastmod>
-                                                                                                                                                        <changefreq>monthly</changefreq>
-                                                                                                                                                            <priority>0.8</priority>
-                                                                                                                                                              </url>
-                                                                                                                                                                
-                                                                                                                                                                  <url>
-                                                                                                                                                                      <loc>https://techdecoded.tech/lab2.html</loc>
-                                                                                                                                                                          <lastmod>2026-01-24</lastmod>
-                                                                                                                                                                              <changefreq>monthly</changefreq>
-                                                                                                                                                                                  <priority>0.8</priority>
-                                                                                                                                                                                    </url>
-                                                                                                                                                                                      
-                                                                                                                                                                                        <url>
-                                                                                                                                                                                            <loc>https://techdecoded.tech/lab3.html</loc>
-                                                                                                                                                                                                <lastmod>2026-01-24</lastmod>
-                                                                                                                                                                                                    <changefreq>monthly</changefreq>
-                                                                                                                                                                                                        <priority>0.8</priority>
-                                                                                                                                                                                                          </url>
-                                                                                                                                                                                                            
-                                                                                                                                                                                                              <url>
-                                                                                                                                                                                                                  <loc>https://techdecoded.tech/lab4.html</loc>
-                                                                                                                                                                                                                      <lastmod>2026-01-24</lastmod>
-                                                                                                                                                                                                                          <changefreq>monthly</changefreq>
-                                                                                                                                                                                                                              <priority>0.8</priority>
-                                                                                                                                                                                                                                </url>
-                                                                                                                                                                                                                                  
-                                                                                                                                                                                                                                    <url>
-                                                                                                                                                                                                                                        <loc>https://techdecoded.tech/lab5.html</loc>
-                                                                                                                                                                                                                                            <lastmod>2026-01-24</lastmod>
-                                                                                                                                                                                                                                                <changefreq>monthly</changefreq>
-                                                                                                                                                                                                                                                    <priority>0.8</priority>
-                                                                                                                                                                                                                                                      </url>
-                                                                                                                                                                                                                                                        
-                                                                                                                                                                                                                                                          <url>
-                                                                                                                                                                                                                                                              <loc>https://techdecoded.tech/lab6A.html</loc>
-                                                                                                                                                                                                                                                                  <lastmod>2026-01-24</lastmod>
-                                                                                                                                                                                                                                                                      <changefreq>monthly</changefreq>
-                                                                                                                                                                                                                                                                          <priority>0.8</priority>
-                                                                                                                                                                                                                                                                            </url>
-                                                                                                                                                                                                                                                                              
-                                                                                                                                                                                                                                                                                <url>
-                                                                                                                                                                                                                                                                                    <loc>https://techdecoded.tech/lab6B.html</loc>
-                                                                                                                                                                                                                                                                                        <lastmod>2026-01-24</lastmod>
-                                                                                                                                                                                                                                                                                            <changefreq>monthly</changefreq>
-                                                                                                                                                                                                                                                                                                <priority>0.8</priority>
-                                                                                                                                                                                                                                                                                                  </url>
-                                                                                                                                                                                                                                                                                                    
-                                                                                                                                                                                                                                                                                                      <url>
-                                                                                                                                                                                                                                                                                                          <loc>https://techdecoded.tech/lab7.html</loc>
-                                                                                                                                                                                                                                                                                                              <lastmod>2026-01-24</lastmod>
-                                                                                                                                                                                                                                                                                                                  <changefreq>monthly</changefreq>
-                                                                                                                                                                                                                                                                                                                      <priority>0.8</priority>
-                                                                                                                                                                                                                                                                                                                        </url>
-                                                                                                                                                                                                                                                                                                                          
-                                                                                                                                                                                                                                                                                                                            <url>
-                                                                                                                                                                                                                                                                                                                                <loc>https://techdecoded.tech/lab8.html</loc>
-                                                                                                                                                                                                                                                                                                                                    <lastmod>2026-01-24</lastmod>
-                                                                                                                                                                                                                                                                                                                                        <changefreq>monthly</changefreq>
-                                                                                                                                                                                                                                                                                                                                            <priority>0.8</priority>
-                                                                                                                                                                                                                                                                                                                                              </url>
-                                                                                                                                                                                                                                                                                                                                                
-                                                                                                                                                                                                                                                                                                                                                  <url>
-                                                                                                                                                                                                                                                                                                                                                      <loc>https://techdecoded.tech/lab9.html</loc>
-                                                                                                                                                                                                                                                                                                                                                          <lastmod>2026-01-24</lastmod>
-                                                                                                                                                                                                                                                                                                                                                              <changefreq>monthly</changefreq>
-                                                                                                                                                                                                                                                                                                                                                                  <priority>0.8</priority>
-                                                                                                                                                                                                                                                                                                                                                                    </url>
-                                                                                                                                                                                                                                                                                                                                                                      
-                                                                                                                                                                                                                                                                                                                                                                        <url>
-                                                                                                                                                                                                                                                                                                                                                                            <loc>https://techdecoded.tech/lab10.html</loc>
-                                                                                                                                                                                                                                                                                                                                                                                <lastmod>2026-01-24</lastmod>
-                                                                                                                                                                                                                                                                                                                                                                                    <changefreq>monthly</changefreq>
-                                                                                                                                                                                                                                                                                                                                                                                        <priority>0.8</priority>
-                                                                                                                                                                                                                                                                                                                                                                                          </url>
-                                                                                                                                                                                                                                                                                                                                                                                            
-                                                                                                                                                                                                                                                                                                                                                                                              <url>
-                                                                                                                                                                                                                                                                                                                                                                                                  <loc>https://techdecoded.tech/lab11.html</loc>
-                                                                                                                                                                                                                                                                                                                                                                                                      <lastmod>2026-01-24</lastmod>
-                                                                                                                                                                                                                                                                                                                                                                                                          <changefreq>monthly</changefreq>
-                                                                                                                                                                                                                                                                                                                                                                                                              <priority>0.8</priority>
-                                                                                                                                                                                                                                                                                                                                                                                                                </url>
-                                                                                                                                                                                                                                                                                                                                                                                                                  
-                                                                                                                                                                                                                                                                                                                                                                                                                  </urlset>
-                                                                                                                                                                                                                                                                                                                                                                                                                  >
+    <url>
+        <loc>https://techdecoded.tech/index.html</loc>
+        <lastmod>2026-01-24</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>1.0</priority>
+    </url>
+    <url>
+        <loc>https://techdecoded.tech/Netplay.html</loc>
+        <lastmod>2026-01-24</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.9</priority>
+    </url>
+    <url>
+        <loc>https://techdecoded.tech/about.html</loc>
+        <lastmod>2026-01-24</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    <url>
+        <loc>https://techdecoded.tech/contact.html</loc>
+        <lastmod>2026-01-24</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.6</priority>
+    </url>
+    <url>
+        <loc>https://techdecoded.tech/privacy-policy.html</loc>
+        <lastmod>2026-01-24</lastmod>
+        <changefreq>yearly</changefreq>
+        <priority>0.4</priority>
+    </url>
+    <url>
+        <loc>https://techdecoded.tech/terms.html</loc>
+        <lastmod>2026-01-24</lastmod>
+        <changefreq>yearly</changefreq>
+        <priority>0.4</priority>
+    </url>
+
+    <!-- Lab Pages -->
+    <url>
+        <loc>https://techdecoded.tech/lab1.html</loc>
+        <lastmod>2026-01-24</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://techdecoded.tech/lab2.html</loc>
+        <lastmod>2026-01-24</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://techdecoded.tech/lab3.html</loc>
+        <lastmod>2026-01-24</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://techdecoded.tech/lab4.html</loc>
+        <lastmod>2026-01-24</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://techdecoded.tech/lab5.html</loc>
+        <lastmod>2026-01-24</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://techdecoded.tech/lab6A.html</loc>
+        <lastmod>2026-01-24</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://techdecoded.tech/lab6B.html</loc>
+        <lastmod>2026-01-24</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://techdecoded.tech/lab7.html</loc>
+        <lastmod>2026-01-24</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://techdecoded.tech/lab8.html</loc>
+        <lastmod>2026-01-24</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://techdecoded.tech/lab9.html</loc>
+        <lastmod>2026-01-24</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://techdecoded.tech/lab10.html</loc>
+        <lastmod>2026-01-24</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://techdecoded.tech/lab11.html</loc>
+        <lastmod>2026-01-24</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+</urlset>
