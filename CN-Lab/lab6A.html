@@ -13,22 +13,25 @@
         </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin />
+    <link rel="dns-prefetch" href="//cdnjs.cloudflare.com" />
     <title>Lab 06A - Telnet and SSH | CN Lab Helper</title>
     <meta property="og:title" content="Lab 06A - Telnet and SSH | CN Lab Helper" />
     <meta property="og:description" content="Interactive computer networking labs, tutorials, and games for CS students on NetLabPro." />
-    <meta property="og:image" content="https://techdecoded.tech/images/logo2.png" />
+    <meta property="og:image" content="https://techdecoded.tech/images/logo2.webp" />
     <meta property="og:url" content="https://techdecoded.tech/lab6A.html" />
     <meta property="og:type" content="website" />
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-    <link rel="stylesheet" href="style.css?v=1.3" />
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></noscript>
+    <link rel="stylesheet" href="style.min.css?v=1.4" />
 
     <!-- Atom One Dark theme for highlight.js -->
     <link rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/atom-one-dark.min.css" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
     <script>
-        hljs.highlightAll();
+        window.addEventListener('DOMContentLoaded', () => { if (window.hljs) hljs.highlightAll(); });
     </script>
 
     <style>
@@ -477,7 +480,7 @@
         <div class="container">
             <div class="header-content">
                 <div class="logo">
-                <img src="images/logo2.png" alt="CN Lab Helper Logo">
+                <img src="images/logo2.webp" alt="CN Lab Helper Logo" width="50" height="50" decoding="async" fetchpriority="high">
                     <h1>NetLabPro</h1>
                 </div>
                 <nav class="navbar">
@@ -565,16 +568,16 @@ write memory
                     <div class="carousel-container">
                         <div class="carousel" id="telnet-carousel">
                             <div class="carousel-images" id="telnet-images">
-                                <img src="images/lab6a_1.jpg" alt="Telnet Topology" class="carousel-image active">
-                                <img src="images/lab6a_2.jpg" alt="Commands on Router" class="carousel-image">
-                                <img src="images/lab6a_3.jpg" alt="TelnetConnection" class="carousel-image">
-                                <img src="images/lab6a_4.jpg" alt ="Telnet on Switch" class="carousel-image">
-                                <img src="images/lab6a_5.jpg" alt="Commands on Switch" class="carousel-image">
-                                <img src="images/lab6a_6.jpg" alt="IP Configuration" class="carousel-image">
-                                <img src="images/lab6a_7.jpg" alt="IP Configuration" class="carousel-image">
-                                <img src="images/lab6a_8.jpg" alt="IP Configuration" class="carousel-image">
-                                <img src="images/lab6a_9.jpg" alt="Successful Telnet after config" class="carousel-image">
-                                <img src="images/lab6a_10.jpg" alt="Telnet Connection on PC" class="carousel-image">
+                                <img src="images/lab6a_1.jpg" alt="Telnet Topology" class="carousel-image active" width="1280" height="720" loading="lazy" decoding="async">
+                                <img src="images/lab6a_2.jpg" alt="Commands on Router" class="carousel-image" width="1280" height="720" loading="lazy" decoding="async">
+                                <img src="images/lab6a_3.jpg" alt="TelnetConnection" class="carousel-image" width="1280" height="720" loading="lazy" decoding="async">
+                                <img src="images/lab6a_4.jpg" alt ="Telnet on Switch" class="carousel-image" width="1280" height="720" loading="lazy" decoding="async">
+                                <img src="images/lab6a_5.jpg" alt="Commands on Switch" class="carousel-image" width="1280" height="720" loading="lazy" decoding="async">
+                                <img src="images/lab6a_6.jpg" alt="IP Configuration" class="carousel-image" width="1280" height="720" loading="lazy" decoding="async">
+                                <img src="images/lab6a_7.jpg" alt="IP Configuration" class="carousel-image" width="1280" height="720" loading="lazy" decoding="async">
+                                <img src="images/lab6a_8.jpg" alt="IP Configuration" class="carousel-image" width="1280" height="720" loading="lazy" decoding="async">
+                                <img src="images/lab6a_9.jpg" alt="Successful Telnet after config" class="carousel-image" width="1280" height="720" loading="lazy" decoding="async">
+                                <img src="images/lab6a_10.jpg" alt="Telnet Connection on PC" class="carousel-image" width="1280" height="720" loading="lazy" decoding="async">
                             </div>
 
                             <div class="carousel-caption">
@@ -641,16 +644,16 @@ write memory
                     <div class="carousel-container">
                         <div class="carousel" id="ssh-carousel">
                             <div class="carousel-images" id="ssh-images">
-                                <img src="images/sshswitch_1.jpg" alt="SSH Topology" class="carousel-image active">
-                                <img src="images/sshswitch_2.jpg" alt="IP Configuration" class="carousel-image">
-                                <img src="images/sshswitch_3.jpg" alt="IP Configuration" class="carousel-image">
-                                <img src="images/sshswitch_4.jpg" alt="Commands on Switch" class="carousel-image">
-                                <img src="images/sshswitch_5.jpg" alt="SSH Implementation" class="carousel-image">
-                                <img src="images/sshswitch_6.jpg" alt="SSH connection on PC" class="carousel-image">
-                                <img src="images/sshrouter_1.jpg" alt="Network topology for applying ssh on router" class="carousel-image">
-                                <img src="images/sshrouter_2.jpg" alt="IP Configuration" class="carousel-image">
-                                <img src="images/sshrouter_3.jpg" alt="Commands on Router" class="carousel-image">
-                                <img src="images/sshrouter_4.jpg" alt="SSH Connection successful" class="carousel-image">
+                                <img src="images/sshswitch_1.jpg" alt="SSH Topology" class="carousel-image active" width="1280" height="720" loading="lazy" decoding="async">
+                                <img src="images/sshswitch_2.jpg" alt="IP Configuration" class="carousel-image" width="1280" height="720" loading="lazy" decoding="async">
+                                <img src="images/sshswitch_3.jpg" alt="IP Configuration" class="carousel-image" width="1280" height="720" loading="lazy" decoding="async">
+                                <img src="images/sshswitch_4.jpg" alt="Commands on Switch" class="carousel-image" width="1280" height="720" loading="lazy" decoding="async">
+                                <img src="images/sshswitch_5.jpg" alt="SSH Implementation" class="carousel-image" width="1280" height="720" loading="lazy" decoding="async">
+                                <img src="images/sshswitch_6.jpg" alt="SSH connection on PC" class="carousel-image" width="1280" height="720" loading="lazy" decoding="async">
+                                <img src="images/sshrouter_1.jpg" alt="Network topology for applying ssh on router" class="carousel-image" width="1280" height="720" loading="lazy" decoding="async">
+                                <img src="images/sshrouter_2.jpg" alt="IP Configuration" class="carousel-image" width="1280" height="720" loading="lazy" decoding="async">
+                                <img src="images/sshrouter_3.jpg" alt="Commands on Router" class="carousel-image" width="1280" height="720" loading="lazy" decoding="async">
+                                <img src="images/sshrouter_4.jpg" alt="SSH Connection successful" class="carousel-image" width="1280" height="720" loading="lazy" decoding="async">
                             </div>
 
                             <div class="carousel-caption">

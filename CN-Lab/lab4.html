@@ -13,22 +13,25 @@
         </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin />
+    <link rel="dns-prefetch" href="//cdnjs.cloudflare.com" />
     <title>Lab 4 - HTTP, HTTPS, DNS & Wireshark | CN Lab Helper</title>
     <meta property="og:title" content="Lab 4 - HTTP, HTTPS, DNS & Wireshark | CN Lab Helper" />
     <meta property="og:description" content="Interactive computer networking labs, tutorials, and games for CS students on NetLabPro." />
-    <meta property="og:image" content="https://techdecoded.tech/images/logo2.png" />
+    <meta property="og:image" content="https://techdecoded.tech/images/logo2.webp" />
     <meta property="og:url" content="https://techdecoded.tech/lab4.html" />
     <meta property="og:type" content="website" />
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-    <link rel="stylesheet" href="style.css?v=1.3" />
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></noscript>
+    <link rel="stylesheet" href="style.min.css?v=1.4" />
 
     <!-- Atom One Dark theme for highlight.js -->
     <link rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/atom-one-dark.min.css" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
     <script>
-        hljs.highlightAll();
+        window.addEventListener('DOMContentLoaded', () => { if (window.hljs) hljs.highlightAll(); });
     </script>
 
     <style>
@@ -541,7 +544,7 @@
         <div class="container">
             <div class="header-content">
                 <div class="logo">
-                <img src="images/logo2.png" alt="CN Lab Helper Logo">
+                <img src="images/logo2.webp" alt="CN Lab Helper Logo" width="50" height="50" decoding="async" fetchpriority="high">
                     <h1>NetLabPro</h1>
                 </div>
                 <nav class="navbar">
@@ -851,19 +854,19 @@ Password: test
                         <div class="carousel-container">
                             <div class="carousel" id="http-carousel">
                                 <div class="carousel-images">
-                                    <img src="images/lab4ss1.jpg" alt="HTTP,HTTPS Configuration in Packet Tracer" class="carousel-image active">
-                                    <img src="images/lab4ss2.jpg" alt="IP Configuration" class="carousel-image">
-                                    <img src="images/lab4ss3.jpg" alt="IP Configuration" class="carousel-image">
-                                    <img src="images/lab4ss4.jpg" alt="IP Configuration" class="carousel-image">
-                                    <img src="images/lab4ss5.jpg" alt="IP Configuration" class="carousel-image">
-                                    <img src="images/lab4ss6.jpg" alt="IP Configuration" class="carousel-image">
-                                    <img src="images/lab4ss7.jpg" alt="Connectivity check using ping" class="carousel-image">
-                                    <img src="images/lab4ss8.jpg" alt="Connectivity check using ping" class="carousel-image">
-                                    <img src="images/lab4ss9.jpg" alt="Enable Services" class="carousel-image">
-                                    <img src="images/lab4ss10.jpg" alt="Access Services" class="carousel-image">
-                                    <img src="images/lab4ss11.jpg" alt="Simulation Mode" class="carousel-image">
-                                    <img src="images/lab4ss12.jpg" alt="Simulation Mode" class="carousel-image">
-                                    <img src="images/lab4ss13.jpg" alt="Simulation Mode" class="carousel-image">
+                                    <img src="images/lab4ss1.jpg" alt="HTTP,HTTPS Configuration in Packet Tracer" class="carousel-image active" width="1280" height="720" loading="lazy" decoding="async">
+                                    <img src="images/lab4ss2.jpg" alt="IP Configuration" class="carousel-image" width="1280" height="720" loading="lazy" decoding="async">
+                                    <img src="images/lab4ss3.jpg" alt="IP Configuration" class="carousel-image" width="1280" height="720" loading="lazy" decoding="async">
+                                    <img src="images/lab4ss4.jpg" alt="IP Configuration" class="carousel-image" width="1280" height="720" loading="lazy" decoding="async">
+                                    <img src="images/lab4ss5.jpg" alt="IP Configuration" class="carousel-image" width="1280" height="720" loading="lazy" decoding="async">
+                                    <img src="images/lab4ss6.jpg" alt="IP Configuration" class="carousel-image" width="1280" height="720" loading="lazy" decoding="async">
+                                    <img src="images/lab4ss7.jpg" alt="Connectivity check using ping" class="carousel-image" width="1280" height="720" loading="lazy" decoding="async">
+                                    <img src="images/lab4ss8.jpg" alt="Connectivity check using ping" class="carousel-image" width="1280" height="720" loading="lazy" decoding="async">
+                                    <img src="images/lab4ss9.jpg" alt="Enable Services" class="carousel-image" width="1280" height="720" loading="lazy" decoding="async">
+                                    <img src="images/lab4ss10.jpg" alt="Access Services" class="carousel-image" width="1280" height="720" loading="lazy" decoding="async">
+                                    <img src="images/lab4ss11.jpg" alt="Simulation Mode" class="carousel-image" width="1280" height="720" loading="lazy" decoding="async">
+                                    <img src="images/lab4ss12.jpg" alt="Simulation Mode" class="carousel-image" width="1280" height="720" loading="lazy" decoding="async">
+                                    <img src="images/lab4ss13.jpg" alt="Simulation Mode" class="carousel-image" width="1280" height="720" loading="lazy" decoding="async">
                                 </div>
                                 <div class="carousel-caption">
                                     <p id="http-caption">Figure 1: HTTP/HTTPS implementation network topology.</p>
@@ -890,14 +893,14 @@ Password: test
                         <div class="carousel-container">
                             <div class="carousel" id="dns-carousel">
                                 <div class="carousel-images">
-                                    <img src="images/lab4ss14.jpg" alt="DNS implementation topology" class="carousel-image active">
-                                    <img src="images/lab4ss15.jpg" alt="IP Configuration" class="carousel-image">
-                                    <img src="images/lab4ss16.jpg" alt="HTTP & HTTPS Services" class="carousel-image">
-                                    <img src="images/lab4ss17.jpg" alt="DNS configuration settings" class="carousel-image">
-                                    <img src="images/lab4ss18.jpg" alt="DNS resolves name into IP address" class="carousel-image">
-                                    <img src="images/lab4ss19.jpg" alt="Summary" class="carousel-image">
-                                    <img src="images/lab4ss20.jpg" alt="Simulation Mode" class="carousel-image">
-                                    <img src="images/lab4ss21.jpg" alt="Headers in Simulation Mode" class="carousel-image">
+                                    <img src="images/lab4ss14.jpg" alt="DNS implementation topology" class="carousel-image active" width="1280" height="720" loading="lazy" decoding="async">
+                                    <img src="images/lab4ss15.jpg" alt="IP Configuration" class="carousel-image" width="1280" height="720" loading="lazy" decoding="async">
+                                    <img src="images/lab4ss16.jpg" alt="HTTP & HTTPS Services" class="carousel-image" width="1280" height="720" loading="lazy" decoding="async">
+                                    <img src="images/lab4ss17.jpg" alt="DNS configuration settings" class="carousel-image" width="1280" height="720" loading="lazy" decoding="async">
+                                    <img src="images/lab4ss18.jpg" alt="DNS resolves name into IP address" class="carousel-image" width="1280" height="720" loading="lazy" decoding="async">
+                                    <img src="images/lab4ss19.jpg" alt="Summary" class="carousel-image" width="1280" height="720" loading="lazy" decoding="async">
+                                    <img src="images/lab4ss20.jpg" alt="Simulation Mode" class="carousel-image" width="1280" height="720" loading="lazy" decoding="async">
+                                    <img src="images/lab4ss21.jpg" alt="Headers in Simulation Mode" class="carousel-image" width="1280" height="720" loading="lazy" decoding="async">
                                 </div>
                                 <div class="carousel-caption">
                                     <p id="dns-caption">Figure 14: DNS implementation network topology.</p>

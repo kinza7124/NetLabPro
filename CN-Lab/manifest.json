@@ -10,7 +10,7 @@
   "theme_color": "#2c3e50",
   "icons": [
     {
-      "src": "images/logo2.png",
+      "src": "images/logo2.webp",
       "sizes": "1080x1080",
       "type": "image/png",
       "purpose": "any"
