@@ -1,4 +1,4 @@
-const CACHE_NAME = "netlabpro-offline-v2";
+const CACHE_NAME = "netlabpro-offline-v1";
 const RUNTIME_CACHE = "netlabpro-runtime";
 
 const PRECACHE_URLS = [
@@ -23,14 +23,11 @@ const PRECACHE_URLS = [
   "/lab11.html",
   "/offline.html",
   "/style.css",
-  "/style.min.css",
   "/manifest.json",
   "/ads.txt",
   "/robots.txt",
   "/sitemap.xml",
   "/images/logo2.png",
-  "/images/logo2.webp",
-  "/images/hero-bg.webp",
   "/images/OSImodel.jpg",
   "/images/OSI_Advanced.jpg",
   "/images/Tcp_congestion_control.jpg",
